@@ -39,15 +39,14 @@ define('TNOTW_HOVERBBUBLE_URL', plugin_dir_url(__FILE__));
  **/
 function tnotw_hoverbubble_load(){
 		
-    if(is_admin()) //load admin files only in admin
-        require_once(TNOTW_HOVERBUBBLE_DIR .'includes/admin.php');
-        
-    require_once(TNOTW_HOVERBUBBLE_DIR .'includes/core.php');
-    require_once(TNOTW_HOVERBUBBLE_DIR .'includes/database.php');
+	if(is_admin()) //load admin files only in admin
+		require_once(TNOTW_HOVERBUBBLE_DIR .'includes/admin.php');
+		
+	require_once(TNOTW_HOVERBUBBLE_DIR .'includes/core.php');
+	require_once(TNOTW_HOVERBUBBLE_DIR .'includes/database.php');
 }
 
 tnotw_hoverbubble_load();
-
 
 
 /**
@@ -61,7 +60,7 @@ register_deactivation_hook(__FILE__, 'tnotw_hoverbubble_deactivation');
 function tnotw_hoverbubble_activation() {
     
 	//actions to perform once on plugin activation go here    
-        require_once(TNOTW_HOVERBUBBLE_DIR .'includes/database.php');
+	require_once(TNOTW_HOVERBUBBLE_DIR .'includes/database.php');
 	tnotw_create_bubble_tables();
 	
 	//register uninstaller
@@ -102,31 +101,29 @@ add_action( 'wp_enqueue_scripts', 'tnotw_hoverbubble_register_js' );
 
 function tnotw_hoverbubble_ajax(){
 
-   // the first part is a SWTICHBOARD that fires specific functions
-   // according to the value of Query Var 'fn'
+	// the first part is a SWTICHBOARD that fires specific functions
+	// according to the value of Query Var 'fn'
 
-     switch($_REQUEST['fn']){
-          case 'get_bubble_config':
-		$output = tnotw_get_bubble_configs();
-          break;
-          default:
-              $output = 'No function specified, check your jQuery.ajax() call';
-          break;
+	switch($_REQUEST['fn']){
+		case 'get_bubble_config':
+			$output = tnotw_get_bubble_configs();
+			break;
+		default:
+		$output = 'No function specified, check your jQuery.ajax() call';
+		break;
 
-     }
+	}
 
-   // at this point, $output contains some sort of valuable data!
-   // Now, convert $output to JSON and echo it to the browser 
-   // That way, we can recapture it with jQuery and run our success function
+	// Convert $output to JSON and echo it to the browser 
 
-          $output=json_encode($output);
-	     if(is_array($output)){
-		print_r($output);	
-	     }
-	     else{
-		echo $output;
-	     }
-	     die;
+	$output=json_encode($output);
+		if(is_array($output)){
+			print_r($output);	
+ 		}
+		else {
+			echo $output;
+	     	}
+	die;
 
 }
 

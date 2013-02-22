@@ -8,8 +8,7 @@
  * Set up alias for bubble table access.
  */
 global $wpdb ;
-if (!isset($wpdb->hoverbubbles)) 
-{
+if (!isset($wpdb->hoverbubbles)) {
 	$wpdb->hoverbubbles = $wpdb->prefix . 'hoverbubbles';
 }
 
@@ -17,8 +16,7 @@ if (!isset($wpdb->hoverbubbles))
 /**
  * Retrieve bubble configurations from database.  
  */
-function tnotw_get_bubble_configs( )
-{
+function tnotw_get_bubble_configs(){
 	global $wpdb ;
 	$bubble_configs = $wpdb->get_results(
 		"
@@ -28,8 +26,7 @@ function tnotw_get_bubble_configs( )
 	);
 
 	$configArray = array();
-	foreach ( $bubble_configs as $bubble_config )
-	{
+	foreach ( $bubble_configs as $bubble_config ) {
 		$mapped_config = map_config( $bubble_config );
 		array_push( $configArray, $mapped_config);
 	}
@@ -40,8 +37,7 @@ function tnotw_get_bubble_configs( )
 /**
  * Map database columns to variable names as they are known in the UI.
  */
-function map_config( $bubbleConfig )
-{
+function map_config( $bubbleConfig ) {
 	$mappedConfig = array(	'bubbleFillColor' => $bubbleConfig['bubble_fill_color'],
 				'bubbleMessage' => $bubbleConfig['bubble_message'],
 				'bubbleFont' => $bubbleConfig['bubble_font'],
@@ -69,16 +65,14 @@ function map_config( $bubbleConfig )
 
 
  
-function tnotw_create_bubble_tables()
-{
+function tnotw_create_bubble_tables() {
 
 	global $wpdb;
 	$hbtable = $wpdb->prefix . "hoverbubbles";
  
 	//verify if table already exists
-	if($wpdb->get_var("SHOW TABLES LIKK '$hbtable'") !== $hbtable ) 
-	{
-		$sql = get_bubble_table_DDL ;
+	if($wpdb->get_var("SHOW TABLES LIKK '$hbtable'") !== $hbtable ) {
+		$sql = get_bubble_table_DDL() ;
 	}
  
 	//include the wordpress db functions
@@ -100,9 +94,8 @@ function tnotw_check_update_bubble_tables(){
 
 	$installed_ver = get_option( TNOTW_HOVERBUBBLE_VERSION_OPTION_KEY );
 
-	if( $installed_ver != TNOTW_HOVERBUBBLE_VERSION ) 
-	{
-		$sql = get_bubble_table_DDL ;
+	if( $installed_ver != TNOTW_HOVERBUBBLE_VERSION ) {
+		$sql = get_bubble_table_DDL() ;
 		require_once(ABSPATH . 'wp-admin/upgrade-functions.php');
 		dbDelta($sql);
 		update_option(TNOTW_HOVERBUBBLE_VERSION_OPTION_KEY, TNOTW_HOVERBUBBLE_VERSION);
@@ -113,8 +106,7 @@ function tnotw_check_update_bubble_tables(){
 add_action('plugins_loaded', 'tnotw_check_update_bubble_tables');
 
 
-function get_bubble_table_DDL()
-{
+function get_bubble_table_DDL() {
 
 	$sql =  "CREATE TABLE ". $hbtable . " (
 		bubble_id MEDIUMINT(12) NOT NULL AUTO_INCREMENT,
