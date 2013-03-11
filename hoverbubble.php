@@ -91,6 +91,7 @@ function tnotw_hoverbubble_register_js()
 						array( 'jquery' ) 
 	);  
 	wp_enqueue_script( 'hoverbubble-js' );  
+	
 }  
 
 add_action( 'wp_enqueue_scripts', 'tnotw_hoverbubble_register_js' );  
