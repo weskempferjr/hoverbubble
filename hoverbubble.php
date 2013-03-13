@@ -131,4 +131,17 @@ function tnotw_hoverbubble_ajax(){
 add_action('wp_ajax_nopriv_tnotw_hoverbubble_ajax', 'tnotw_hoverbubble_ajax');
 add_action('wp_ajax_tnotw_hoverbubble_ajax', 'tnotw_hoverbubble_ajax');
 
+
+// shortcodes
+function tnotw_hoverbubble_shortcode( $atts ) {
+	global $wpdb ;
+	
+	$bubble_id = $atts['bubble_id'];
+	// TODO: error handling here/run through prepare
+	$bubble = $wpdb->get_row( "SELECT * FROM $wpdb->hoverbubbles WHERE bubble_id = " . $bubble_id , ARRAY_A );
+	return $bubble['bubble_message'];
+}
+
+add_shortcode('hoverbubble', 'tnotw_hoverbubble_shortcode');
+
 ?>

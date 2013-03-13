@@ -8,7 +8,7 @@ jQuery(document).ready(function($) {
 				$(this).siblings('.ui-dialog-buttonpane').find('button:eq(1)').focus();
 			},
 		buttons: [ 
-			{ text: "Ok", click: function() { 
+			{ text: "OK", click: function() { 
 				$( this ).dialog( "close" );
 				window.location = $(this).data('delete_target').href ;				
 			}},
@@ -19,25 +19,22 @@ jQuery(document).ready(function($) {
 	$(".hbdelete").click(function(e) {
 		e.preventDefault();	
 		$("#dialog").data('delete_target', this );
-		$("#dialog").dialog("open");
-			// alert("Here we are.");
-			// var rsp = confirm("Delete bubble?");
-			//if ( rsp == true ) {
-				// alert("yes");
-				//window.location = jQuery(this).attr('href');
-				// jQuery(function() {
-				//	    jQuery( "#dialog" ).dialog({
-				//	    	width: 600,
-				//			height: 400
-				//	    });
-				// });
-			//} 
-			// else {
-			//	alert("no");
-			//	e.preventDefault();				
-			//}
-			
+		$("#dialog").dialog("open");			
 	});
+	
+	// color picker
+	$('.colorfield').wpColorPicker({
+		change: function(event, ui) {
+			var field_color = $('.colorfield').wpColorPicker("color");
+			event.target.value = field_color ;
+		},
+		clear: function(event,ui) {
+
+		 }
+	      
+	});
+	
+
 
 });
 

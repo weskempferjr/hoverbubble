@@ -49,6 +49,7 @@ function hoverbubble_edit() {
 		handle_hoverbubble_edit();
 	}
 	else {
+		tnontw_enqueue_scripts_internally();
 		generate_hoverbubble_edit_page();
 	}
 }
@@ -98,8 +99,7 @@ function generate_hoverbubble_edit_page() {
 			// Don't generate page but delete immediately. Assumes confirmation
 			// on the client side.
 			$bubble_id = $_GET['bubble_id'];
-			// TODO: delete disable for conf dialog dev if ( delete_bubble( $bubble_id ) ) {
-			if ( true ) {
+			if ( delete_bubble( $bubble_id ) ) {
 				tnontw_enqueue_scripts_internally();
 				generate_hoverbubble_settings_page("Delete of $bubble_id succeeded.");
 				return ;
@@ -127,7 +127,7 @@ function generate_hoverbubble_edit_page() {
 			</tr>
 			<tr>
 			<td>Bubble Fill Color:</td> 
-	 		<td><input type="text" name="bubble_fill_color" value="<?php echo $bubble['bubble_fill_color'] ?>" /> </td>
+	 		<td><input class="colorfield" type="text" name="bubble_fill_color" value="<?php echo $bubble['bubble_fill_color'] ?>" /> </td>
 			</tr>
 			<tr>
 			<td>Bubble Font:</td> 
@@ -135,7 +135,7 @@ function generate_hoverbubble_edit_page() {
 			</tr>
 			<tr>
 			<td>Bubble Font Color:</td>
-			<td> <input type="text" name="bubble_font_color" value="<?php echo $bubble['bubble_font_color'] ?>" /> </td>
+			<td> <input class="colorfield" type="text" name="bubble_font_color" value="<?php echo $bubble['bubble_font_color'] ?>" /> </td>
 			</tr>
 			<tr>
 			<td>Bubble Text Align:</td>
@@ -151,7 +151,7 @@ function generate_hoverbubble_edit_page() {
 			</tr>
 			<tr>
 			<td>Bubble Outline Color:</td>
-			<td><input type="text" name="bubble_outline_color" value="<?php echo $bubble['bubble_outline_color'] ?>" />  </td>
+			<td><input class="colorfield" type="text" name="bubble_outline_color" value="<?php echo $bubble['bubble_outline_color'] ?>" />  </td>
 			</tr>
 			<tr>
 			<td>Bubble Outline Width:</td>
@@ -192,10 +192,6 @@ function generate_hoverbubble_edit_page() {
 			<tr>
 			<td>Target Image Container ID  :</td>
 			<td><input type="text" name="target_image_cntnr_id" value="<?php echo $bubble['target_image_cntnr_id'] ?>" />  </td>
-			</tr>
-			<tr>
-			<td>Bubble Canvas ID :</td>
-			<td><input type="text" name="bubble_canvas_id" value="<?php echo $bubble['bubble_canvas_id'] ?>" />  </td>
 			</tr>
 			<tr>
 			<td><input type="submit" name="edit_bubble" value="Submit" class="button-primary" />
@@ -247,7 +243,6 @@ function generate_hoverbubble_settings_page( $status_message ) {
 			<thead>
 			<tr>
 			<th>Bubble ID</th>
-			<th>Bubble Canvas ID</th>
 			<th>Message</th>
 			<th>Target Image</th>
 			</tr>
@@ -255,7 +250,6 @@ function generate_hoverbubble_settings_page( $status_message ) {
 			<tfoot>
 			<tr>
 			<th>Bubble ID</th>
-			<th>Bubble Canvas ID</th>
 			<th>Message</th>
 			<th>Target Image</th>
 			</tr>
@@ -267,7 +261,6 @@ function generate_hoverbubble_settings_page( $status_message ) {
 				$bubbles = $wpdb->get_results(
 					"
 					SELECT 	bubble_id, 
-						bubble_canvas_id, 
 						bubble_message, 
 						target_image_id
 					FROM $wpdb->hoverbubbles
@@ -298,7 +291,6 @@ function generate_hoverbubble_settings_page( $status_message ) {
 					?>
 					<tr>
 					<td><?php echo $bubble->bubble_id ?> </td>
-					<td><?php echo $bubble->bubble_canvas_id ?> </td>
 					<td><?php echo $bubble->bubble_message ?> </td>
 					<td><?php echo $bubble->target_image_id ?> </td>
 					<td><a href="<?php echo $edit_page_url?>"> Edit</a> | <a class="hbdelete" href="<?php echo $delete_page_url?>"> Delete</a></td>
@@ -356,8 +348,7 @@ function get_add_form_defaults() {
 		"canvas_height" => "100",
 		"canvas_border_style" => "0px solid #000000",
 		"target_image_id" => "",
-		"target_image_cntr_id" => "",
-		"bubble_canvas_id" => ""
+		"target_image_cntr_id" => ""
 	);
 	return $bubble;
 }
@@ -384,9 +375,8 @@ function add_bubble() {
 				canvas_height,
 				canvas_border_style,
 				target_image_id,
-				target_image_cntnr_id,
-				bubble_canvas_id 
-			) VALUES ( %d, %s, %s, %s, %s, %s, %d, %d, %d, %s, %d, %s, %d, %d, %d, %d, %s, %s, %s, %s )
+				target_image_cntnr_id
+			) VALUES ( %d, %s, %s, %s, %s, %s, %d, %d, %d, %s, %d, %s, %d, %d, %d, %d, %s, %s, %s )
 		",
 		array(
 			$_POST['bubble_id'],
@@ -407,8 +397,7 @@ function add_bubble() {
 			$_POST['canvas_height'],
 			$_POST['canvas_border_style'],
 			$_POST['target_image_id'],
-			$_POST['target_image_cntnr_id'],
-			$_POST['bubble_canvas_id']
+			$_POST['target_image_cntnr_id']
 		)
 	);
 	$ret_val = $wpdb->query( $sql );
@@ -438,8 +427,7 @@ function update_bubble() {
 				canvas_height = %d,
 				canvas_border_style = %s,
 				target_image_id = %s,
-				target_image_cntnr_id = %s,
-				bubble_canvas_id = %s
+				target_image_cntnr_id = %s
 			WHERE bubble_id = %d
 		",
 		array(		
@@ -461,7 +449,6 @@ function update_bubble() {
 			$_POST['canvas_border_style'],
 			$_POST['target_image_id'],
 			$_POST['target_image_cntnr_id'],
-			$_POST['bubble_canvas_id'],
 			$_POST['bubble_id']
 		)
 	
@@ -511,7 +498,7 @@ function tnotw_hoverbubble_admin_enqueue_scripts($hook) {
 function tnontw_enqueue_scripts_internally() {
 	
 	wp_enqueue_script( 'hoverbubble-form-js',
-		 plugins_url() . '/hoverbubble/assets/js/hoverbubble_form.js');
+		 plugins_url() . '/hoverbubble/assets/js/hoverbubble_form.js',  array( 'wp-color-picker' ) );
 		 // array('jquery'));
 
 	//wp_enqueue_script( 'jquery',
@@ -562,7 +549,7 @@ function tnontw_enqueue_scripts_internally() {
 function tnotw_add_jquery_footer() {
 	?>
 	<div id="dialog" style="display: none" title="Basic dialog">
-		<p>Talk to me!</p>
+		<p>Delete this bubble?</p>
 	</div>
 	<?php
 	

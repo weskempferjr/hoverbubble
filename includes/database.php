@@ -35,7 +35,8 @@ function tnotw_get_bubble_configs(){
 }
 
 /**
- * Map database columns to variable names as they are known in the UI.
+ * Map database columns to variable names as they are known in the UI.Note
+ * some config fields are dirived or composed of more than datanbase one field. 
  */
 function map_config( $bubbleConfig ) {
 	$mappedConfig = array(	'bubbleFillColor' => $bubbleConfig['bubble_fill_color'],
@@ -51,7 +52,7 @@ function map_config( $bubbleConfig ) {
 				'bubbleTailDirection' => $bubbleConfig['bubble_tail_direction'],
 				'targetImageID' => $bubbleConfig['target_image_id'],
 				'targetImageContainerID' => $bubbleConfig['target_image_cntnr_id'],
-				'bubbleCanvasID' => $bubbleConfig['bubble_canvas_id'],
+				'bubbleCanvasID' => "bubble_canvas" . $bubbleConfig['bubble_id'] ,
 				'canvasBorderStyle' => $bubbleConfig['canvas_border_style'],
 				'canvasTop' => $bubbleConfig['canvas_top_offset'],
 				'canvasLeft' => $bubbleConfig['canvas_left_offset'],
@@ -128,7 +129,6 @@ function get_bubble_table_DDL() {
 		canvas_border_style VARCHAR(100),
 		target_image_id VARCHAR(500),
 		target_image_cntnr_id VARCHAR(50),
-		bubble_canvas_id VARCHAR(50) UNIQUE,
 		UNIQUE KEY bubble_id (bubble_id));";
 
 	return $sql;
