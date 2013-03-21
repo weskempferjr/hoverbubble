@@ -45,7 +45,6 @@ function map_config( $bubbleConfig ) {
 				'bubbleFontColor' => $bubbleConfig['bubble_font_color'],
 				'bubbleTextAlign' => $bubbleConfig['bubble_text_align'],
 				'bubbleTailLength' => $bubbleConfig['bubble_tail_length'],
-				'bubblePadding' => $bubbleConfig['bubble_padding'],
 				'bubbleCornerRadius' => $bubbleConfig['bubble_corner_radius'],
 				'bubbleOutlineColor' => $bubbleConfig['bubble_outline_color'],
 				'bubbleOutlineWidth' => $bubbleConfig['bubble_outline_width'],
@@ -53,11 +52,12 @@ function map_config( $bubbleConfig ) {
 				'targetImageID' => $bubbleConfig['target_image_id'],
 				'targetImageContainerID' => $bubbleConfig['target_image_cntnr_id'],
 				'bubbleCanvasID' => "bubble_canvas" . $bubbleConfig['bubble_id'] ,
-				'canvasBorderStyle' => $bubbleConfig['canvas_border_style'],
-				'canvasTop' => $bubbleConfig['canvas_top_offset'],
-				'canvasLeft' => $bubbleConfig['canvas_left_offset'],
-				'canvasHeight' => $bubbleConfig['canvas_height'],
-				'canvasWidth' => $bubbleConfig['canvas_width']
+				'bubbleTailX' => $bubbleConfig['bubble_tail_x'],
+				'bubbleTailY' => $bubbleConfig['bubble_tail_y'],
+				'bubbleAspectRatio' => $bubbleConfig['bubble_aspect_ratio'],
+				'textLineSpacing' => $bubbleConfig['text_line_spacing'],
+				'canvasBorderStyle' => $bubbleConfig['canvas_border_style']
+	
 	);
 	return $mappedConfig ;
 ;	
@@ -110,27 +110,25 @@ add_action('plugins_loaded', 'tnotw_check_update_bubble_tables');
 function get_bubble_table_DDL() {
 
 	$sql =  "CREATE TABLE ". $hbtable . " (
-		bubble_id MEDIUMINT(12) NOT NULL AUTO_INCREMENT,
-		bubble_message VARCHAR(1000) NOT NULL,
-		bubble_fill_color VARCHAR(50),
-		bubble_font_color VARCHAR(50),
-		bubble_font VARCHAR(50),
-		bubble_text_align VARCHAR(50),
-		bubble_tail_length SMALLINT(4) UNSIGNED,	
-		bubble_padding SMALLINT(4) UNSIGNED,	
-		bubble_corner_radius SMALLINT(4) UNSIGNED,	
-		bubble_outline_color VARCHAR(50),
-		bubble_outline_width SMALLINT(4) UNSIGNED,	
-		bubble_tail_direction CHAR(2),
-		canvas_top_offset SMALLINT(4),
-		canvas_left_offset SMALLINT(4),
-		canvas_width MEDIUMINT(5),
-		canvas_height MEDIUMINT(5),
-		canvas_border_style VARCHAR(100),
-		target_image_id VARCHAR(500),
-		target_image_cntnr_id VARCHAR(50),
+		bubble_id mediumint(12) NOT NULL AUTO_INCREMENT,
+		bubble_message varchar(1000) NOT NULL,
+		bubble_fill_color varchar(50) DEFAULT NULL,
+		bubble_font_color varchar(50) DEFAULT NULL,
+		bubble_font varchar(50) DEFAULT NULL,
+		bubble_text_align varchar(50) DEFAULT NULL,
+		text_line_spacing int(4) unsigned DEFAULT NULL,
+		bubble_aspect_ratio float unsigned DEFAULT NULL,
+		bubble_tail_length smallint(4) unsigned DEFAULT NULL,
+		bubble_tail_direction char(2) DEFAULT NULL,
+		bubble_tail_x int(4) unsigned DEFAULT NULL,
+		bubble_tail_y int(4) unsigned DEFAULT NULL,
+		bubble_corner_radius smallint(4) unsigned DEFAULT NULL,
+		bubble_outline_color varchar(50) DEFAULT NULL,
+		bubble_outline_width smallint(4) unsigned DEFAULT NULL,
+		canvas_border_style varchar(100) DEFAULT NULL,
+		target_image_id varchar(500) DEFAULT NULL,
+		target_image_cntnr_id varchar(50) DEFAULT NULL,
 		UNIQUE KEY bubble_id (bubble_id));";
-
 	return $sql;
 }
  

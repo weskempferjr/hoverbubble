@@ -162,24 +162,20 @@ function generate_hoverbubble_edit_page() {
 			<td><input type="text" name="bubble_corner_radius" value="<?php echo $bubble['bubble_corner_radius'] ?>" />  </td>
 			</tr>
 			<tr>
-			<td>Bubble Padding:</td>
-			<td><input type="text" name="bubble_padding" value="<?php echo $bubble['bubble_padding'] ?>" />  </td>
+			<td>Bubble Aspect Ratio:</td>
+			<td><input type="text" name="bubble_aspect_ratio" value="<?php echo $bubble['bubble_aspect_ratio'] ?>" />  </td>
 			</tr>
 			<tr>
-			<td>Canvas Height:</td>
-			<td><input type="text" name="canvas_height" value="<?php echo $bubble['canvas_height'] ?>" />  </td>
+			<td>Bubble Tail Tip X Coordinate:</td>
+			<td><input type="text" name="bubble_tail_x" value="<?php echo $bubble['bubble_tail_x'] ?>" />  </td>
 			</tr>
 			<tr>
-			<td>Canvas Width:</td>
-			<td><input type="text" name="canvas_width" value="<?php echo $bubble['canvas_width'] ?>" />  </td>
+			<td>Bubble Tail Tip Y Coordinate:</td>
+			<td><input type="text" name="bubble_tail_y" value="<?php echo $bubble['bubble_tail_y'] ?>" />  </td>
 			</tr>
 			<tr>
-			<td>Canvas Top Offset:</td>
-			<td><input type="text" name="canvas_top_offset" value="<?php echo $bubble['canvas_top_offset'] ?>" />  </td>
-			</tr>
-			<tr>
-			<td>Canvas Left Offset:</td>
-			<td> <input type="text" name="canvas_left_offset" value="<?php echo $bubble['canvas_left_offset'] ?>" />  </td>
+			<td>Text Line Spacing:</td>
+			<td><input type="text" name="text_line_spacing" value="<?php echo $bubble['text_line_spacing'] ?>" />  </td>
 			</tr>
 			<tr>
 			<td>Canvas Border Style :</td>
@@ -338,14 +334,13 @@ function get_add_form_defaults() {
 		"bubble_text_align" => "center",
 		"bubble_tail_length" => "30",
 		"bubble_tail_direction" => "",
-		"bubble_corner_radius" => "40",
-		"bubble_padding" => "40",
+		"bubble_corner_radius" => "15",
 		"bubble_outline_color" => "black",
 		"bubble_outline_width" => "4",
-		"canvas_top_offest" => "",
-		"canvas_left_offset" => "",
-		"canvas_width" => "150",
-		"canvas_height" => "100",
+		"bubble_aspect_ratio" => "1.0",
+		"bubble_tail_x" => "",
+		"bubble_tail_y" => "",
+		"text_line_spacing" => "4",
 		"canvas_border_style" => "0px solid #000000",
 		"target_image_id" => "",
 		"target_image_cntr_id" => ""
@@ -364,19 +359,18 @@ function add_bubble() {
 				bubble_font,
 				bubble_text_align,
 				bubble_tail_length,
-				bubble_padding,
+				bubble_aspect_ratio,
 				bubble_corner_radius,
 				bubble_outline_color,				
 				bubble_outline_width,
 				bubble_tail_direction,
-				canvas_top_offset,
-				canvas_left_offset,
-				canvas_width,				
-				canvas_height,
+				bubble_tail_x,
+				bubble_tail_y,
+				text_line_spacing,				
 				canvas_border_style,
 				target_image_id,
 				target_image_cntnr_id
-			) VALUES ( %d, %s, %s, %s, %s, %s, %d, %d, %d, %s, %d, %s, %d, %d, %d, %d, %s, %s, %s )
+			) VALUES ( %d, %s, %s, %s, %s, %s, %d, %d, %d, %s, %d, %s, %d, %d, %d, %s, %s, %s )
 		",
 		array(
 			$_POST['bubble_id'],
@@ -386,15 +380,14 @@ function add_bubble() {
 			$_POST['bubble_font'],
 			$_POST['bubble_text_align'],
 			$_POST['bubble_tail_length'],
-			$_POST['bubble_padding'],
+			$_POST['bubble_aspect_ratio'],
 			$_POST['bubble_corner_radius'],
 			$_POST['bubble_outline_color'],
 			$_POST['bubble_outline_width'],
 			$_POST['bubble_tail_direction'],
-			$_POST['canvas_top_offset'],
-			$_POST['canvas_left_offset'],
-			$_POST['canvas_width'],
-			$_POST['canvas_height'],
+			$_POST['bubble_tail_x'],
+			$_POST['bubble_tail_y'],
+			$_POST['text_line_spacing'],
 			$_POST['canvas_border_style'],
 			$_POST['target_image_id'],
 			$_POST['target_image_cntnr_id']
@@ -416,15 +409,14 @@ function update_bubble() {
 				bubble_font = %s,
 				bubble_text_align = %s,
 				bubble_tail_length = %d,
-				bubble_padding = %d,
+				bubble_aspect_ratio = %d,
 				bubble_corner_radius = %d,
 				bubble_outline_color = %s,
 				bubble_outline_width = %d,
 				bubble_tail_direction = %s,
-				canvas_top_offset = %d,
-				canvas_left_offset = %d,
-				canvas_width = %d,
-				canvas_height = %d,
+				bubble_tail_x = %d,
+				bubble_tail_y = %d,
+				text_line_spacing = %d,
 				canvas_border_style = %s,
 				target_image_id = %s,
 				target_image_cntnr_id = %s
@@ -437,15 +429,14 @@ function update_bubble() {
 			$_POST['bubble_font'],
 			$_POST['bubble_text_align'],
 			$_POST['bubble_tail_length'],
-			$_POST['bubble_padding'],
+			$_POST['bubble_aspect_ratio'],
 			$_POST['bubble_corner_radius'],
 			$_POST['bubble_outline_color'],
 			$_POST['bubble_outline_width'],
 			$_POST['bubble_tail_direction'],
-			$_POST['canvas_top_offset'],
-			$_POST['canvas_left_offset'],
-			$_POST['canvas_width'],
-			$_POST['canvas_height'],
+			$_POST['bubble_tail_x'],
+			$_POST['bubble_tail_y'],
+			$_POST['text_line_spacing'],
 			$_POST['canvas_border_style'],
 			$_POST['target_image_id'],
 			$_POST['target_image_cntnr_id'],
