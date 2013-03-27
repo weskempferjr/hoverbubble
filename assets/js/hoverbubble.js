@@ -1,13 +1,17 @@
 
 jQuery(document).ready(function($) {
 
-	//TODO: AJAX call url is hardcoded. Make configurable or set to page request hostname.
+
+	var imageSourceArray = getImageList();
+	var imageInfoData = JSON.stringify(imageSourceArray);
+	
 	$.ajax({
-		url: 'http://wpdev/wordpress/wp-admin/admin-ajax.php',
+		url:  wpsiteinfo.site_url + '/wp-admin/admin-ajax.php',
 		data:{
 			'action':'tnotw_hoverbubble_ajax',
 			'fn':'get_bubble_config',
-			'bubble_id':1
+			'bubble_id':1,
+			'imageInfoData': imageSourceArray
  		},
 		dataType: 'JSON',
 		success:function(data){
@@ -37,45 +41,87 @@ function displayBubbles(data)
 	} 
 }
 
+function getImageList() {
+	
+	var imgSrcArray = new Array();
+	
+	jQuery("img").each(function() {
+		var imgURLtmp = jQuery(this).attr('src');
+		// Remove wordpress attachment size 
+		var imgURL = imgURLtmp.replace(/-[0-9]*x[0-9]*\./,'.');
+		imgSrcArray.push( imgURL );
+	    // imgSrcArray.push(jQuery(this).attr('src'));
+	});
+	
+	return imgSrcArray ;
+}
+
+function restoreImageURL( imageURL ) {
+	
+	if ( jQuery("img[src='" + imageURL + "']").length > 0 ) {
+		return imageURL;
+	}
+	
+	var targetURL = "";
+	jQuery("img").each(function() {
+		var actualURL = jQuery(this).attr('src');
+		var matchURL = actualURL.replace(/-[0-9]*x[0-9]*\./,'.');
+		if ( imageURL == matchURL ) {
+			targetURL = actualURL;
+		}
+		
+	});
+	
+	if ( targetURL == "" ) {
+		// TODO: console wrapper
+		console.log("HB: restoreTargetURL: could not match target URL");
+	}
+	return targetURL;
+	
+}
+
 function displayBubble(bubbleConfig){
 
-	var bubbleMessage = bubbleConfig.bubbleMessage ;
+	//var bubbleMessage = bubbleConfig.bubbleMessage ;
+	var bubbleID = bubbleConfig.bubbleID ;
 	var bubbleFillColor = bubbleConfig.bubbleFillColor ;
-	var bubbleFontColor = bubbleConfig.bubbleFontColor ;
-	var bubbleFont = bubbleConfig.bubbleFont ;
-	var bubbleTextAlign = bubbleConfig.bubbleTextAlign ;
 	var bubbleTailLength = parseInt(bubbleConfig.bubbleTailLength);
-	// var bubblePadding = parseInt(bubbleConfig.bubblePadding );
 	var bubbleCornerRadius = parseInt(bubbleConfig.bubbleCornerRadius );
 	var bubbleOutlineColor = bubbleConfig.bubbleOutlineColor;
 	var bubbleOutlineWidth = parseInt(bubbleConfig.bubbleOutlineWidth);
 	var bubbleTailX = parseInt(bubbleConfig.bubbleTailX) ;
-	var bubbleTailY = parseInt(bubbleConfig.bubbleTailY) ;
-	var bubbleAspectRatio =  parseInt(bubbleConfig.bubbleAspectRatio) ;
-	var textLineSpacing = parseInt(bubbleConfig.textLineSpacing);
+	var bubbleTailY = parseInt(bubbleConfig.bubbleTailY) ;	var bubbleAspectRatio =  parseInt(bubbleConfig.bubbleAspectRatio) ;
+
+	var contentAreaWidth = parseInt(bubbleConfig.contentAreaWidth);
+	var contentAreaHeight = parseInt(bubbleConfig.contentAreaHeight);
 
 	// Force tail direction to lower case. All code in this
 	// script assumes lower case. 
 	var bubbleTailDirection = bubbleConfig.bubbleTailDirection.toLowerCase(); ;
 	var canvasBorderStyle = bubbleConfig.canvasBorderStyle ;
-	var targetImageID = bubbleConfig.targetImageID ;
+	var targetImageURL = bubbleConfig.targetImageURL  ;
+	
 	var targetImageContainerID = bubbleConfig.targetImageContainerID ;
 	var bubbleCanvasID = bubbleConfig.bubbleCanvasID ;
+	var contentDivID = bubbleConfig.contentDivID ;
+	var contentEmbedID = bubbleConfig.contentEmbedID ;
 
-	// wrap target image in div
-	var the_image = jQuery("img[src='" + targetImageID	+ "']");
-	the_image.wrap('<div id="' + targetImageContainerID + '"/></div>');
+	// wrap target image in div, call remove in case it previously exists. 
+	var the_image = "";
+	if ( jQuery("#" + targetImageContainerID ).length == 0 ) {
+		var the_image = jQuery("img[src='" + targetImageURL	+ "']");
+		the_image.wrap('<div id="' + targetImageContainerID + '"/></div>');
+	}
 
-	// TODO: Div name is hardcoded. It should be derived from target image id. 
-	var img_div = jQuery("#the_image_div");
-	var imageDivPosition = img_div.position();	
+	var img_div = jQuery("#" + targetImageContainerID); 
+	var imageDivPosition = img_div.position();
+	
 
+	textAreaDimensions = new Object();
+	textAreaDimensions.width = contentAreaWidth;
+	textAreaDimensions.height = contentAreaHeight;
 
-	var textAreaDimensions = calculateTextDimensions( 	img_div,
-														bubbleMessage, 
-														bubbleFont, 
-														bubbleAspectRatio,
-														textLineSpacing );
+	
 	
 	// TODO: consider making textPadding a config parameter
 	var textPadding = new Object();
@@ -96,11 +142,7 @@ function displayBubble(bubbleConfig){
 	
 
 	
-	// TODO: Clean this up. Bubble top/left actually refers to the canvas top/left.
-	// var bubble_top = position.top + canvasTop ;
-	// var bubble_left = position.left + canvasLeft ;
-	// var top = bubble_top + "px" ;
-	// var left = bubble_left + "px" ;
+
 	var top = imageDivPosition.top + canvasAreaDimensions.top ;
 	var left = imageDivPosition.left +   canvasAreaDimensions.left;
 	
@@ -122,19 +164,16 @@ function displayBubble(bubbleConfig){
 	var canvas_h_attr = canvas_h + "px" ;
 	var canvas_border_style = canvasBorderStyle ;
 
-	// height and width of bubble
-	// var bubble_pad = bubblePadding;
-	// var bubble_real_w = canvas_w - tail_length - bubble_pad ;
-	// var bubble_real_h = canvas_h - tail_length - bubble_pad ;
+
 
 	var strokeColor = bubbleOutlineColor;
 	var strokeWidth = bubbleOutlineWidth;
-	var textFont = bubbleFont ;
-	var textAlign = bubbleTextAlign ;
-	var textColor = bubbleFontColor ;
+
 
 	// remove previous instance if it exists.
-	jQuery("#" +	bubbleCanvasID ).remove();
+	jQuery("#" + bubbleCanvasID ).remove();
+	jQuery("#" + contentDivID ).remove();
+	jQuery("#" + contentEmbedID ).remove();
 
 	img_div.append('<canvas id="' + bubbleCanvasID + '" width="' + canvas_w + '" height="' + canvas_h + '" > </canvas>');
 	var canvasElement=document.getElementById( bubbleCanvasID );
@@ -161,8 +200,7 @@ function displayBubble(bubbleConfig){
 	// text_x = bubble_w - max_text_width / 2;
 	// text_y = ( center_y - ( bubble_h / 2 ) ) + textPadding.y;
 	
-	// Calculate text origin. Assumes left align.
-	// TODO: support for right and center text align.
+	// Calculate text origin. 
 	var text_x =  Math.round(( canvasAreaDimensions.width  - textAreaDimensions.width ) / 2);
 	var text_y =  Math.round(( canvasAreaDimensions.height  - textAreaDimensions.height ) / 2) + textPadding.y;
 	
@@ -178,7 +216,7 @@ function displayBubble(bubbleConfig){
 	var start_point = getBubbleDrawStartPoint( bubbleTailDirection );
 
 
-	jQuery("#" + bubbleCanvasID ).css({"border": canvas_border_style,"position":"absolute","z-index":"2"});
+	jQuery("#" + bubbleCanvasID ).css({"border": canvas_border_style,"position":"absolute","z-index":"10"});
 	jQuery("#" + bubbleCanvasID ).css({"top":top,"left":left });
 
 
@@ -414,12 +452,16 @@ function displayBubble(bubbleConfig){
 	ctx.fillStyle = bubbleFillColor ;
 	ctx.fill(); 
 	
-	// ctx.textAlign = textAlign ;
-	ctx.fillStyle = textColor ;
-	ctx.font = textFont ;
 	
-	wrapText(ctx, bubbleMessage, text_x, text_y, bubbleAreaDimensions.width, bubbleFont );
-	// ctx.fillText( bubbleMessage, text_x, text_y );
+	 var canvasPosition = jQuery("#" + bubbleCanvasID ).position();
+	 var etop = canvasPosition.top + ( ( canvas_h - contentAreaHeight ) / 2 );
+	 var eleft = canvasPosition.left + ( ( canvas_w - contentAreaWidth ) / 2 );
+
+	 img_div.append('<div id="' + contentDivID + '"  style="z-index:20;position:absolute;top:' +  etop +  'px;left:' + eleft + 'px"></div>');
+	 
+	 //TODO: hardcoded URL
+	 jQuery("#" + contentDivID ).append('<embed  width="' + contentAreaWidth + 'px" height="' + contentAreaHeight + 'px" src="http://wpdev/wordpress/index.php?hb_bubble_id='+ bubbleID +'">');
+
 	ctx.restore();
 
 };
@@ -654,7 +696,13 @@ function backingScale(context) {
 };
 
 function saveBubbleConfig( data ) {
-  localStorage.setItem( 'bubbleConfig', JSON.stringify( data ) );
+	
+	// restore URLs to match actuals on page.
+	for ( i = 0 ; i <	data.length ; i++ )
+	{
+		data[i].targetImageURL = restoreImageURL( data[i].targetImageURL );
+	} 
+	localStorage.setItem( 'bubbleConfig', JSON.stringify( data ) );
 } 
 
 function retrieveBubbleConfig( data ) {

@@ -116,30 +116,25 @@ function generate_hoverbubble_edit_page() {
 
 	
 	if ( $bubble != NULL ){
+		//$images = tonotw_get_posted_images();
 	?>
 	<div class="wrap">
 		<p>Here is the hoverbubble edit page for bubble_id = <?php echo $bubble_id ?></p>
 		<form id="hbedit" action="" method="POST">
 			<table>
 			<tr>
+			<td>Bubble Name:</td> 
+	 		<td><input type="text" name="bubble_name" value="<?php echo $bubble['bubble_name'] ?>" /> </td>
+			</tr>
+			<tr>
 			<td>Bubble Message:</td>
-			<td><input type="text" name="bubble_message" value="<?php echo $bubble['bubble_message'] ?>" /></td> 
+			<td>
+			<textarea class="theEditor" rows="10" cols="40" name="bubble_message" form="hbedit" ><?php echo $bubble['bubble_message'] ?> </textarea> 		
+			</td> 
 			</tr>
 			<tr>
 			<td>Bubble Fill Color:</td> 
 	 		<td><input class="colorfield" type="text" name="bubble_fill_color" value="<?php echo $bubble['bubble_fill_color'] ?>" /> </td>
-			</tr>
-			<tr>
-			<td>Bubble Font:</td> 
-			<td><input type="text" name="bubble_font" value="<?php echo $bubble['bubble_font'] ?>" /> </td>
-			</tr>
-			<tr>
-			<td>Bubble Font Color:</td>
-			<td> <input class="colorfield" type="text" name="bubble_font_color" value="<?php echo $bubble['bubble_font_color'] ?>" /> </td>
-			</tr>
-			<tr>
-			<td>Bubble Text Align:</td>
-			<td><input type="text" name="bubble_text_align" value="<?php echo $bubble['bubble_text_align'] ?>" /> </td>
 			</tr>
 			<tr>
 			<td>Bubble Tail Length:</td>
@@ -162,10 +157,6 @@ function generate_hoverbubble_edit_page() {
 			<td><input type="text" name="bubble_corner_radius" value="<?php echo $bubble['bubble_corner_radius'] ?>" />  </td>
 			</tr>
 			<tr>
-			<td>Bubble Aspect Ratio:</td>
-			<td><input type="text" name="bubble_aspect_ratio" value="<?php echo $bubble['bubble_aspect_ratio'] ?>" />  </td>
-			</tr>
-			<tr>
 			<td>Bubble Tail Tip X Coordinate:</td>
 			<td><input type="text" name="bubble_tail_x" value="<?php echo $bubble['bubble_tail_x'] ?>" />  </td>
 			</tr>
@@ -174,28 +165,43 @@ function generate_hoverbubble_edit_page() {
 			<td><input type="text" name="bubble_tail_y" value="<?php echo $bubble['bubble_tail_y'] ?>" />  </td>
 			</tr>
 			<tr>
-			<td>Text Line Spacing:</td>
-			<td><input type="text" name="text_line_spacing" value="<?php echo $bubble['text_line_spacing'] ?>" />  </td>
-			</tr>
-			<tr>
 			<td>Canvas Border Style :</td>
 			<td> <input type="text" name="canvas_border_style" value="<?php echo $bubble['canvas_border_style'] ?>" />  </td>
 			</tr>
 			<tr>
-			<td>Target Image ID  :</td>
-			<td><input type="text" name="target_image_id" value="<?php echo $bubble['target_image_id'] ?>" />  </td>
+			<td>Content Area Height :</td>
+			<td> <input type="text" name="content_area_height" value="<?php echo $bubble['content_area_height'] ?>" />  </td>
 			</tr>
 			<tr>
-			<td>Target Image Container ID  :</td>
-			<td><input type="text" name="target_image_cntnr_id" value="<?php echo $bubble['target_image_cntnr_id'] ?>" />  </td>
+			<td>Content Area Width :</td>
+			<td> <input type="text" name="content_area_width" value="<?php echo $bubble['content_area_width'] ?>" />  </td>
+			</tr>
+			<tr>
+			<td>Target Image ID  :</td>
+			<td>
+			<select form="hbedit" size="1" name="target_image_id" >
+			<?php
+				if ( $edit_action == "add") {
+					?><option value="" selected>Select an image</option> <?php
+				}
+				$images = tonotw_get_posted_images();
+				foreach ( $images as $image ) {
+					?>
+					<option value="<?php echo $image['image_ID'];?>"<?php if ( $image['image_ID'] == $bubble['target_image_id'] ) echo 'selected'?>>
+					<?php echo $image['image_title'] . " in ". $image['image_parent_post_type'] . " " . $image['image_parent_post_title'] ;?>
+					</option>
+					
+			<?php }?>
+			</select> 
+			</td>
 			</tr>
 			<tr>
 			<td><input type="submit" name="edit_bubble" value="Submit" class="button-primary" />
 			</tr>
-			<table>
+			</table>
 			<input type="hidden" name="bubble_id" value="<?php echo $bubble_id ?>">
 			<input type="hidden" name="edit_action" value="<?php echo $edit_action ?>">
-		<form>
+		</form>
 	</div>
         <?php
 	}
@@ -239,14 +245,14 @@ function generate_hoverbubble_settings_page( $status_message ) {
 			<thead>
 			<tr>
 			<th>Bubble ID</th>
-			<th>Message</th>
+			<th>Name</th>
 			<th>Target Image</th>
 			</tr>
 			</thead>
 			<tfoot>
 			<tr>
 			<th>Bubble ID</th>
-			<th>Message</th>
+			<th>Name</th>
 			<th>Target Image</th>
 			</tr>
 			</tfoot>
@@ -257,7 +263,7 @@ function generate_hoverbubble_settings_page( $status_message ) {
 				$bubbles = $wpdb->get_results(
 					"
 					SELECT 	bubble_id, 
-						bubble_message, 
+						bubble_name, 
 						target_image_id
 					FROM $wpdb->hoverbubbles
 					"
@@ -287,7 +293,7 @@ function generate_hoverbubble_settings_page( $status_message ) {
 					?>
 					<tr>
 					<td><?php echo $bubble->bubble_id ?> </td>
-					<td><?php echo $bubble->bubble_message ?> </td>
+					<td><?php echo $bubble->bubble_name; ?> </td>
 					<td><?php echo $bubble->target_image_id ?> </td>
 					<td><a href="<?php echo $edit_page_url?>"> Edit</a> | <a class="hbdelete" href="<?php echo $delete_page_url?>"> Delete</a></td>
 					</tr>
@@ -315,82 +321,87 @@ function generate_hoverbubble_help_page() {
 	<?php
 }
 
-
-function get_bubble_values ( $bubble_id ) {
+//TODO: If base64_encode is going to be used for encodeing message html for db storage, an object model
+// should be used for bubbles in order to hide the the encoding and to improve maintainability.
+function get_bubble_values( $bubble_id ) {
 	global $wpdb ;
 
 	// TODO: error handling here
 	$bubble = $wpdb->get_row( "SELECT * FROM $wpdb->hoverbubbles WHERE bubble_id = " . $bubble_id , ARRAY_A );
+	$bubble['bubble_message'] = base64_decode($bubble['bubble_message']);
 	return $bubble ;
 }
 
 
 function get_add_form_defaults() {
 	$bubble = array(
+		"bubble_name" => "",
 		"bubble_message" => "",
 		"bubble_fill_color" => "white",
-		"bubble_font_color" => "black",
-		"bubble_font" => "12x Arial",
-		"bubble_text_align" => "center",
 		"bubble_tail_length" => "30",
 		"bubble_tail_direction" => "",
 		"bubble_corner_radius" => "15",
 		"bubble_outline_color" => "black",
 		"bubble_outline_width" => "4",
-		"bubble_aspect_ratio" => "1.0",
 		"bubble_tail_x" => "",
 		"bubble_tail_y" => "",
-		"text_line_spacing" => "4",
+		"content_area_width" => "150",
+		"content_area_height" => "150",
 		"canvas_border_style" => "0px solid #000000",
-		"target_image_id" => "",
-		"target_image_cntr_id" => ""
+		"target_image_id" => ""
 	);
 	return $bubble;
 }
 
+// TODO: add_bubble move to database.php
 function add_bubble() {
 	global $wpdb ;
+		
+	$bubble_message_stripped = stripslashes($_POST['bubble_message']);
+	$bubble_message_encoded = base64_encode($bubble_message_stripped );
+	
+	// Get URL for target image.
+	$target_image_url = wp_get_attachment_url($_POST['target_image_id']);
+	// $target_image_url = preg_replace("/.gif$|.png$|.jpg$/", '', $target_image_url);
+	
+
 	$sql = $wpdb->prepare(
 		"INSERT INTO $wpdb->hoverbubbles
 			(	bubble_id,
+				bubble_name,
 				bubble_message,
-				bubble_fill_color,
-				bubble_font_color,
-				bubble_font,
-				bubble_text_align,
-				bubble_tail_length,
-				bubble_aspect_ratio,
+				bubble_fill_color,			
+				bubble_tail_length,				
 				bubble_corner_radius,
-				bubble_outline_color,				
+				bubble_outline_color,								
 				bubble_outline_width,
-				bubble_tail_direction,
+				bubble_tail_direction,				
 				bubble_tail_x,
 				bubble_tail_y,
-				text_line_spacing,				
 				canvas_border_style,
+				content_area_height,
+				content_area_width,				
 				target_image_id,
-				target_image_cntnr_id
-			) VALUES ( %d, %s, %s, %s, %s, %s, %d, %d, %d, %s, %d, %s, %d, %d, %d, %s, %s, %s )
+				target_image_url
+			) VALUES ( %d, %s, %s, %s, %d, %d, %s, %d, %s, %d, %d, %s, %d, %d, %d, %s )
 		",
 		array(
 			$_POST['bubble_id'],
-			$_POST['bubble_message'],
+			$_POST['bubble_name'],
+			$bubble_message_encoded,
 			$_POST['bubble_fill_color'],
-			$_POST['bubble_font_color'],
-			$_POST['bubble_font'],
-			$_POST['bubble_text_align'],
 			$_POST['bubble_tail_length'],
-			$_POST['bubble_aspect_ratio'],
 			$_POST['bubble_corner_radius'],
-			$_POST['bubble_outline_color'],
+			$_POST['bubble_outline_color'],			
 			$_POST['bubble_outline_width'],
 			$_POST['bubble_tail_direction'],
 			$_POST['bubble_tail_x'],
-			$_POST['bubble_tail_y'],
-			$_POST['text_line_spacing'],
+			$_POST['bubble_tail_y'],		
 			$_POST['canvas_border_style'],
+			$_POST['content_area_height'],
+			$_POST['content_area_width'],
 			$_POST['target_image_id'],
-			$_POST['target_image_cntnr_id']
+			$target_image_url
 		)
 	);
 	$ret_val = $wpdb->query( $sql );
@@ -398,57 +409,73 @@ function add_bubble() {
 		
 }
 
+// TODO: move update_bubble to database.php
 function update_bubble() {
 	global $wpdb ;
+	
+	$bubble_message_stripped = stripslashes($_POST['bubble_message']);
+	$bubble_message_encoded = base64_encode($bubble_message_stripped );
+	
+	$target_image_url = wp_get_attachment_url($_POST['target_image_id']);
+	// $target_image_url = preg_replace("/.gif$|.png$|.jpg$/", '', $target_image_url);
+	
+	
 	$sql = $wpdb->prepare(
 		"
 			UPDATE $wpdb->hoverbubbles set
+				bubble_name = %s,
 				bubble_message = %s,
 				bubble_fill_color = %s,
-				bubble_font_color = %s,
-				bubble_font = %s,
-				bubble_text_align = %s,
 				bubble_tail_length = %d,
-				bubble_aspect_ratio = %d,
 				bubble_corner_radius = %d,
 				bubble_outline_color = %s,
 				bubble_outline_width = %d,
 				bubble_tail_direction = %s,
 				bubble_tail_x = %d,
 				bubble_tail_y = %d,
-				text_line_spacing = %d,
 				canvas_border_style = %s,
-				target_image_id = %s,
-				target_image_cntnr_id = %s
+				content_area_height = %d,
+				content_area_width = %d,
+				target_image_id = %d,
+				target_image_url = %s
 			WHERE bubble_id = %d
 		",
-		array(		
-			$_POST['bubble_message'],
+		array(
+			$_POST['bubble_name'],		
+			$bubble_message_encoded,
 			$_POST['bubble_fill_color'],
-			$_POST['bubble_font_color'],
-			$_POST['bubble_font'],
-			$_POST['bubble_text_align'],
 			$_POST['bubble_tail_length'],
-			$_POST['bubble_aspect_ratio'],
 			$_POST['bubble_corner_radius'],
 			$_POST['bubble_outline_color'],
 			$_POST['bubble_outline_width'],
 			$_POST['bubble_tail_direction'],
 			$_POST['bubble_tail_x'],
 			$_POST['bubble_tail_y'],
-			$_POST['text_line_spacing'],
 			$_POST['canvas_border_style'],
+			$_POST['content_area_height'],
+			$_POST['content_area_width'],
 			$_POST['target_image_id'],
-			$_POST['target_image_cntnr_id'],
+			$target_image_url,
 			$_POST['bubble_id']
 		)
 	
 	);
+	
 	$ret_val = $wpdb->query( $sql );
+	
+	// TODO: another security mechanims may be require for the message field. wpdb->repare() mangles it. 
+	// if ( $ret_val ) {
+	// 	$sql = "UPDATE $wpdb->hoverbubbles set bubble_message = " . $_POST['bubble_message'] . " WHERE bubble_id = " . $_POST['bubble_id'] ;
+	//	$ret_val = $wpdb->query( $sql );
+	//
+	//}
+ 
+	
 	return $ret_val ;
 	
 }
 
+//TODO: move delete_bubble to database.php
 function delete_bubble() {
 	global $wpdb ;
 	
@@ -529,11 +556,21 @@ function tnontw_enqueue_scripts_internally() {
 		
 	wp_enqueue_style('jquery.ui.dialog.theme', 
 		$plugins_url . '/hoverbubble/assets/css/ui-lightness/minified/jquery.ui.dialog.min.css');
-		
+	
 	// color picker
 	wp_enqueue_style( 'wp-color-picker' );
 	wp_enqueue_script( 'wp-color-picker' );
 	
+	// tiny mce
+	wp_enqueue_script( 'hb.tiny.mce',
+		$plugins_url . '/hoverbubble/assets/js/tiny_mce/tiny_mce.js' );
+	
+	// jquery tools 
+	wp_enqueue_script( 'jquery.tools',
+		$plugins_url . '/hoverbubble/assets/js/jquery.tools.min.js' );
+	
+	wp_enqueue_style('hb.admin.form', 
+		$plugins_url . '/hoverbubble/assets/css/admin_form.css');
 		 
 }
 
@@ -547,5 +584,48 @@ function tnotw_add_jquery_footer() {
 }
 
 add_action('admin_footer', 'tnotw_add_jquery_footer');
+
+function tonotw_get_posted_images() {
+	
+	$query_images_args = array(
+    	'post_type' => 'attachment', 'post_mime_type' =>'image', 'post_status' => 'inherit', 'posts_per_page' => -1,
+	);
+
+	$query_images = new WP_Query( $query_images_args );
+	$images = array();
+	foreach ( $query_images->posts as $image) {
+		$image_info = array();
+		$post_parent = get_post( $image->post_parent);
+		//if ( $post_parent == null )
+		//	continue;
+		$image_info['image_ID'] = $image->ID ;
+		$image_info['image_title'] = $image->post_title ;
+		
+		if ( $post_parent != null ) {
+			$image_info['image_parent_id'] = $image->post_parent ;
+			$image_info['image_parent_post_title'] = get_the_title($image->post_parent );	
+			$image_info['image_parent_post_type'] = $post_parent->post_type ;
+				
+			if ($image_info['image_parent_post_title'] == '') {
+				$image_info['image_parent_post_title'] = $post_parent->post_name ;
+		}		
+		}
+		else {
+			$image_info['image_parent_id'] = 0;
+			$image_info['image_parent_post_title'] = "no parent";
+			$image_info['image_parent_post_type'] = "no parent";
+			$image_info['image_parent_post_title'] = "no parent";
+		}
+		
+		$image_info['image_thumb_url '] = wp_get_attachment_thumb_url($image->ID);
+		
+
+   		$images[] = $image_info ;
+	}
+	
+	return $images ;
+}
+
+
 
 ?>

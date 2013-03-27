@@ -34,7 +34,18 @@ jQuery(document).ready(function($) {
 	      
 	});
 	
-
+	tinyMCE.init({
+        mode : "textareas",
+        theme : "advanced",
+        theme_advanced_buttons3_add : "fontselect,fontsizeselect",
+        relative_urls : false,
+        convert_urls : false,
+        encoding: "raw"
+	});
+	
+	// active image select list
+	$("input[rel]").overlay();
+	$("#target_image").overlay();
 
 });
 

@@ -92,6 +92,9 @@ function tnotw_hoverbubble_register_js()
 	);  
 	wp_enqueue_script( 'hoverbubble-js' );  
 	
+	$wp_js_info = array('site_url' => __(site_url()));
+	wp_localize_script('hoverbubble-js', 'wpsiteinfo', $wp_js_info );
+	
 }  
 
 add_action( 'wp_enqueue_scripts', 'tnotw_hoverbubble_register_js' );  
@@ -131,6 +134,24 @@ function tnotw_hoverbubble_ajax(){
 add_action('wp_ajax_nopriv_tnotw_hoverbubble_ajax', 'tnotw_hoverbubble_ajax');
 add_action('wp_ajax_tnotw_hoverbubble_ajax', 'tnotw_hoverbubble_ajax');
 
+function tnotw_get_bubble_content($wp) {
+	global $wpdb ;
+	if (array_key_exists('hb_bubble_id', $wp->query_vars) ) {
+		$bubble_id = $wp->query_vars['hb_bubble_id'];
+		// TODO: error handling here/run through prepare
+		$bubble = $wpdb->get_row( "SELECT bubble_message FROM $wpdb->hoverbubbles WHERE bubble_id = " . $bubble_id , ARRAY_A );
+	    echo base64_decode($bubble['bubble_message']);
+        die;
+    }
+}
+add_action('parse_request', 'tnotw_get_bubble_content');
+
+function tnotw_hoverbubble_query_vars($vars) {
+    $vars[] = 'hb_bubble_id';
+    return $vars;
+}
+
+add_filter('query_vars', 'tnotw_hoverbubble_query_vars');
 
 // shortcodes
 function tnotw_hoverbubble_shortcode( $atts ) {
