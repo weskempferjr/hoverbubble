@@ -3,7 +3,11 @@
 class WPResources {
 	
 	public static final function getImageURL( $imageID ) {
-			$imageURL = wp_get_attachment_url($imageID);
+			// $imageURL = wp_get_attachment_url($imageID);
+			$srcArray = wp_get_attachment_image_src( $imageID );
+			if ( $srcArray == null )
+				throw new Exception("WPResources::getImageURL: Could not find attachment source for image ID = " . $imageID, -1);
+			$imageURL = $srcArray[0];
 			if ( $imageURL == null )
 				throw new Exception("WPResources::getImageURL: Could not find image URL for image ID = " . $imageID, -1);
 			return $imageURL ;

@@ -119,7 +119,7 @@ class HoverBubblePlugin {
 		BubbleConfigAjaxController::getBubbleContent($wp);
 	}
 	
-	public function query_vars() {
+	public function query_vars( $vars ) {
 		 $vars[] = 'hb_bubble_id';
     	return $vars;
 	}

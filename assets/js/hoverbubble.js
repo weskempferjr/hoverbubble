@@ -48,7 +48,8 @@ function getImageList() {
 	jQuery("img").each(function() {
 		var imgURLtmp = jQuery(this).attr('src');
 		// Remove wordpress attachment size 
-		var imgURL = imgURLtmp.replace(/-[0-9]*x[0-9]*\./,'.');
+		// var imgURL = imgURLtmp.replace(/-[0-9]*x[0-9]*\./,'.');
+		imgURL = imgURLtmp ;
 		imgSrcArray.push( imgURL );
 	    // imgSrcArray.push(jQuery(this).attr('src'));
 	});
@@ -65,7 +66,8 @@ function restoreImageURL( imageURL ) {
 	var targetURL = "";
 	jQuery("img").each(function() {
 		var actualURL = jQuery(this).attr('src');
-		var matchURL = actualURL.replace(/-[0-9]*x[0-9]*\./,'.');
+		// var matchURL = actualURL.replace(/-[0-9]*x[0-9]*\./,'.');
+		matchURL = actualURL ;
 		if ( imageURL == matchURL ) {
 			targetURL = actualURL;
 		}
@@ -698,10 +700,10 @@ function backingScale(context) {
 function saveBubbleConfig( data ) {
 	
 	// restore URLs to match actuals on page.
-	for ( i = 0 ; i <	data.length ; i++ )
-	{
-		data[i].targetImageURL = restoreImageURL( data[i].targetImageURL );
-	} 
+	// for ( i = 0 ; i <	data.length ; i++ )
+	// {
+	//	data[i].targetImageURL = ( data[i].targetImageURL );
+	// } 
 	localStorage.setItem( 'bubbleConfig', JSON.stringify( data ) );
 } 
 

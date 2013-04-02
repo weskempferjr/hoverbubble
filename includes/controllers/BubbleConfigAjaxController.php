@@ -48,9 +48,9 @@ class BubbleConfigAjaxController {
 			$bubble = new BubbleConfig();
 			$bubble->restore($bubble_id);
 			echo $bubble->getBubbleMessage();
-			
+			die;			
 	    }
-		die;
+		
 	}
 	
 	private static function retrieveBubbleConfigs() {

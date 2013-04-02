@@ -33,7 +33,20 @@ class AdminEditView {
 			</tr>
 			<tr>
 			<td>Bubble Tail Direction:</td>
-			<td> <input type="text" name="bubble_tail_direction" value="<?php echo $bubble->getBubbleTailDirection(); ?>" />  </td>
+			<td>
+			<table>
+			<tr>
+			<td >N <input type="radio" name="bubble_tail_direction" value ="N"  <?php if ($bubble->getBubbleTailDirection() == "N") echo 'checked' ; ?>/>&nbsp </td>
+			<td>NE <input type="radio" name="bubble_tail_direction" value ="NE" <?php if ($bubble->getBubbleTailDirection() == "NE") echo 'checked' ; ?> />&nbsp </td>
+			<td>E <input type="radio" name="bubble_tail_direction" value ="E"  <?php if ($bubble->getBubbleTailDirection() == "E") echo 'checked' ; ?> />&nbsp </td>
+			<td>SE <input type="radio" name="bubble_tail_direction" value ="SE" <?php if ($bubble->getBubbleTailDirection() == "SE") echo 'checked' ; ?> /> &nbsp</td>
+			<td>S <input type="radio" name="bubble_tail_direction" value ="S"  <?php if ($bubble->getBubbleTailDirection() == "S") echo 'checked' ; ?>/>&nbsp </td>
+			<td>SW <input type="radio" name="bubble_tail_direction" value ="SW" <?php if ($bubble->getBubbleTailDirection() == "SW") echo 'checked' ; ?>/>&nbsp </td>
+			<td>W <input type="radio" name="bubble_tail_direction" value ="W"  <?php if ($bubble->getBubbleTailDirection() == "W") echo 'checked' ; ?> />&nbsp </td>
+			<td>NW <input type="radio" name="bubble_tail_direction" value ="NW" <?php if ($bubble->getBubbleTailDirection() == "NW") echo 'checked' ; ?> />&nbsp </td>
+			</tr>
+			</table>
+			</td>
 			</tr>
 			<tr>
 			<td>Bubble Outline Color:</td>
