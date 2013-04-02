@@ -54,7 +54,7 @@ function hoverbubble_edit() {
 	}
 }
 
-
+// MOVED to BubbleEditActionController::dispatchEditAction
 function handle_hoverbubble_edit() {
 	
 	$edit_action =  $_POST['edit_action'];
@@ -82,6 +82,9 @@ function handle_hoverbubble_edit() {
 	
 }
 
+
+// MOVED to BubbleEditActionControler::displayEditActionView
+// and AdminEditView
 function generate_hoverbubble_edit_page() {
 
 	$edit_action = $_GET['action'] ;
@@ -220,7 +223,7 @@ function hoverbubble_settings() {
 	generate_hoverbubble_settings_page();
 }
 
-
+// MOVED
 function generate_hoverbubble_settings_page( $status_message ) {
 	
 	$add_page_url = admin_url('admin.php?page=hoverbubble-edit');
@@ -321,7 +324,7 @@ function generate_hoverbubble_help_page() {
 	<?php
 }
 
-//TODO: If base64_encode is going to be used for encodeing message html for db storage, an object model
+// MOVED:If base64_encode is going to be used for encodeing message html for db storage, an object model
 // should be used for bubbles in order to hide the the encoding and to improve maintainability.
 function get_bubble_values( $bubble_id ) {
 	global $wpdb ;
@@ -332,7 +335,7 @@ function get_bubble_values( $bubble_id ) {
 	return $bubble ;
 }
 
-
+// MOVED
 function get_add_form_defaults() {
 	$bubble = array(
 		"bubble_name" => "",
@@ -353,7 +356,7 @@ function get_add_form_defaults() {
 	return $bubble;
 }
 
-// TODO: add_bubble move to database.php
+// MOVED
 function add_bubble() {
 	global $wpdb ;
 		
@@ -409,7 +412,7 @@ function add_bubble() {
 		
 }
 
-// TODO: move update_bubble to database.php
+// MOVED
 function update_bubble() {
 	global $wpdb ;
 	
@@ -463,19 +466,11 @@ function update_bubble() {
 	
 	$ret_val = $wpdb->query( $sql );
 	
-	// TODO: another security mechanims may be require for the message field. wpdb->repare() mangles it. 
-	// if ( $ret_val ) {
-	// 	$sql = "UPDATE $wpdb->hoverbubbles set bubble_message = " . $_POST['bubble_message'] . " WHERE bubble_id = " . $_POST['bubble_id'] ;
-	//	$ret_val = $wpdb->query( $sql );
-	//
-	//}
- 
-	
 	return $ret_val ;
 	
 }
 
-//TODO: move delete_bubble to database.php
+//MOVED 
 function delete_bubble() {
 	global $wpdb ;
 	
@@ -501,29 +496,24 @@ function generate_error_page( $message ) {
 	<?php
 }
 
+// MOVED to hoverbubbleplugin class/register assets
 function tnotw_hoverbubble_admin_enqueue_scripts($hook) {
 
 	if ( ! strpos( $hook, "hoverbubble-settings"))
 		return;
 	
 	tnontw_enqueue_scripts_internally();
-	//TODO: definition constant for path of assets/js
-	// wp_enqueue_script( 'hoverbubble-form-js', 
-	//	plugins_url('hoverbubble/assets/js/hoverbubble_form.js') , 
-	//	array('jquery'));
+
+	
 }
 
 function tnontw_enqueue_scripts_internally() {
 	
+	//TODO: definition constant for path of assets/js
+	
 	wp_enqueue_script( 'hoverbubble-form-js',
 		 plugins_url() . '/hoverbubble/assets/js/hoverbubble_form.js',  array( 'wp-color-picker' ) );
-		 // array('jquery'));
 
-	//wp_enqueue_script( 'jquery',
-	//	 plugins_url('hoverbubble/assets/js/jquery.1.9.1.js') );
-		 
-	//wp_enqueue_script( 'jquery-ui-core',
-		 // plugins_url() . '/hoverbubble/assets/js/jquery.ui.core.min.js');
 		 
 	$plugins_url = plugins_url() ;	
 		 
@@ -585,6 +575,8 @@ function tnotw_add_jquery_footer() {
 
 add_action('admin_footer', 'tnotw_add_jquery_footer');
 
+
+// MOVED to WPResources
 function tonotw_get_posted_images() {
 	
 	$query_images_args = array(

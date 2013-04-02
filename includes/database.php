@@ -15,7 +15,7 @@ if (!isset($wpdb->hoverbubbles)) {
 
 /**
  * Retrieve bubble configurations from database.  
- * TODO: modify to target page, or image title. the_image_div is hardcoded.
+ *
  */
 function tnotw_get_bubble_configs(){
 	global $wpdb ;
@@ -131,6 +131,7 @@ function tnotw_check_update_bubble_tables(){
 // register to run 
 add_action('plugins_loaded', 'tnotw_check_update_bubble_tables');
 
+// MOVED
 // TODO: add unique constraint to bubble_name
 function get_bubble_table_DDL() {
 

@@ -1,4 +1,5 @@
 <?php
+
 /*
 Plugin Name: Hover Bubble
 Plugin URI: http://tnotw.com/hoverbubble
@@ -23,146 +24,181 @@ License: GPL2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-/**
- * Plugin constants
- **/
+// require_once( plugin_dir_path(__FILE__) . "constants.php");
+
 define('TNOTW_HOVERBUBBLE_VERSION', '0.1');
 define('TNOTW_HOVERBUBBLE_VERSION_OPTION_KEY', 'tnotw_hoverbubble_version');
 define('TNOTW_HOVERBUBBLE_DIR', plugin_dir_path(__FILE__));
 define('TNOTW_HOVERBBUBLE_URL', plugin_dir_url(__FILE__));
 
+require_once( TNOTW_HOVERBUBBLE_DIR . "includes/cms/WPRegistrar.php");
+require_once( TNOTW_HOVERBUBBLE_DIR . "includes/controllers/BubbleSettingsController.php");
+require_once( TNOTW_HOVERBUBBLE_DIR . "includes/controllers/BubbleConfigAjaxController.php");
+require_once( TNOTW_HOVERBUBBLE_DIR . "includes/controllers/BubbleEditActionController.php");
+require_once( TNOTW_HOVERBUBBLE_DIR . "includes/controllers/ErrorController.php");
+require_once( TNOTW_HOVERBUBBLE_DIR . "includes/controllers/HelpController.php");
 
 
-/**
- * Load files
- * 
- **/
-function tnotw_hoverbubble_load(){
+
+
+// TODO: make sure admin related resources are loaded only 
+// with is_admin()
+
+class HoverBubblePlugin {
+	
+	public function __construct() {
+		// TODO: add localization code
+		// add_action( 'init', array( $this, 'plugin_textdomain' ) );
 		
-	if(is_admin()) //load admin files only in admin
-		require_once(TNOTW_HOVERBUBBLE_DIR .'includes/admin.php');
+		// check table configuration after upgrade.
+		add_action('plugins_loaded', array($this,'check_table_update'));
 		
-	require_once(TNOTW_HOVERBUBBLE_DIR .'includes/core.php');
-	require_once(TNOTW_HOVERBUBBLE_DIR .'includes/database.php');
-}
-
-tnotw_hoverbubble_load();
-
-
-/**
- * Activation, Deactivation and Uninstall Functions
- * 
- **/
-register_activation_hook(__FILE__, 'tnotw_hoverbubble_activation');
-register_deactivation_hook(__FILE__, 'tnotw_hoverbubble_deactivation');
-
-
-function tnotw_hoverbubble_activation() {
-    
-	//actions to perform once on plugin activation go here    
-	require_once(TNOTW_HOVERBUBBLE_DIR .'includes/database.php');
-	tnotw_create_bubble_tables();
-	
-	//register uninstaller
-	register_uninstall_hook(__FILE__, 'tnotw_hoverbubble_uninstall');
-}
-
-function tnotw_hoverbubble_deactivation() {
-    
-	// actions to perform once on plugin deactivation go here
-	    
-}
-
-function tnotw_hoverbubble_uninstall(){
-    
-    //actions to perform once on plugin uninstall go here
-	    
-}
-
-/*
- * Register assets (javascript, css)
- */
-
-
-function tnotw_hoverbubble_register_js()  
-{  
-	wp_register_script(	'hoverbubble-js', 
-				plugins_url(	'assets/js/hoverbubble.js', __FILE__ ), 
-						array( 'jquery' ) 
-	);  
-	wp_enqueue_script( 'hoverbubble-js' );  
-	
-	$wp_js_info = array('site_url' => __(site_url()));
-	wp_localize_script('hoverbubble-js', 'wpsiteinfo', $wp_js_info );
-	
-}  
-
-add_action( 'wp_enqueue_scripts', 'tnotw_hoverbubble_register_js' );  
-
-/*
- * AJAX request handler
- */
-
-function tnotw_hoverbubble_ajax(){
-
-	// the first part is a SWTICHBOARD that fires specific functions
-	// according to the value of Query Var 'fn'
-
-	switch($_REQUEST['fn']){
-		case 'get_bubble_config':
-			$output = tnotw_get_bubble_configs();
-			break;
-		default:
-		$output = 'No function specified, check your jQuery.ajax() call';
-		break;
-
+		// Register admin scripts only for settings page/admin privs required 
+		if ( is_admin() ) {
+			add_action('admin_menu', array($this, 'admin_menu_pages'));
+			add_action( 'admin_enqueue_scripts', array( $this, 'register_admin_assets' ) );
+		}
+		
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_assets' ) );
+		
+		register_activation_hook( __FILE__, array( $this, 'activate' ) );
+		register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
+		// register_uninstall_hook( __FILE__, array( $this, 'uninstall' ) );
+		register_uninstall_hook( __FILE__, 'HoverBubblePlugin::uninstall'  );
+		
+		// register ajax function
+		add_action('wp_ajax_nopriv_tnotw_hoverbubble_ajax', array( $this, 'tnotw_hoverbubble_ajax'));
+		add_action('wp_ajax_tnotw_hoverbubble_ajax', array( $this,'tnotw_hoverbubble_ajax'));
+		add_action('parse_request', array( $this,'tnotw_get_bubble_content'));
+		add_filter('query_vars', array($this, 'query_vars') );
+		
+		// For jquery UI dialogs
+		add_action('admin_footer', array($this, 'load_jquery_elements'));
+		
+		
 	}
-
-	// Convert $output to JSON and echo it to the browser 
-
-	$output=json_encode($output);
-		if(is_array($output)){
-			print_r($output);	
- 		}
-		else {
-			echo $output;
-	     	}
-	die;
-
-}
-
-add_action('wp_ajax_nopriv_tnotw_hoverbubble_ajax', 'tnotw_hoverbubble_ajax');
-add_action('wp_ajax_tnotw_hoverbubble_ajax', 'tnotw_hoverbubble_ajax');
-
-function tnotw_get_bubble_content($wp) {
-	global $wpdb ;
-	if (array_key_exists('hb_bubble_id', $wp->query_vars) ) {
-		$bubble_id = $wp->query_vars['hb_bubble_id'];
-		// TODO: error handling here/run through prepare
-		$bubble = $wpdb->get_row( "SELECT bubble_message FROM $wpdb->hoverbubbles WHERE bubble_id = " . $bubble_id , ARRAY_A );
-	    echo base64_decode($bubble['bubble_message']);
-        die;
-    }
-}
-add_action('parse_request', 'tnotw_get_bubble_content');
-
-function tnotw_hoverbubble_query_vars($vars) {
-    $vars[] = 'hb_bubble_id';
-    return $vars;
-}
-
-add_filter('query_vars', 'tnotw_hoverbubble_query_vars');
-
-// shortcodes
-function tnotw_hoverbubble_shortcode( $atts ) {
-	global $wpdb ;
 	
-	$bubble_id = $atts['bubble_id'];
-	// TODO: error handling here/run through prepare
-	$bubble = $wpdb->get_row( "SELECT * FROM $wpdb->hoverbubbles WHERE bubble_id = " . $bubble_id , ARRAY_A );
-	return $bubble['bubble_message'];
+	
+	public function register_assets() {		
+		WPRegistrar::registerAssets();		
+	}
+	
+	public function register_admin_assets($hook) {
+		// Load assets only for plugin-related pages
+		if ( ! strpos( $hook, "hoverbubble-settings"))
+			return;
+
+		WPRegistrar::registerAdminAssets();
+	}
+	
+	// TODO: handle wpmu 
+	public function activate( $network_wide ) {
+		
+		require_once("database/WPDatabase.php");
+		WPDatabase::createTable ( 	BubbleConfig::generateDDL(), 
+ 									BubbleConfig::getTableName() );
+ 									
+ 		
+	}
+	
+	// TODO: handle deactivate
+	public function deactivate( $network_wide ) {
+		
+	}
+	
+	// TODO: handle uninstall
+	public static function uninstall( $network_wide) {
+		
+	}
+	
+	public function tnotw_hoverbubble_ajax() {
+		BubbleConfigAjaxController::getBubbleConfigs();
+	}
+	
+	public function tnotw_get_bubble_content($wp) {
+		BubbleConfigAjaxController::getBubbleContent($wp);
+	}
+	
+	public function query_vars() {
+		 $vars[] = 'hb_bubble_id';
+    	return $vars;
+	}
+	
+	public function admin_menu_pages(){
+			// Add the top-level admin menu
+		$page_title = 'Hover Bubble Plugin Setings';
+		$menu_title = 'Hover Bubble';
+		$capability = 'manage_options';
+		$menu_slug = 'hoverbubble-settings';
+		$function = 'hoverbubble_settings';
+		add_menu_page($page_title, $menu_title, $capability, $menu_slug, array($this, $function)) ;
+	
+		// Add submenu page with same slug as parent to ensure no duplicates
+		$sub_menu_title = 'Settings';
+		add_submenu_page($menu_slug, $page_title, $sub_menu_title, $capability, $menu_slug, array($this, $function));
+		
+		// add_submenu_page(NULL, "Hover Bubble Edit", "Hover Bubble Edit", $capability, "hoverbubble-edit", "hoverbubble_edit");
+	
+		// Now add the submenu page for Help
+		$submenu_page_title = 'Hover Bubble Plugin Help';
+		$submenu_title = 'Help';
+		$submenu_slug = 'hoverbubble-help';
+		$submenu_function = 'hoverbubble_help';
+		add_submenu_page($menu_slug, $submenu_page_title, $submenu_title, $capability, $submenu_slug, array($this,$submenu_function));
+	
+		// Add bubble edit page, parent slug set to NULL so that page does not show up menu.
+		$edit_page_title = "Hover Bubble Edit";
+		$edit_menu_title = "Hover Bubble Edit";
+		$edit_slug = "hoverbubble-edit";
+		$edit_function = "hoverbubble_edit";
+	
+		add_submenu_page(NULL, $edit_page_title, $edit_menu_title, $capability, $edit_slug, array($this,$edit_function));
+		
+	}
+	
+	public function hoverbubble_settings() {
+		$statusMessge = "";
+		BubbleSettingsController::displaySettingsView("");
+	}
+	
+	public function hoverbubble_edit() {
+		BubbleEditActionController::routeRequest("");		
+	}
+	
+	// TODO: complete hoverbubble help
+	public function hoverbubble_help() {
+		$statusMessage = "";
+		HelpController::displayHelpPage($statusMessage);
+		
+	}
+	
+	public function check_table_update() {
+		
+		global $wpdb;
+		
+		// TODO: define table name in constant
+		$hbtable = $wpdb->prefix . "hoverbubbles";
+	
+		$installed_ver = get_option( TNOTW_HOVERBUBBLE_VERSION_OPTION_KEY );
+	
+		if( $installed_ver != TNOTW_HOVERBUBBLE_VERSION ) {
+			$sql = BubbleConfig::generateDDL();
+			require_once(ABSPATH . 'wp-admin/upgrade-functions.php');
+			dbDelta($sql);
+			update_option(TNOTW_HOVERBUBBLE_VERSION_OPTION_KEY, TNOTW_HOVERBUBBLE_VERSION);
+		}
+	}
+	
+	public function load_jquery_elements() {
+		// TODO: complete jquery delete confirmer
+		?>
+		<div id="dialog" style="display: none" title="Basic dialog">
+		<p>Delete this bubble?</p>
+		</div>
+		<?php
+	}
 }
 
-add_shortcode('hoverbubble', 'tnotw_hoverbubble_shortcode');
+$hoverbubble_plugin = new HoverBubblePlugin();
 
 ?>
