@@ -81,25 +81,8 @@ class AdminEditView {
 			<td> <input type="text" name="content_area_width" value="<?php echo $bubble->getContentAreaWidth(); ?>" />  </td>
 			</tr>
 			<tr>
-			<td>Target Image ID  :</td>
-			<td>
-			<select form="hbedit" size="1" name="target_image_id" >
-			<?php
-				if ( $action == "add") {
-					?><option value="" selected>Select an image</option> <?php
-				}
-				
-				
-				$images = WPResources::getPostedImages();
-				foreach ( $images as $image ) {
-					?>
-					<option value="<?php echo $image['image_ID'];?>"<?php if ( $image['image_ID'] == $bubble->getTargetImageID() ) echo 'selected'?>>
-					<?php echo $image['image_title'] . " in ". $image['image_parent_post_type'] . " " . $image['image_parent_post_title'] ;?>
-					</option>
-					
-			<?php }?>
-			</select> 
-			</td>
+			<td>Target Image URL  :</td>
+			<td><input type="text" name="target_image_url" value="<?php echo $bubble->getTargetImageURL(); ?>" />  </td>			
 			</tr>
 			<tr>
 			<td><input type="submit" name="edit_bubble" value="Submit" class="button-primary" />

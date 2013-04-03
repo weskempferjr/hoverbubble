@@ -98,7 +98,7 @@ class BubbleConfig implements DBMap {
 	
 	public function update() {
 		$converter = CMSConverterFactory::geBubbleConfigConverter();
-		$converter->setImageURLFromCMS($this);		
+		// $converter->setImageURLFromCMS($this);		
 		$converter->setCMSUpdateArgs($this);
 		$database = BubbleConfig::getDatabase();
 		$database->updateRows( $converter );
@@ -106,7 +106,7 @@ class BubbleConfig implements DBMap {
 	
 	public function insert() {
 		$converter = CMSConverterFactory::geBubbleConfigConverter();
-		$converter->setImageURLFromCMS($this);
+		// $converter->setImageURLFromCMS($this);
 		$converter->setCMSInsertArgs($this);
 		$database = BubbleConfig::getDatabase();
 		$database->insertRow( $converter );
@@ -300,7 +300,7 @@ class BubbleConfig implements DBMap {
 		$this->bubbleOutlineColor = $columnValues['bubble_outline_color'];
 		$this->bubbleOutlineWidth = $columnValues['bubble_outline_width'];
 		$this->bubbleTailDirection = $columnValues['bubble_tail_direction'];
-		$this->targetImageID = $columnValues['target_image_id'];
+		// $this->targetImageID = $columnValues['target_image_id'];
 		$this->targetImageContainerID = $this->bubbleNameToContainerID($columnValues['bubble_name'] );
 		$this->bubbleCanvasID = "bubblecanvas" . $columnValues['bubble_id'] ;
 		$this->contentDivID = "hbcontentdiv" . $columnValues['bubble_id'];
@@ -310,7 +310,7 @@ class BubbleConfig implements DBMap {
 		$this->contentAreaHeight = $columnValues['content_area_height'];
 		$this->contentAreaWidth = $columnValues['content_area_width'];
 		$this->canvasBorderStyle = $columnValues['canvas_border_style'];
-		// $this->targetImageURL = $columnValues['target_image_url'];
+		$this->targetImageURL = $columnValues['target_image_url'];
 	}
 	
 	public function objectToColumns( $dbwrite ) {

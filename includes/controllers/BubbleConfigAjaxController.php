@@ -88,7 +88,7 @@ class BubbleConfigAjaxController {
 	// TODO: move to BubbleConfig
 	private static function mapConfig( $bubbleConfig ) {
 		
-		$imageURL = WPResources::getImageURL( $bubbleConfig->getTargetImageID() );
+		// $imageURL = WPResources::getImageURL( $bubbleConfig->getTargetImageID() );
 		
 		$mappedConfig = array(	
 					'bubbleFillColor' => $bubbleConfig->getBubbleFillColor(),
@@ -109,7 +109,7 @@ class BubbleConfigAjaxController {
 					'contentAreaHeight' => $bubbleConfig->getContentAreaHeight(),
 					'contentAreaWidth' => $bubbleConfig->getContentAreaWidth(),
 					'canvasBorderStyle' => $bubbleConfig->getCanvasBorderStyle(),
-					'targetImageURL' => $imageURL
+					'targetImageURL' => $bubbleConfig->getTargetImageURL()
 		);
 		return $mappedConfig ;
 	}
