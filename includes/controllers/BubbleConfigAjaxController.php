@@ -16,6 +16,10 @@ class BubbleConfigAjaxController {
 				//$output = tnotw_get_bubble_configs();
 				$output = BubbleConfigAjaxController::retrieveBubbleConfigs();
 				break;
+			case 'does_bubble_name_exist':
+				$bubbleExists = BubbleConfigAjaxController::doesBubbleNameExist();
+				$output = array('bubbleExists' => $bubbleExists );
+				break;
 			default:
 				$output = 'No function specified, check your jQuery.ajax() call';
 			break;
@@ -83,6 +87,20 @@ class BubbleConfigAjaxController {
 		}
 		return $configArray ;	
 	
+	}
+	
+	private static function doesBubbleNameExist() {
+		$bubble_name = $_REQUEST['bubble_name'];
+		$where_clause = "bubble_name = '" . $bubble_name . "'" ;
+		$bubbles = BubbleConfig::retrieveBubbles($where_clause);
+		
+		if ( count($bubbles) == 0 ) {
+			return FALSE;
+		}
+		else {
+			return TRUE;
+		}
+		
 	}
 	
 	// TODO: move to BubbleConfig

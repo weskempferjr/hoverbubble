@@ -49,6 +49,7 @@ class BubbleConfig implements DBMap {
 		$this->bubbleTailDirection = "";
 		$this->bubbleCornerRadius = 15 ;
 		$this->bubbleOutlineColor = "black";
+		$this->bubbleTailDirection = "S";
 		$this->bubbleOutlineWidth = 4;
 		$this->bubbleTailX = 0;
 		$this->bubbleTailY = 0;
@@ -393,8 +394,9 @@ class BubbleConfig implements DBMap {
 			content_area_width smallint(4) unsigned DEFAULT NULL,
 			content_area_height smallint(4) unsigned DEFAULT NULL,
 			target_image_id bigint(20) unsigned DEFAULT NULL,
-			target_image_url varchar(1000) DEFAULT NULL,		
-			UNIQUE KEY bubble_id (bubble_id));";
+			target_image_url varchar(1000) DEFAULT NULL,
+			UNIQUE KEY bubble_id (bubble_id),
+			UNIQUE KEY `bubble_name` (`bubble_name`);";
 		return $sql;	
 	}
 	

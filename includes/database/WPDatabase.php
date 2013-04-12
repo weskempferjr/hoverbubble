@@ -40,10 +40,15 @@ class WPDatabase implements Database {
 		}
 		
 		$columnValuesArray = $wpdb->get_results( "SELECT " . $args['wpPrepareFormat'] .  " FROM " . $wpdb->$args['wpTableName'] . $whereClause , ARRAY_A );
-		if ( $columnValuesArray == null )
+		
+		if ( empty($columnValuesArray) ) {
+			return $columnValuesArray;
+		}
+		else if ( $columnValuesArray == NULL )
 			throw new Exception("WPDatabase::getRows: Could not retrieve rows from ". $wpdb->$args['wpTableName'], -1);
 		return $columnValuesArray ;
 	}
+
 	
 	public function updateRows( $cmsConverter ){
 		global $wpdb ;
@@ -54,7 +59,7 @@ class WPDatabase implements Database {
 			$args['wpPrepareValues']
 		);
 		$ret_val = $wpdb->query( $sql );
-		if ( $ret_val == false )
+		if ( $ret_val === false )
 			throw new Exception("WPDatabase::updateRows: Update failed in table ". $args['wpTableName'], -1);
 	}
 	

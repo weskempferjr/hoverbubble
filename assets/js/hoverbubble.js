@@ -257,8 +257,8 @@ function displayBubble(bubbleConfig){
 
 		
 		// canvas origin
-		var tail_point_x = 0;
-		var tail_point_y = 0;
+		var tail_point_x = 0 + bubbleOutlineWidth;
+		var tail_point_y = 0 + bubbleOutlineWidth;
 		
 		// for tail off of side.
 		var tail_side_base_x1 = left_x ;
@@ -270,7 +270,7 @@ function displayBubble(bubbleConfig){
 		// var tail_side_point_x = left_x - tail_length ;
 		// var tail_side_point_y = center_y ;
 		// To the west side of the canvas.
-		var tail_side_point_x = 0;
+		var tail_side_point_x = 0 + bubbleOutlineWidth ;
 		var tail_side_point_y = Math.round( canvasAreaDimensions.height / 2 );
 		
 		
@@ -300,12 +300,12 @@ function displayBubble(bubbleConfig){
 		var fourth_arc_y2 = top_y + corner_r ;
 
 		// for tail off of corner.
-		var tail_base_x = right_x - corner_r ; 
+		var tail_base_x =  right_x - corner_r ; 
 		var tail_base_y = top_y ;
 		
 		// To the northeast corner.
-		var tail_point_x = canvasAreaDimensions.width; 
-		var tail_point_y = 0;
+		var tail_point_x = canvasAreaDimensions.width - bubbleOutlineWidth; 
+		var tail_point_y = 0 + bubbleOutlineWidth;
 
 		// for tail off of side.
 		var tail_side_base_x1 = center_x - tail_base_offset ;
@@ -317,7 +317,7 @@ function displayBubble(bubbleConfig){
 		// var tail_side_point_y = top_y - tail_length ;
 		// To the North side of the canvas
 		var tail_side_point_x = Math.round( canvasAreaDimensions.width / 2 );
-		var tail_side_point_y = 0;
+		var tail_side_point_y = 0 + bubbleOutlineWidth;
 
 	}
 	else if ( start_point == "se" ) {
@@ -346,15 +346,15 @@ function displayBubble(bubbleConfig){
 		var fourth_arc_y2 = bottom_y ;
 
 		// for tail of of corner
-		var tail_base_x = right_x ; 
-		var tail_base_y = bottom_y - corner_r ;
+		var tail_base_x = right_x  ; 
+		var tail_base_y =  bottom_y - corner_r  ;
 
 		//
 		// var tail_point_x = right_x + tail_offset_x ; 
 		// var tail_point_y = bottom_y + tail_offset_y ; 
 		// To the southeast corner
-		var tail_point_x = canvasAreaDimensions.width;
-		var tail_point_y = canvasAreaDimensions.height;
+		var tail_point_x = canvasAreaDimensions.width - bubbleOutlineWidth;
+		var tail_point_y = canvasAreaDimensions.height - bubbleOutlineWidth;
 
 		// for tail off of side.
 		var tail_side_base_x1 = right_x ;
@@ -365,7 +365,7 @@ function displayBubble(bubbleConfig){
 		// var tail_side_point_x = right_x + tail_length ;
 		// var tail_side_point_y = center_y ;
 		// To the east side. 
-		var tail_side_point_x = canvasAreaDimensions.width;
+		var tail_side_point_x = canvasAreaDimensions.width - bubbleOutlineWidth;
 		var tail_side_point_y = Math.round( canvasAreaDimensions.height /2 );
 		
 
@@ -401,8 +401,8 @@ function displayBubble(bubbleConfig){
 
 		// var tail_point_x = left_x - tail_offset_x ; 
 		// var tail_point_y = bottom_y + tail_offset_y ; 
-		var tail_point_x  = 0;
-		var tail_point_y = canvasAreaDimensions.height ;
+		var tail_point_x  = 0 + bubbleOutlineWidth ;
+		var tail_point_y = canvasAreaDimensions.height  - bubbleOutlineWidth ;
 
 		// for tail off of side.
 		var tail_side_base_x1 = center_x + tail_base_offset ;
@@ -412,7 +412,7 @@ function displayBubble(bubbleConfig){
 
 		// To the south
 		var tail_side_point_x = Math.round(canvasAreaDimensions.width / 2 )  ;
-		var tail_side_point_y = canvasAreaDimensions.height  ;
+		var tail_side_point_y = canvasAreaDimensions.height - bubbleOutlineWidth ;
 	} 
 		 
 	ctx.strokeStyle = strokeColor ;
@@ -462,7 +462,7 @@ function displayBubble(bubbleConfig){
 	 img_div.append('<div id="' + contentDivID + '"  style="z-index:20;position:absolute;top:' +  etop +  'px;left:' + eleft + 'px"></div>');
 	 
 	 //TODO: hardcoded URL
-	 jQuery("#" + contentDivID ).append('<embed  width="' + contentAreaWidth + 'px" height="' + contentAreaHeight + 'px" src="http://wpdev/wordpress/index.php?hb_bubble_id='+ bubbleID +'">');
+	 jQuery("#" + contentDivID ).append('<embed  type="text/html" width="' + contentAreaWidth + 'px" height="' + contentAreaHeight + 'px" src="' + wpsiteinfo.site_url + '/index.php?hb_bubble_id='+ bubbleID +'">');
 
 	ctx.restore();
 
@@ -621,6 +621,9 @@ function calculateCanvasDimensions( bubbleDimensions, tailLength, tailDirection,
 			var tailOffset = Math.round( tailLength * Math.sin(Math.PI / 4) );
 			break;
 		default:
+			// 10 pixels are added to prevent tip of tail from 
+			// being truncated. TODO: it may be necessary to 
+			// consider outline width as a factor. 
 			var tailOffset = tailLength ;
 			break;
 	}

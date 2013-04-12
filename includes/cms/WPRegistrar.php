@@ -19,7 +19,9 @@ class WPRegistrar {
 	
 		wp_enqueue_script( 'hoverbubble-form-js',
 			 plugins_url() . '/hoverbubble/assets/js/hoverbubble_form.js',  array( 'wp-color-picker' ) );
-	
+
+		$wp_js_info = array('site_url' => __(site_url()));
+		wp_localize_script('hoverbubble-form-js', 'wpsiteinfo', $wp_js_info );
 			 
 		$plugins_url = plugins_url() ;	
 			 
