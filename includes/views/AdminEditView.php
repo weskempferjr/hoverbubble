@@ -5,6 +5,12 @@ require_once( TNOTW_HOVERBUBBLE_DIR . "includes/database/WPResources.php");
 
 class AdminEditView {
 	
+	private static $imageCandiditeList ;
+	
+	public static function setImageCandidateList( $imageCandidates) {
+		self::$imageCandiditeList = $imageCandidates;
+	}
+	
 	public static function displayBubbleEditPage( $bubble, $action, $statusMessage ) {
 	?>
 	<div class="wrap">
@@ -92,14 +98,28 @@ class AdminEditView {
 			</tr>
 			<tr>
 			<td>Target Image URL  :</td>
-			<td><input id="imageurl" style="width: 80%"  type="url" maxlength="150" name="target_image_url" value="<?php echo $bubble->getTargetImageURL(); ?>" />  </td>		
+			<td>
+				<select id="imageurl" style="width: 80%"  name="target_image_url" >
+				<option <?php if ( $action == 'edit' ) echo 'select'?>></option>
+				<?php
+					foreach ( self::$imageCandiditeList as $imageCandiate ) {
+						$caTargetImageURL = $imageCandiate->getTargetImageURL();
+						$bubbleTargetImageURL = $bubble->getTargetImageURL();						
+						?>
+						<option value="<?php echo $imageCandiate->getTargetImageURL() ;?>"<?php if ( $caTargetImageURL == $bubbleTargetImageURL ) echo 'selected' ?> > <?php echo $caTargetImageURL ;?> </option>
+						<?php
+					}
+				?>
+				</select>  
+			</td>						
 			</tr>
+			<tr id="pageurlph" hidden><td>Page Display List:</td><td id="pageurlinput"></td></tr>
 			<tr>
 			<td><input type="submit" name="edit_bubble" value="Submit" class="button-primary" />   <input type="reset" class="button-primary" /></td>
 			<td></td>
 			</tr>
 			</table>
-			<input type="hidden" name="bubble_id" value="<?php echo $bubble->getBubbleID(); ?>" />
+			<input  id="bubbleidhid" type="hidden" name="bubble_id" value="<?php echo $bubble->getBubbleID(); ?>" />
 			<input type="hidden" name="edit_action" value="<?php echo $action ?>" />
 		</form>
 	</div>

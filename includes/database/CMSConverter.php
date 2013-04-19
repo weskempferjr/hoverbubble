@@ -12,6 +12,7 @@ interface CMSConverter {
 	public function setCMSUpdateArgs( $object);
 	public function getCMSDeleteArgs();
 	public function setCMSDeleteArgs( $object);
+	public function setUID( $uid );
 }
 
 ?>

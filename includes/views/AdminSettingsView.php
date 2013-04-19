@@ -69,6 +69,9 @@ class AdminSettingsView {
 				?>
 				</tbody>
 			</table>
+			<br>
+			<h3>General Settings</h3>
+			<button id="genimagetab" class="button-secondary"/>Generate Image Table</button>
 		</div>
 		<?php
 		}

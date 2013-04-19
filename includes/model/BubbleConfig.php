@@ -1,8 +1,6 @@
 <?php
 
 
-//TODO: no error checking or exception handling
-//TODO: need unique contraint for bubble_name
 
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/database/DBMap.php");
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/database/CMSConverter.php");
@@ -61,7 +59,7 @@ class BubbleConfig implements DBMap {
 	}
 	
 	public function restore( $bubbleID ) {
-		$converter = CMSConverterFactory::geBubbleConfigConverter();
+		$converter = CMSConverterFactory::getBubbleConfigConverter();
 		$this->setBubbleID( $bubbleID );
 		$converter->setCMSSelectRowArgs($this);
 		$database = BubbleConfig::getDatabase();
@@ -71,7 +69,7 @@ class BubbleConfig implements DBMap {
 	
 	public static function delete( $bubbleID ) {
 		
-		$converter = CMSConverterFactory::geBubbleConfigConverter();
+		$converter = CMSConverterFactory::getBubbleConfigConverter();
 		$bubble = new BubbleConfig();
 		$bubble->setBubbleID( $bubbleID );
 		$converter->setCMSDeleteArgs($bubble);
@@ -81,7 +79,7 @@ class BubbleConfig implements DBMap {
 	}
 	
 	public static function retrieveBubbles( $whereClause ) {
-		$converter = CMSConverterFactory::geBubbleConfigConverter();
+		$converter = CMSConverterFactory::getBubbleConfigConverter();
 		$converter->setCMSSelectRowsArgs($whereClause);
 		$database = BubbleConfig::getDatabase();
 		$bubbleColumnValueArray = $database->getRows( $converter );
@@ -98,7 +96,7 @@ class BubbleConfig implements DBMap {
 	}
 	
 	public function update() {
-		$converter = CMSConverterFactory::geBubbleConfigConverter();
+		$converter = CMSConverterFactory::getBubbleConfigConverter();
 		// $converter->setImageURLFromCMS($this);		
 		$converter->setCMSUpdateArgs($this);
 		$database = BubbleConfig::getDatabase();
@@ -106,7 +104,7 @@ class BubbleConfig implements DBMap {
 	}
 	
 	public function insert() {
-		$converter = CMSConverterFactory::geBubbleConfigConverter();
+		$converter = CMSConverterFactory::getBubbleConfigConverter();
 		// $converter->setImageURLFromCMS($this);
 		$converter->setCMSInsertArgs($this);
 		$database = BubbleConfig::getDatabase();

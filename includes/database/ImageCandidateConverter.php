@@ -1,22 +1,21 @@
 <?php
-
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/database/CMSConverter.php");
 
 
-class BubbleConfigConverter implements CMSConverter {
+class ImageCandidateConverter implements CMSConverter {
 	
 	private $insertArgs ;
 	private $deleteArgs;
 	private $updateArgs;
 	private $selectRowArgs;
 	private $selectRowsArgs ;
-	private $bubbleConfig ;
+	private $imageCandidate ;
 	
 	
 	private static function setAlias() {
 		global $wpdb ;
-		if (!isset($wpdb->hoverbubbles)) {
-			$wpdb->hoverbubbles = $wpdb->prefix . 'hoverbubbles';
+		if (!isset($wpdb->hbimagecandidates)) {
+			$wpdb->hbimagecandidates = $wpdb->prefix . 'hbimagecandidates';
 		}	
 	}
 	public function getCMSSelectRowArgs() {
@@ -29,9 +28,9 @@ class BubbleConfigConverter implements CMSConverter {
 		self::setAlias();
 		
 		$this->selectRowArgs = array(
-			'wpPrepareFormat' => "bubble_id",
-			'wpPrepareValues' => $object->getBubbleID(),
-			'wpTableName' => 'hoverbubbles'
+			'wpPrepareFormat' => "image_candidate_id",
+			'wpPrepareValues' => $object->getImageCandidateID(),
+			'wpTableName' => 'hbimagecandidates'
 		);
 	}
 	
@@ -47,7 +46,7 @@ class BubbleConfigConverter implements CMSConverter {
 		$this->selectRowsArgs = array(
 			'wpPrepareFormat' => "*",
 			'wpWhereClause' => $whereClause,
-			'wpTableName' => 'hoverbubbles'
+			'wpTableName' => 'hbimagecandidates'
 		);
 	}
 	
@@ -57,32 +56,18 @@ class BubbleConfigConverter implements CMSConverter {
 	
 	public function setCMSInsertArgs( $object) {
 		global $wpdb;
-
+		
 		self::setAlias();
 		
-		$this->bubbleConfig = $object ;
+		$this->imageCandidate = $object ;
 		
 		$this->insertArgs = array(
 			'wpPrepareFormat' => "(	
-				bubble_id,
-				bubble_name,
-				bubble_message,
-				bubble_fill_color,			
-				bubble_tail_length,				
-				bubble_corner_radius,
-				bubble_outline_color,								
-				bubble_outline_width,
-				bubble_tail_direction,				
-				bubble_tail_x,
-				bubble_tail_y,
-				canvas_border_style,
-				content_area_height,
-				content_area_width,				
-				target_image_id,
+				image_candidate_id,
 				target_image_url
-			) VALUES ( %d, %s, %s, %s, %d, %d, %s, %d, %s, %d, %d, %s, %d, %d, %d, %s )",
+			) VALUES ( %d, %s )",
 			'wpPrepareValues' => $object->objectToColumns( true ),
-			'wpTableName' => 'hoverbubbles'
+			'wpTableName' => 'hbimagecandidates'
 		);
 	}
 	
@@ -98,25 +83,11 @@ class BubbleConfigConverter implements CMSConverter {
 		
 		$this->updateArgs = array( 
 			'wpPrepareFormat' => "
-				bubble_name = %s,
-				bubble_message = %s,
-				bubble_fill_color = %s,
-				bubble_tail_length = %d,
-				bubble_corner_radius = %d,
-				bubble_outline_color = %s,
-				bubble_outline_width = %d,
-				bubble_tail_direction = %s,
-				bubble_tail_x = %d,
-				bubble_tail_y = %d,
-				canvas_border_style = %s,
-				content_area_height = %d,
-				content_area_width = %d,
-				target_image_id = %d,
 				target_image_url = %s
-			WHERE bubble_id = %d
+			WHERE image_candidate_id = %d
 			",
 			'wpPrepareValues' => $object->objectToColumnsForUpdate( true ),
-			'wpTableName' => 'hoverbubbles'
+			'wpTableName' => 'hbimagecandidates'
 		);
 	}
 	
@@ -131,20 +102,21 @@ class BubbleConfigConverter implements CMSConverter {
 		self::setAlias();
 		
 		$this->deleteArgs = array(
-			'wpPrepareFormat' => "bubble_id = %d",
-			'wpPrepareValues' => array( $object->getBubbleID() ),
-			'wpTableName' => 'hoverbubbles'
+			'wpPrepareFormat' => "image_candidate_id = %d",
+			'wpPrepareValues' => array( $object->getImageCandidateID() ),
+			'wpTableName' => 'hbimagecandidates'
 		);
 	}
 	
-	public function setImageURLFromCMS( $object ) {
-		$imageURL = WPResources::getImageURL( $object->getTargetImageID() );
-		$object->setTargetImageURL( $imageURL );
-	}
-	
 	public function setUID( $uid ) {
-		$this->bubbleConfig->setBubbleID( $uid );
+		$this->imageCandidate->setImageCandidateID( $uid );
 	}
+
+	// TODO: delete this if it turns out is not needed. For now, comment.
+	// public function setImageURLFromCMS( $object ) {
+	//	$imageURL = WPResources::getImageURL( $object->getTargetImageID() );
+	//	$object->setTargetImageURL( $imageURL );
+	// }
 }
 
 ?>

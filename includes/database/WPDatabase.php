@@ -75,6 +75,8 @@ class WPDatabase implements Database {
 		$ret_val = $wpdb->query( $sql );
 		if ( $ret_val == false )
 			throw new Exception("WPDatabase::insertRow: Insert failed in table ". $wpdb->$args['wpTableName'], -1);
+			
+		$cmsConverter->setUID( $wpdb->insert_id );
 	}
 	
 	public function deleteRow( $cmsConverter ) {

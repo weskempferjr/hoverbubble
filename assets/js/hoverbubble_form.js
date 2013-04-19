@@ -3,6 +3,68 @@
 jQuery(document).ready(function($) {
 	
 	
+
+	$("#genimagetab").click( function(e) {
+		e.preventDefault();
+		$.ajax({
+			url:  wpsiteinfo.site_url + '/wp-admin/admin-ajax.php',
+			data:{
+				'action':'tnotw_hoverbubble_ajax',
+				'fn':'gen_site_image_list'
+	 		},
+			dataType: 'JSON',
+			success:function(data){
+				var imageList = data;
+	        },
+			error: function(errorThrown){
+				alert('error');
+				console.log(errorThrown);
+	        }
+		});
+
+	});
+	
+	$("#pageurlinput").change( function( e ) {
+		var selElems = $("#pageurlinput :selected").toArray();
+		if ( selElems.length > 1) {
+			$("#pageurlinput option[value='None']").prop('selected',false);
+		}
+		
+	});
+	
+	$("#imageurl").change( function(e) {
+		// alert("ImageURL select callback executed");
+		
+		// get selection
+		var targetImageURL = $("#imageurl :selected").text();
+		if ( targetImageURL == "" || targetImageURL == null ) {
+			return ;
+		}
+		
+		var bubbleID = $("#bubbleidhid").val();
+		
+		$.ajax({
+			url:  wpsiteinfo.site_url + '/wp-admin/admin-ajax.php',
+			data:{
+				'action':'tnotw_hoverbubble_ajax',
+				'fn':'get_page_candidate_list',
+				'target_image_url': targetImageURL,
+				'bubble_id' : bubbleID
+	 		},
+			dataType: 'JSON',
+			success:function(data){
+				displayPageCandidateSelect( data );
+	        },
+			error: function(errorThrown){
+				alert('error');
+				console.log(errorThrown);
+	        }
+
+
+		});
+		$("#pageurlph").show();
+	});
+	
 	$("#outlinewidth").blur( function(event) {
 		validateNumberField("Outline Width:","outlinewidthlabel", "outlinewidth");
 	});
@@ -92,6 +154,8 @@ jQuery(document).ready(function($) {
 		$("#dialog").dialog("open");			
 	});
 	
+
+	
 	// color picker
 	$('.colorfield').wpColorPicker({
 		change: function(event, ui) {
@@ -107,15 +171,16 @@ jQuery(document).ready(function($) {
 	tinyMCE.init({
         mode : "textareas",
         theme : "advanced",
-        theme_advanced_buttons3_add : "fontselect,fontsizeselect,forecolor,backcolor",
+        theme_advanced_buttons3_add : "forecolor,backcolor,fontselect,fontsizeselect",
         relative_urls : false,
         convert_urls : false,
         encoding: "raw"
 	});
 	
-	// active image select list
-	$("input[rel]").overlay();
-	$("#target_image").overlay();
+	// Trigger change on load to display page candidate
+	// list when in edit mode. 
+	$("#imageurl").trigger("change");
+	
 	
 	
 	function validateNumberField( labelText, labelID, inputID ) {
@@ -132,6 +197,42 @@ jQuery(document).ready(function($) {
 			$("#" + labelID ).html( labelText );
 			$("#" + labelID ).css("color","black");
 		}	
+	}
+	
+	function displayPageCandidateSelect( data ) {
+		
+		// remove old list 
+		$(".pcseloptions").remove();
+		$("#pcselect").remove();
+		
+		$("#pageurlinput").append('<select id="pcselect" name="bubble_pages[]" multiple></select>');
+		$("#pcselect").append( '<option class="pcseloptions" value="None">None</option>' );
+		
+		var pageCandidates = data.pageCandidates ;
+		var displayPageIDs = data.displayPageIDs ;
+		
+		var somethingSelected = false ;
+		
+		for ( i = 0 ; i <	pageCandidates.length ; i++ )
+		{
+			var pageCandidate = pageCandidates[i];
+			var optionValue = pageCandidate.pageCandidateID ;
+			var displayValue = pageCandidate.targetPageURL ;
+			
+			var selectMe = "";
+			if ( displayPageIDs.indexOf( optionValue ) != -1 ) {
+				selectMe = " selected " ;
+				somethingSelected = true; 
+			}
+			var optionStr = '<option class="pcseloptions" value="' + optionValue  + '"' +  selectMe +  '>' + displayValue + '</option>';
+			$("#pcselect").append( optionStr );
+		} 
+		
+		// If no displayed pages, force selection to none.
+		if ( somethingSelected == false ) {
+			$("#pageurlinput option[value='None']").prop('selected',true);
+		}
+		
 	}
 });
 
