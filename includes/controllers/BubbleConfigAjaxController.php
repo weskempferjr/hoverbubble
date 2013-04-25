@@ -12,29 +12,41 @@ require_once( TNOTW_HOVERBUBBLE_DIR . "includes/util/ImageListGenerator.php");
 
 
 
-// TODO: error handling in ajax controller.
 class BubbleConfigAjaxController {
 	
 	public static function getBubbleConfigs() {
-		switch($_REQUEST['fn']){
-			case 'get_bubble_config':
-				$output = self::retrieveBubbleConfigs();
+		
+		try {
+			switch($_REQUEST['fn']){
+				case 'get_bubble_config':
+					$output = self::retrieveBubbleConfigs();
+					break;
+				case 'does_bubble_name_exist':
+					$bubbleExists = self::doesBubbleNameExist();
+					$output = array('bubbleExists' => $bubbleExists );
+					break;
+				case 'gen_site_image_list':
+					ImageListGenerator::updateCandidateTables();
+					$output = array(
+						'updateTablesStatus' => 'success'
+					);
+					break;
+				case 'get_page_candidate_list':
+					$output = self::retrievePageCandidates( $_REQUEST['target_image_url'], $_REQUEST['bubble_id'] );
+					break;
+				default:
+					$output = 'No function specified, check your jQuery.ajax() call';
 				break;
-			case 'does_bubble_name_exist':
-				$bubbleExists = self::doesBubbleNameExist();
-				$output = array('bubbleExists' => $bubbleExists );
-				break;
-			case 'gen_site_image_list':
-				// TODO: Return an indication of success or failure here.
-				$output = self::genSiteImageList();
-				break;
-			case 'get_page_candidate_list':
-				$output = self::retrievePageCandidates( $_REQUEST['target_image_url'], $_REQUEST['bubble_id'] );
-				break;
-			default:
-				$output = 'No function specified, check your jQuery.ajax() call';
-			break;
-
+	
+			}
+		} 
+		catch ( Exception $e ) {
+			$errorData = array(
+				'errorData' => 'true',
+				'errorMessage' => $e.getMessage(),
+				'errorTrace' => $e.getTraceAsString()
+			);
+			$output = $errorData;
 		}
 
 		// Convert $output to JSON and echo it to the browser 
@@ -186,10 +198,6 @@ class BubbleConfigAjaxController {
 		
 	}
 	
-	private static function genSiteImageList() {
-		$imageList = ImageListGenerator::updateCandidateTables();
-		return $imageList;
-	}
 	
 	
 	// TODO: move to BubbleConfig

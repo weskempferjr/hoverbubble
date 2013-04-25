@@ -14,10 +14,15 @@ jQuery(document).ready(function($) {
 	 		},
 			dataType: 'JSON',
 			success:function(data){
-				var imageList = data;
+				if ( data.errorData != null && data.errorData == true ) {
+					reportError( data );
+					return;
+				}
+
+				alert("Gen image table status = " + data.updateTablesStatus );
 	        },
 			error: function(errorThrown){
-				alert('error');
+				alert('Error retrieving gen image table status from server:' + errorThrown );
 				console.log(errorThrown);
 	        }
 		});
@@ -53,10 +58,14 @@ jQuery(document).ready(function($) {
 	 		},
 			dataType: 'JSON',
 			success:function(data){
+				if ( data.errorData != null && data.errorData == true ) {
+					reportError( data );
+					return;
+				}
 				displayPageCandidateSelect( data );
 	        },
 			error: function(errorThrown){
-				alert('error');
+				alert('Error retrieving page candidate list from server:' + errorThrown );
 				console.log(errorThrown);
 	        }
 
@@ -114,16 +123,21 @@ jQuery(document).ready(function($) {
 	 		},
 			dataType: 'JSON',
 			success:function(data){
+				
+				if ( data.errorData != null && data.errorData == true ) {
+					reportError( data );
+					return;
+				}
+				
 				if ( data.bubbleExists == true ) {
-					// alert("A bubble with the name " + bubble_name + " already exists.");
-					// $("#bubblename").focus();
+
 					$("#bubblenamelabel").html("Duplicate bubble name!:");
 					$("#bubblenamelabel").css("color","red");
 					return;
 				}
 	        },
 			error: function(errorThrown){
-				alert('error');
+				alert('Error checking bubble name availability:' + errorThrown );
 				console.log(errorThrown);
 	        }
 
@@ -233,6 +247,11 @@ jQuery(document).ready(function($) {
 			$("#pageurlinput option[value='None']").prop('selected',true);
 		}
 		
+	}
+	
+	function reportError( errorData ) {
+		var errorString = "Server error:" + errorData.errorMessage ;
+		alert( errorString );
 	}
 });
 

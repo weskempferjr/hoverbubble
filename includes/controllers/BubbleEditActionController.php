@@ -142,7 +142,7 @@ class BubbleEditActionController {
 			return ;
 		} 
 		else {
-			// For each select pageCandidateID, se if there is a BubblePage record for it. If not
+			// For each select pageCandidateID, see if there is a BubblePage record for it. If not
 			// add it.							
 			foreach ( $pageCandidateIDs as $pageCandidateID ) {
 				$whereClause = "bubble_id = " . $bubbleID . " and page_candidate_id = " . $pageCandidateID ;

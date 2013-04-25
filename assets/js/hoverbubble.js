@@ -15,21 +15,29 @@ jQuery(document).ready(function($) {
  		},
 		dataType: 'JSON',
 		success:function(data){
-		// save data for browser window events.
-		saveBubbleConfig( data );
-		displayBubbles(data);
-          	},
+			if ( data.errorData != null && data.errorData == true ) {
+				reportError( data );
+				return;
+			}
+			// save data for browser window events.
+			saveBubbleConfig( data );
+			displayBubbles(data);
+        },
 		error: function(errorThrown){
-			alert('error');
+			alert('Error retrieving bubble configurations:' + errorThrown );
 			console.log(errorThrown);
-          	}
-
+        }
 
 	});
 
 	$(window).resize(function(){
 		displayBubbles( retrieveBubbleConfig() );
 	});
+	
+	function reportError( errorData ) {
+		var errorString = "Server error:" + errorData.errorMessage ;
+		alert( errorString );
+	}
 });
 
 

@@ -7,9 +7,13 @@ require_once( TNOTW_HOVERBUBBLE_DIR . "includes/model/PageCandidate.php");
 class ImageListGenerator {
 	
 	private static $imageInfoList ;
+	private static $imagePageMap ;
 	private static $searched ;
 	
-	// TODO: exception handling
+	// Update the page and image candidate tables by crawling site and updating
+	// the image and page candidate tables to match what is found on the site.
+	// Exceptions thrown by calls in this function should be caught somewhere up the
+	// call stack. 
 	public static function updateCandidateTables() {
 		// Crawl site to find images and the pages
 		// on which they appear. 
@@ -20,7 +24,7 @@ class ImageListGenerator {
 		foreach ( self::$imageInfoList as $imageInfo ) {
 			array_push($imageURLList, $imageInfo->imageURL );
 		}
-		array_unique(imageURLList);
+		array_unique( $imageURLList );
 		
 		
 		// For each unique image URL, 
@@ -59,9 +63,88 @@ class ImageListGenerator {
 			}
 			
 		}
-				
+		// call clean image tables here.
+		self::cleanImageTables();
 		
 	}
+	
+	// Called from updateImageTables in order to remove image/page candidate records 
+	// no longer reference on the site (i.e. images no longer used, still existing images that have been
+	// removed from some pages. 
+	public static function cleanImageTables() {
+				
+		// Delete image candidates not on current list		
+		$whereClause = "";				
+		$imageCandidates = ImageCandidate::retrieveImageCandidates( $whereClause ) ;
+		
+		foreach ( $imageCandidates as $imageCandidate ) {
+			$targetImageURL = $imageCandidate->getTargetImageURL();
+			if ( self::isImageCandidateDisplayed( $targetImageURL ) ) {
+				continue;
+			}
+			$imageCandidateID = $imageCandidate->getImageCandidateID();
+			ImageCandidate::delete( $imageCandidateID );
+		}
+		
+		// For each active image candidate, delete any invalid page candidates. 
+		foreach ( array_keys( self::$imagePageMap ) as $imageURL ) {
+			// TODO: collapse into a single call/should be getRow call with a unique column value
+			if ( self::doesImageCandidateExist( $imageURL ) ) {
+				$whereClause = "target_image_url = '" . $imageURL . "'" ;
+				$imageCandidates = ImageCandidate::retrieveImageCandidates( $whereClause );
+				$imageCandidate = $imageCandidates[0];
+				$imageCandidateID = $imageCandidate->getImageCandidateID();
+				
+				
+				$pageList = self::$imagePageMap[ $imageURL ];
+				$whereClause = "image_candidate_id = " . $imageCandidateID .  " AND target_page_url NOT IN ( ";
+				$pageCount = count( $pageList );
+				for ( $i = 0 ;  $i < $pageCount ; $i++ ) {
+					$whereClause .= ' ' . "'". $pageList[$i] . "'";
+					if ( $i == ($pageCount - 1)) {
+						$whereClause .= ')';
+					} 
+					else {
+						$whereClause .= ',';
+					}
+				}
+				
+				$pageCandidates = PageCandidate::retrievePageCandidates( $whereClause ) ;
+				foreach ( $pageCandidates as $pageCandidate ) {
+					$pageCandidateID = $pageCandidate->getPageCandidateID();
+					PageCandidate::delete( $pageCandidateID ); 
+				}
+				
+			} 
+			
+		}
+		
+		
+	}
+	
+	public static function getImagePageList( $imageURL ) {
+		
+		$pageList = array();
+		foreach ( self::$imageInfoList as $imageInfo ) {
+			if ( $imageURL == $imageInfo->imageURL ) {
+				array_push( $pageList, $imageInfo->parentPage );
+			}
+		}	
+		return $pageList ;
+	}
+	
+	private static function isImageCandidateDisplayed(  $imageCandidateURL )  {
+		
+		$imageURLList = array_keys( self::$imagePageMap );
+		
+		if ( array_search( $imageCandidateURL, $imageURLList ) === false ) {
+			return false; 
+		} 
+		else {
+			return true;
+		}
+	}
+	
 	
 	public static function getSiteImageList() {
 		
@@ -72,12 +155,14 @@ class ImageListGenerator {
 		$searchComplete = false;
 		$currentURL = $siteURL;
 		
-		ImageListGenerator::findPageImages($siteURL, $siteURL);
+		self::findPageImages($siteURL, $siteURL);
+		self::setImagePageMap();
 		return self::$imageInfoList;
 	}
 	
 	private static function findPageImages( $siteURL, $pageURL ) {
 		$doc = new DOMDocument();
+		libxml_use_internal_errors(true);
 		$doc->loadHTMLFile($pageURL);
 		
 		// get list of images on this page. 
@@ -85,7 +170,7 @@ class ImageListGenerator {
 			$srcAttr = $tag->getAttribute("src");
 			if ( strpos($srcAttr, $siteURL, 0) === 0) {
 				$imageInfo = new ImageInfo();
-				$imageInfo->parentPage = $pageURL;
+				$imageInfo->parentPage = rtrim( $pageURL, "/" );
 				$imageInfo->imageURL = $srcAttr ;
 				array_push(self::$imageInfoList, $imageInfo);
 			}			
@@ -115,6 +200,21 @@ class ImageListGenerator {
 			}	
 		}
 		
+	}
+	
+	private static function setImagePageMap() {
+		$imageURLList = array();
+		foreach ( self::$imageInfoList as $imageInfo ) {
+			array_push($imageURLList, $imageInfo->imageURL );
+		}
+		array_unique($imageURLList);
+		
+		self::$imagePageMap = array();
+		foreach ( $imageURLList as $imageURL ) {
+			$pageList = self::getImagePageList( $imageURL );
+			self::$imagePageMap[ $imageURL ] =  $pageList ;	
+		}
+	
 	}
 	
 	
