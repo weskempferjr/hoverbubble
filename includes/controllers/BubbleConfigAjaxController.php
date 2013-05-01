@@ -43,8 +43,8 @@ class BubbleConfigAjaxController {
 		catch ( Exception $e ) {
 			$errorData = array(
 				'errorData' => 'true',
-				'errorMessage' => $e.getMessage(),
-				'errorTrace' => $e.getTraceAsString()
+				'errorMessage' => $e->getMessage(),
+				'errorTrace' => $e->getTraceAsString()
 			);
 			$output = $errorData;
 		}

@@ -158,7 +158,7 @@ class HoverBubblePlugin {
 	
 	public function hoverbubble_settings() {
 		$statusMessge = "";
-		BubbleSettingsController::displaySettingsView("");
+		BubbleSettingsController::routeRequest( $statusMessge );
 	}
 	
 	public function hoverbubble_edit() {

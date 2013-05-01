@@ -1,7 +1,7 @@
 <?php
 
 class AdminSettingsView {
-	public static function displayBubbleSettingsPage( $bubbles, $statusMessage ) {
+	public static function displayBubbleSettingsPage( $bubbles, $settings, $statusMessage ) {
 		
 		$add_page_url = admin_url('admin.php?page=hoverbubble-edit');
 		$add_page_url = add_query_arg(	"action", 
@@ -68,10 +68,39 @@ class AdminSettingsView {
 					}
 				?>
 				</tbody>
-			</table>
+			</table>			
 			<br>
 			<h3>General Settings</h3>
-			<button id="genimagetab" class="button-secondary"/>Generate Image Table</button>
+			<h4>Set and Generate Target Image List</h4>
+			<p>Before creating bubbles, generate a target image list. The image list generate
+			needs to know two things:
+			</p>
+			<ol>
+			<li>The top level URLs to crawl for target images, as specified <i>Crawl Path</i>. The crawl path should contain
+			your site's top URL. If a page is not linked anywhere directly on your site, then it will need to be added to 
+			the crawl path.</li>
+			<li>Which which types of content to skip when crawling your site. This will typically be media files.</li>
+			</ol>
+			<p>Entries in both fields must be seperated by spaces. Hit the submit button to save your changes. <i>These settings should
+			be set automically to reasonable defaults by the installation. Change them only as necessary.</i></p>
+			<form id="hbsettings" action="" method="POST">
+			<table style="width: 100%">
+			<col  style="width: 15%">
+			<col  style="width: 85%">
+			<tr>
+			<td>Crawl Path:</td><td><input id="crawlpathinput" style="width: 80%" name="crawlpath" type="text" value="<?php echo $settings->getCrawlPath(); ?>"/></td>
+			</tr>
+			<tr>
+			<td>Exclusion List:</td><td><input id="exclistinput" style="width: 80%" name="exclusionlist" type="text" value="<?php echo $settings->getExclusionList(); ?>"/></td>			
+			</tr>
+			<tr>
+			<td><input type="submit" name="hb_settings" value="Submit" class="button-primary" />   <input type="reset" class="button-primary" /></td>
+			</tr>
+			</table>
+			</form>
+			<p>Once the Crawl Path and Exclusion list are specified, press the Generate Image Button to generate the target image table. <i>The
+			Generator must be run at least once immediately after installation.</i></p>
+			<button id="genimagetab" class="button-secondary">Generate Image Table</button>
 		</div>
 		<?php
 		}

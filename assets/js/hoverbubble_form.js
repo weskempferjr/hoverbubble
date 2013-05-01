@@ -14,7 +14,7 @@ jQuery(document).ready(function($) {
 	 		},
 			dataType: 'JSON',
 			success:function(data){
-				if ( data.errorData != null && data.errorData == true ) {
+				if ( data.errorData != null && data.errorData == 'true' ) {
 					reportError( data );
 					return;
 				}
@@ -22,7 +22,7 @@ jQuery(document).ready(function($) {
 				alert("Gen image table status = " + data.updateTablesStatus );
 	        },
 			error: function(errorThrown){
-				alert('Error retrieving gen image table status from server:' + errorThrown );
+				alert('Error retrieving gen image table status from server:' + errorThrown.responseText.substring(0,500) );
 				console.log(errorThrown);
 	        }
 		});
@@ -58,14 +58,14 @@ jQuery(document).ready(function($) {
 	 		},
 			dataType: 'JSON',
 			success:function(data){
-				if ( data.errorData != null && data.errorData == true ) {
+				if ( data.errorData != null && data.errorData == 'true' ) {
 					reportError( data );
 					return;
 				}
 				displayPageCandidateSelect( data );
 	        },
 			error: function(errorThrown){
-				alert('Error retrieving page candidate list from server:' + errorThrown );
+				alert('Error retrieving page candidate list from server:' + errorThrown.responseText.substring(0,500) );
 				console.log(errorThrown);
 	        }
 
@@ -124,7 +124,7 @@ jQuery(document).ready(function($) {
 			dataType: 'JSON',
 			success:function(data){
 				
-				if ( data.errorData != null && data.errorData == true ) {
+				if ( data.errorData != null && data.errorData == 'true' ) {
 					reportError( data );
 					return;
 				}
@@ -137,7 +137,7 @@ jQuery(document).ready(function($) {
 				}
 	        },
 			error: function(errorThrown){
-				alert('Error checking bubble name availability:' + errorThrown );
+				alert('Error checking bubble name availability:' + errorThrown.responseText.substring(0,500) );
 				console.log(errorThrown);
 	        }
 

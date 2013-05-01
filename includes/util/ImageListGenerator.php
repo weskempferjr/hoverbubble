@@ -9,12 +9,17 @@ class ImageListGenerator {
 	private static $imageInfoList ;
 	private static $imagePageMap ;
 	private static $searched ;
+	private static $settings ;
 	
 	// Update the page and image candidate tables by crawling site and updating
 	// the image and page candidate tables to match what is found on the site.
 	// Exceptions thrown by calls in this function should be caught somewhere up the
 	// call stack. 
 	public static function updateCandidateTables() {
+		
+		self::$settings = SettingsFactory::getSettings();
+		self::$settings->load();
+		
 		// Crawl site to find images and the pages
 		// on which they appear. 
 		self::getSiteImageList();
@@ -36,7 +41,7 @@ class ImageListGenerator {
 			// TODO: collapse into a single call/shoudl be getRow call with a unique column value
 			if ( self::doesImageCandidateExist( $imageURL ) ) {
 				$whereClause = "target_image_url = '" . $imageURL . "'" ;
-				$imageCandidates = ImageCandidate::retrieveImageCandidates($whereClause);
+				$imageCandidates = ImageCandidate::retrieveImageCandidates( $whereClause );
 				$imageCandidate = $imageCandidates[0];
 			} 
 			else {
@@ -63,7 +68,8 @@ class ImageListGenerator {
 			}
 			
 		}
-		// call clean image tables here.
+		// Remove any images from the database that
+		// no are no longer published. 
 		self::cleanImageTables();
 		
 	}
@@ -152,18 +158,37 @@ class ImageListGenerator {
 		self::$searched = array();
 		// TODO: use interface to hide CMS depedencies. 
 		$siteURL = get_site_url();
-		$searchComplete = false;
-		$currentURL = $siteURL;
+
+		$crawlPathArray = self::$settings->getCrawlPathArray() ;
 		
-		self::findPageImages($siteURL, $siteURL);
+		foreach ( $crawlPathArray as $crawlURL ) {
+			self::findPageImages($siteURL, $crawlURL );
+		}
+		
 		self::setImagePageMap();
 		return self::$imageInfoList;
 	}
 	
+	// 
+	// Crawl the specified page to find images. This method
+	// is called recursively as links to other pages 
+	// on the site are encountered. Links to external sites
+	// are ingored. 
+	// TODO: External links are detected by trying to match link URLs to
+	// the site URL. Hence, relative links may be missed. This appears
+	// not to be a problem with Wordpress since it seems to generate
+	// only abslolute URLs.  
 	private static function findPageImages( $siteURL, $pageURL ) {
 		$doc = new DOMDocument();
 		libxml_use_internal_errors(true);
-		$doc->loadHTMLFile($pageURL);
+		
+		// Suppressing error output deliberately (with "@") in order to catch
+		// exception and send brief error message from caller exception
+		// handler. 
+		if ( @$doc->loadHTMLFile($pageURL) === false ) {
+			libxml_clear_errors();
+			throw new Exception('ImageListGenerator could not load URL:' . $pageURL );
+		}
 		
 		// get list of images on this page. 
 		foreach($doc->getElementsByTagName("img") as $tag) {
@@ -181,14 +206,16 @@ class ImageListGenerator {
 		foreach ($doc->getElementsByTagName("a") as $tag ) {
 			$hrefAttr = $tag->getAttribute("href");	
 
+			// Ignore anchors to same page
 			if ( strpos( $hrefAttr, "#") !== false ) {
 				continue;
 			}
 			
-			// TODO: create a filter option to enable configuration of links to skip
-			if ( substr( $hrefAttr, -4 ) === ".jpg"  || substr( $hrefAttr, -4 ) === ".png") {
-				continue;
+			// Don't try to crawl this URL if it is a media file. 
+			if ( self::isExcluded( $hrefAttr ) ) {
+				continue; 
 			}
+			
 			
 			if ( strpos($hrefAttr, $siteURL, 0) === 0) {
 				$hrefAttrTrimmed = rtrim( $hrefAttr, "/");
@@ -200,6 +227,24 @@ class ImageListGenerator {
 			}	
 		}
 		
+	}
+	
+	
+	//
+	// Compare URL to list of media type exlucsions. If URL points to a jpeg file, for
+	// example, ignore it. 
+	private static function isExcluded( $url ) {
+		
+		$exclusionListArray = self::$settings->getExclusionListArray();
+		
+		foreach ( $exclusionListArray as $exclusion ) {
+			$endPosition = strlen( $exclusion ) * -1;
+			if ( strpos( $url, $endPosition ) === $exclusion ) {
+				return true ;
+			}			
+		}
+		
+		return false ;		
 	}
 	
 	private static function setImagePageMap() {

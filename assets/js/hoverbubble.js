@@ -15,7 +15,7 @@ jQuery(document).ready(function($) {
  		},
 		dataType: 'JSON',
 		success:function(data){
-			if ( data.errorData != null && data.errorData == true ) {
+			if ( data.errorData != null && data.errorData == 'true' ) {
 				reportError( data );
 				return;
 			}
@@ -24,7 +24,7 @@ jQuery(document).ready(function($) {
 			displayBubbles(data);
         },
 		error: function(errorThrown){
-			alert('Error retrieving bubble configurations:' + errorThrown );
+			alert('Error retrieving bubble configurations:' + errorThrown.responseText.substring(0,500) );
 			console.log(errorThrown);
         }
 
