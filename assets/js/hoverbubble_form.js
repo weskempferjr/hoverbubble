@@ -185,6 +185,7 @@ jQuery(document).ready(function($) {
 	tinyMCE.init({
         mode : "textareas",
         theme : "advanced",
+        editor_selector : "theEditor",
         theme_advanced_buttons3_add : "forecolor,backcolor,fontselect,fontsizeselect",
         relative_urls : false,
         convert_urls : false,

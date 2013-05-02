@@ -40,6 +40,12 @@ class AdminEditView {
 			</td> 
 			</tr>
 			<tr>
+			<td>Bubble Description:</td>
+			<td>
+			<textarea rows="3" cols="40" name="bubble_description" form="hbedit" ><?php echo $bubble->getBubbleDescription(); ?> </textarea> 		
+			</td> 
+			</tr>
+			<tr>
 			<td>Bubble Fill Color:</td> 
 	 		<td><input class="colorfield" type="text" name="bubble_fill_color" value="<?php echo $bubble->getBubbleFillColor(); ?>" /> </td>
 			</tr>
@@ -96,6 +102,17 @@ class AdminEditView {
 			<td><p id="cawidthlabel">Content Area Width:</p></td>
 			<td> <input id="cawidth" type="number" step="1" min="10" max="2000" name="content_area_width" value="<?php echo $bubble->getContentAreaWidth(); ?>" />  </td>
 			</tr>
+			
+			<tr>
+			<td><p id="delaylabel">Bubble Delay (in ms):</p></td>
+			<td> <input id="bubbledelay" type="number" step="1" min="0"  name="bubble_delay" value="<?php echo $bubble->getBubbleDelay(); ?>" />  </td>
+			</tr>
+			
+			<tr>
+			<td><p id="durationlabel">Bubble Duration (in ms):</p></td>
+			<td> <input id="bubbleduration" type="number" step="1" min="-1"  name="bubble_duration" value="<?php echo $bubble->getBubbleDuration(); ?>" />  </td>
+			</tr>
+			
 			<tr>
 			<td>Target Image URL  :</td>
 			<td>

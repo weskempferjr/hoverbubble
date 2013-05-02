@@ -104,6 +104,9 @@ function displayBubble(bubbleConfig){
 
 	var contentAreaWidth = parseInt(bubbleConfig.contentAreaWidth);
 	var contentAreaHeight = parseInt(bubbleConfig.contentAreaHeight);
+	
+	var bubbleDelay = parseInt( bubbleConfig.bubbleDelay );
+	var bubbleDuration = parseInt( bubbleConfig.bubbleDuration );
 
 	// Force tail direction to lower case. All code in this
 	// script assumes lower case. 
@@ -226,7 +229,7 @@ function displayBubble(bubbleConfig){
 	var start_point = getBubbleDrawStartPoint( bubbleTailDirection );
 
 
-	jQuery("#" + bubbleCanvasID ).css({"border": canvas_border_style,"position":"absolute","z-index":"10"});
+	jQuery("#" + bubbleCanvasID ).css({"border": canvas_border_style,"position":"absolute","z-index":"10","visibility":"hidden"});
 	jQuery("#" + bubbleCanvasID ).css({"top":top,"left":left });
 
 
@@ -467,12 +470,24 @@ function displayBubble(bubbleConfig){
 	 var etop = canvasPosition.top + ( ( canvas_h - contentAreaHeight ) / 2 );
 	 var eleft = canvasPosition.left + ( ( canvas_w - contentAreaWidth ) / 2 );
 
-	 img_div.append('<div id="' + contentDivID + '"  style="z-index:20;position:absolute;top:' +  etop +  'px;left:' + eleft + 'px"></div>');
+	 img_div.append('<div id="' + contentDivID + '"  style="visibility:hidden;z-index:20;position:absolute;top:' +  etop +  'px;left:' + eleft + 'px"></div>');
 	 
-	 //TODO: hardcoded URL
 	 jQuery("#" + contentDivID ).append('<embed  type="text/html" width="' + contentAreaWidth + 'px" height="' + contentAreaHeight + 'px" src="' + wpsiteinfo.site_url + '/index.php?hb_bubble_id='+ bubbleID +'">');
 
-	ctx.restore();
+	 // Display bubble as indicated by delay and duration. 
+	 setTimeout( function() {
+		 	jQuery("#" + bubbleCanvasID ).css("visibility","visible").fadeIn("slow");
+		 	jQuery("#" + contentDivID ).css("visibility","visible").fadeIn("slow") ;
+		 	
+		 	if ( bubbleDuration > 0 ) {
+			 	setTimeout( function() {
+			 		jQuery("#" +  contentDivID ).fadeOut("slow");
+			 		jQuery("#" + bubbleCanvasID ).fadeOut("slow");
+			 	}, bubbleDuration );
+	 		}
+		}, bubbleDelay );
+	 
+	 ctx.restore();
 
 };
 

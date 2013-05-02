@@ -224,7 +224,9 @@ class BubbleConfigAjaxController {
 					'contentAreaHeight' => $bubbleConfig->getContentAreaHeight(),
 					'contentAreaWidth' => $bubbleConfig->getContentAreaWidth(),
 					'canvasBorderStyle' => $bubbleConfig->getCanvasBorderStyle(),
-					'targetImageURL' => $bubbleConfig->getTargetImageURL()
+					'targetImageURL' => $bubbleConfig->getTargetImageURL(),
+					'bubbleDelay' => $bubbleConfig->getBubbleDelay(),
+					'bubbleDuration' => $bubbleConfig->getBubbleDuration()
 		);
 		return $mappedConfig ;
 	}

@@ -26,14 +26,14 @@ class AdminSettingsView {
 				<tr>
 				<th>Bubble ID</th>
 				<th>Name</th>
-				<th>Target Image</th>
+				<th>Description</th>
 				</tr>
 				</thead>
 				<tfoot>
 				<tr>
 				<th>Bubble ID</th>
 				<th>Name</th>
-				<th>Target Image</th>
+				<th>Description</th>
 				</tr>
 				</tfoot>
 				<tbody>			
@@ -61,7 +61,7 @@ class AdminSettingsView {
 						<tr>
 						<td><?php echo $bubble->getBubbleID(); ?> </td>
 						<td><?php echo $bubble->getBubbleName(); ?> </td>
-						<td><?php echo $bubble->getTargetImageID(); ?> </td>
+						<td><?php echo $bubble->getBubbleDescription(); ?> </td>
 						<td><a href="<?php echo $edit_page_url?>"> Edit</a> | <a class="hbdelete" href="<?php echo $delete_page_url?>"> Delete</a></td>
 						</tr>
 						<?php
@@ -71,15 +71,17 @@ class AdminSettingsView {
 			</table>			
 			<br>
 			<h3>General Settings</h3>
-			<h4>Set and Generate Target Image List</h4>
-			<p>Before creating bubbles, generate a target image list. The image list generate
+			<h4>Target Image List Generator</h4>
+			<p>Before creating bubbles, generate a target image list. The target image list enables you to select 
+			which image, and on which pages, a bubble will appear. The image list generator
 			needs to know two things:
 			</p>
 			<ol>
-			<li>The top level URLs to crawl for target images, as specified <i>Crawl Path</i>. The crawl path should contain
-			your site's top URL. If a page is not linked anywhere directly on your site, then it will need to be added to 
-			the crawl path.</li>
-			<li>Which which types of content to skip when crawling your site. This will typically be media files.</li>
+			<li>The top level URLs to crawl for target images, as specified in the <i>Crawl Path</i> field. The crawl path should contain
+			your site's top URL. If there is a page on which you want to target images and it is not linked anywhere within the link 
+			heiarchy accessible from your site's home page, then it will need to be added to the crawl path.</li>
+			<li>Which which types of content to skip when crawling your site as specified in the <i>Exclusion List</i> field. 
+			This will typically be media files. To exclude a content type, add its file extension to the list, including the dot (".")</li>
 			</ol>
 			<p>Entries in both fields must be seperated by spaces. Hit the submit button to save your changes. <i>These settings should
 			be set automically to reasonable defaults by the installation. Change them only as necessary.</i></p>
@@ -100,7 +102,7 @@ class AdminSettingsView {
 			</form>
 			<p>Once the Crawl Path and Exclusion list are specified, press the Generate Image Button to generate the target image table. <i>The
 			Generator must be run at least once immediately after installation.</i></p>
-			<button id="genimagetab" class="button-secondary">Generate Image Table</button>
+			<button id="genimagetab" class="button-primary">Generate Image Table</button>
 		</div>
 		<?php
 		}

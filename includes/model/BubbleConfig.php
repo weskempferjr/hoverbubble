@@ -36,6 +36,9 @@ class BubbleConfig implements DBMap {
 	private $contentAreaWidth = 0;
 	private $canvasBorderStyle = "";
 	private $targetImageURL = "";
+	private $bubbleDescription = "";
+	private $bubbleDelay = 0 ;
+	private $bubbleDuration = -1;
 	
 	private $whereClause = "";
 	
@@ -55,6 +58,9 @@ class BubbleConfig implements DBMap {
 		$this->contentAreaHeight = 150;
 		$this->canvasBorderStyle =  "0px solid #000000";
 		$this->targetImageID = "" ;
+		$this->bubbleDescription = "";
+		$this->bubbleDelay = 0;
+		$this->bubbleDuration = -1;
 
 	}
 	
@@ -272,6 +278,30 @@ class BubbleConfig implements DBMap {
 		return $this->targetImageURL;
 	}
 	
+	public function setBubbleDescription( $bubbleDescription ) {
+		$this->bubbleDescription = $bubbleDescription;
+	}
+	
+	public function getBubbleDescription() {
+		return $this->bubbleDescription ;
+	}
+	
+	public function setBubbleDelay( $bubbleDelay ) {
+		$this->bubbleDelay = $bubbleDelay;
+	}
+	
+	public function getBubbleDelay() {
+		return $this->bubbleDelay;
+	}
+	
+	public function setBubbleDuration( $bubbleDuration ) {
+		$this->bubbleDuration = $bubbleDuration;
+	}
+	
+	public function getBubbleDuration() {
+		return $this->bubbleDuration;
+	}
+	
 	public function setWhereClause ( $whereClause ) {
 		$this->whereClause = $whereClause ;
 	}
@@ -299,7 +329,6 @@ class BubbleConfig implements DBMap {
 		$this->bubbleOutlineColor = $columnValues['bubble_outline_color'];
 		$this->bubbleOutlineWidth = $columnValues['bubble_outline_width'];
 		$this->bubbleTailDirection = $columnValues['bubble_tail_direction'];
-		// $this->targetImageID = $columnValues['target_image_id'];
 		$this->targetImageContainerID = $this->bubbleNameToContainerID($columnValues['bubble_name'] );
 		$this->bubbleCanvasID = "bubblecanvas" . $columnValues['bubble_id'] ;
 		$this->contentDivID = "hbcontentdiv" . $columnValues['bubble_id'];
@@ -310,6 +339,9 @@ class BubbleConfig implements DBMap {
 		$this->contentAreaWidth = $columnValues['content_area_width'];
 		$this->canvasBorderStyle = $columnValues['canvas_border_style'];
 		$this->targetImageURL = $columnValues['target_image_url'];
+		$this->bubbleDescription = $columnValues['bubble_description'];
+		$this->bubbleDelay = $columnValues['bubble_delay'];
+		$this->bubbleDuration = $columnValues['bubble_duration'];
 	}
 	
 	public function objectToColumns( $dbwrite ) {
@@ -337,7 +369,10 @@ class BubbleConfig implements DBMap {
 			'content_area_height' => $this->contentAreaHeight,
 			'content_area_width' => $this->contentAreaWidth,
 			'target_image_id' => $this->targetImageID,
-			'target_image_url' => $this->targetImageURL	
+			'target_image_url' => $this->targetImageURL,
+			'bubble_description' => $this->bubbleDescription,
+			'bubble_delay' => $this->bubbleDelay,
+			'bubble_duration' => $this->bubbleDuration	
 		);
 		return $columnValues ;
 		
@@ -370,7 +405,10 @@ class BubbleConfig implements DBMap {
 			'content_area_width' => $this->contentAreaWidth,
 			'target_image_id' => $this->targetImageID,
 			'target_image_url' => $this->targetImageURL,
-			'bubble_id' => $this->bubbleID,		
+			'bubble_description' => $this->bubbleDescription,
+			'bubble_delay' => $this->bubbleDelay,
+			'bubble_duration' => $this->bubbleDuration,
+			'bubble_id' => $this->bubbleID		
 		);
 		return $columnValues ;
 		
@@ -379,6 +417,7 @@ class BubbleConfig implements DBMap {
 		$sql =  "CREATE TABLE ". $hbtable . " (		
 			bubble_id mediumint(12) NOT NULL AUTO_INCREMENT,
 			bubble_name varchar(50) DEFAULT NULL,
+			bubble_description varchar(1000) DEFAULT NULL,
 			bubble_message varchar(4000) NOT NULL DEFAULT '',
 			bubble_fill_color varchar(50) DEFAULT NULL,
 			bubble_tail_length smallint(4) unsigned DEFAULT NULL,
@@ -393,6 +432,8 @@ class BubbleConfig implements DBMap {
 			content_area_height smallint(4) unsigned DEFAULT NULL,
 			target_image_id bigint(20) unsigned DEFAULT NULL,
 			target_image_url varchar(1000) DEFAULT NULL,
+			bubble_delay int(11) DEFAULT '0',
+ 			bubble_duration int(11) DEFAULT '-1',
 			UNIQUE KEY bubble_id (bubble_id),
 			UNIQUE KEY `bubble_name` (`bubble_name`);";
 		return $sql;	
