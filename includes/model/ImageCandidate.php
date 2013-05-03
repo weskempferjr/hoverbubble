@@ -120,7 +120,7 @@ class ImageCandidate implements DBMap {
 	}
 	
 	public static final function generateDDL() {
-		$sql =  "CREATE TABLE ". $hbtable . " (		
+		$sql =  "CREATE TABLE IF NOT EXISTS ". $hbtable . " (		
 			image_candidate_id int(11) NOT NULL AUTO_INCREMENT,
 			target_image_url varchar(1000) DEFAULT NULL,
 			UNIQUE KEY image_candidate_id (image_candidate_id)";

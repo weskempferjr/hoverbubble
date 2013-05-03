@@ -134,7 +134,7 @@ class BubblePage implements DBMap {
 	}
 	
 	public static final function generateDDL() {
-		$sql =  "CREATE TABLE ". $hbtable . " (
+		$sql =  "CREATE TABLE IF NOT EXISTS ". $hbtable . " (
 		 	bubble_page_id int(11) unsigned NOT NULL AUTO_INCREMENT,
  		 	bubble_id` mediumint(12) NOT NULL,
  		 	page_candidate_id int(11) NOT NULL,

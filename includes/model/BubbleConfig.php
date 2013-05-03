@@ -414,7 +414,7 @@ class BubbleConfig implements DBMap {
 		
 	}
 	public static final function generateDDL() {
-		$sql =  "CREATE TABLE ". $hbtable . " (		
+		$sql =  "CREATE TABLE IF NOT EXISTS ". $hbtable . " (		
 			bubble_id mediumint(12) NOT NULL AUTO_INCREMENT,
 			bubble_name varchar(50) DEFAULT NULL,
 			bubble_description varchar(1000) DEFAULT NULL,

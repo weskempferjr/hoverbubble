@@ -30,6 +30,7 @@ define('TNOTW_HOVERBUBBLE_VERSION', '0.1');
 define('TNOTW_HOVERBUBBLE_VERSION_OPTION_KEY', 'tnotw_hoverbubble_version');
 define('TNOTW_HOVERBUBBLE_DIR', plugin_dir_path(__FILE__));
 define('TNOTW_HOVERBBUBLE_URL', plugin_dir_url(__FILE__));
+define('TNOTW_DEFAULT_EXCLUSION_LIST', '.jpg .png .gif .pdf .mp3');
 
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/cms/WPRegistrar.php");
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/controllers/BubbleSettingsController.php");
@@ -57,6 +58,7 @@ class HoverBubblePlugin {
 		if ( is_admin() ) {
 			add_action('admin_menu', array($this, 'admin_menu_pages'));
 			add_action( 'admin_enqueue_scripts', array( $this, 'register_admin_assets' ) );
+			add_action( 'wpmu_new_blog', array( $this, 'new_blog') ) ;   
 		}
 		
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_assets' ) );
@@ -65,6 +67,7 @@ class HoverBubblePlugin {
 		register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
 		// register_uninstall_hook( __FILE__, array( $this, 'uninstall' ) );
 		register_uninstall_hook( __FILE__, 'HoverBubblePlugin::uninstall'  );
+		
 		
 		// register ajax function
 		add_action('wp_ajax_nopriv_tnotw_hoverbubble_ajax', array( $this, 'tnotw_hoverbubble_ajax'));
@@ -92,24 +95,76 @@ class HoverBubblePlugin {
 	}
 	
 	// TODO: handle wpmu 
-	public function activate( $network_wide ) {
+	
+	public function activite ( $networkwide ) {
+		
+		global $wpdb ;
+		if (function_exists('is_multisite') && is_multisite()) {
+			 if ($networkwide) {
+				$old_blog = $wpdb->blogid;
+				$blogids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
+				foreach ($blogids as $blog_id) {
+                	switch_to_blog( $blog_id );
+                	site_activate( $blob_id );
+            	}
+            	switch_to_blog( $old_blog );
+            	return;
+			}
+			site_activate();
+		}
+		
+	}
+	
+	
+	     
+ 
+	public function new_blog($blog_id, $user_id, $domain, $path, $site_id, $meta ) {
+   		 global $wpdb;
+	 
+	    if (is_plugin_active_for_network('hoverbubbles/hoverbubbles.php')) {
+	        $old_blog = $wpdb->blogid;
+	        switch_to_blog($blog_id);
+	        site_activate( $blog_id );
+	        switch_to_blog($old_blog);
+   	 	}
+	}
+	
+	public function site_activate( $blog_id ) {
+		
+	
+		$settings = SettingsFactory::getSettings();	
+		if (function_exists('is_multisite') && is_multisite()) {
+			$settings->setCrawlPath( get_home_url( $blog_id, '', 'http' ) );
+		} 
+		else {
+			$settings->setCrawlPath( home_url('', 'http') );
+		}
+		
+		$settings->setExclusionList( TNOTW_DEFAULT_EXCLUSION_LIST ) ;
+		$settings->store();
 		
 		require_once("database/WPDatabase.php");
-		WPDatabase::createTable ( 	BubbleConfig::generateDDL(), 
+		WPDatabase::createTable( 	BubbleConfig::generateDDL(), 
  									BubbleConfig::getTableName() );
+ 									
+ 		WPDatabase::createTable( 	ImageCandidate::generateDDL(),
+ 									ImageCandidate::getTableName() );
+ 									
+ 		WPDatabase::createTable( 	PageCandidate::generateDDL(),
+ 									PageCandidate::getTableName() );
+ 									
+ 		WPDatabase::createTable(	BubblePage::generateDDL(),
+ 									BubblePage::getTableName() );
  									
  		
 	}
 	
-	// TODO: handle deactivate
+	
 	public function deactivate( $network_wide ) {
 		
 	}
 	
-	// TODO: handle uninstall
-	public static function uninstall( $network_wide) {
-		
-	}
+	
 	
 	public function tnotw_hoverbubble_ajax() {
 		BubbleConfigAjaxController::getBubbleConfigs();
