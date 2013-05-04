@@ -20,7 +20,7 @@ class WPDatabase implements Database {
 	
 	public function getRow( $cmsConverter ) {
 		global $wpdb ;
-		WPDatabase::setAlias();
+		// WPDatabase::setAlias();
 		$args = $cmsConverter->getCMSSelectRowArgs();
 		
 		$columnValues  = $wpdb->get_row( "SELECT * FROM " .  $wpdb->$args['wpTableName'] . " WHERE " . $args['wpPrepareFormat'] .  " = " . $args['wpPrepareValues'] , ARRAY_A );
@@ -31,7 +31,7 @@ class WPDatabase implements Database {
 	
 	public function getRows( $cmsConverter ) {
 		global $wpdb ;
-		WPDatabase::setAlias();
+		// WPDatabase::setAlias();
 		$args = $cmsConverter->getCMSSelectRowsArgs();
 		
 		$whereClause = "";
@@ -52,7 +52,7 @@ class WPDatabase implements Database {
 	
 	public function updateRows( $cmsConverter ){
 		global $wpdb ;
-		WPDatabase::setAlias();
+		// WPDatabase::setAlias();
 		$args = $cmsConverter->getCMSUpdateArgs();
 		$sql = $wpdb->prepare( 
 			"UPDATE " . $wpdb->$args['wpTableName'] . "  set " . $args['wpPrepareFormat'],
@@ -65,7 +65,7 @@ class WPDatabase implements Database {
 	
 	public function insertRow( $cmsConverter ) {
 		global $wpdb ;
-		WPDatabase::setAlias();
+		// WPDatabase::setAlias();
 		$args = $cmsConverter->getCMSInsertArgs();
 		$sql = $wpdb->prepare( 
 			"INSERT INTO " . $wpdb->$args['wpTableName'] . " " . $args['wpPrepareFormat'],
@@ -81,7 +81,7 @@ class WPDatabase implements Database {
 	
 	public function deleteRow( $cmsConverter ) {
 		global $wpdb ;
-		WPDatabase::setAlias();
+		// WPDatabase::setAlias();
 		$args = $cmsConverter->getCMSDeleteArgs();
 		$sql = $wpdb->prepare( 
 			"DELETE FROM " . $wpdb->$args['wpTableName'] . " WHERE " . $args['wpPrepareFormat'],
@@ -100,21 +100,13 @@ class WPDatabase implements Database {
 	 * 	WPDatabase::createTable ( 	BubbleConfig::generateDDL(), 
 	 * 								BubbleConfig::getTableName() );
 	 */
-	public function createTable($ddl, $tableName ) {
+	public function createTable( $ddl ) {
 		global $wpdb;
-		WPDatabase::setAlias();
-		$hbtable = $wpdb->prefix . $tableName ;
- 
-		//verify if table already exists
-		if($wpdb->get_var("SHOW TABLES LINK '$hbtable'") !== $hbtable ) {
-			$sql = $ddl ;
-		}
- 
-		//include the wordpress db functions
-		require_once(ABSPATH . 'wp-admin/upgrade-functions.php');
-		dbDelta($sql);
+		// WPDatabase::setAlias();
+		// $hbtable = $wpdb->prefix . $tableName ;
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+		dbDelta( $ddl );
 
-		update_option(TNOTW_HOVERBUBBLE_VERSION_OPTION_KEY, TNOTW_HOVERBUBBLE_VERSION);
 	}
 	
 }

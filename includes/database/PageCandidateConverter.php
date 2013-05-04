@@ -12,12 +12,55 @@ class PageCandidateConverter implements CMSConverter {
 	private $pageCandidate ;
 	
 	
-	private static function setAlias() {
+	public static function setAlias() {
 		global $wpdb ;
 		if (!isset($wpdb->hbpagecandidates)) {
 			$wpdb->hbpagecandidates = $wpdb->prefix . 'hbpagecandidates';
 		}	
 	}
+	
+	public static final function generateDDL() {
+		
+		global $wpdb ;
+		
+		self::setAlias();
+		
+       $sql =  "CREATE TABLE " . $wpdb->prefix . 'hbpagecandidates' . " ( 
+			page_candidate_id int(11) NOT NULL AUTO_INCREMENT,
+			image_candidate_id int(11) NOT NULL DEFAULT '0',
+			target_page_url varchar(1000) DEFAULT NULL,
+			display_bubble tinyint(3) NOT NULL DEFAULT '0',
+			PRIMARY KEY  page_candidate_id (page_candidate_id),
+			KEY  image_candidate_id (image_candidate_id),
+			CONSTRAINT wp_hbpagecandidates_ibfk_1 FOREIGN KEY (image_candidate_id) REFERENCES wp_hbimagecandidates (image_candidate_id) ON DELETE CASCADE ON UPDATE CASCADE 
+		);";
+		return $sql;	
+	}
+	
+	public static function tableExists() {
+		
+		global $wpdb ;
+		$tablename = $wpdb->prefix . 'hbpagecandidates';
+		if( $wpdb->get_var("SHOW TABLES LIKE '$tablename'") != $tablename ) { 
+			return false ;
+		}
+		return true ;
+	}
+	public static final function generateUpgradeDDL() {
+		
+		global $wpdb ;
+		
+		self::setAlias();
+		
+       $sql =  "CREATE TABLE " . $wpdb->prefix . 'hbpagecandidates' . " ( 
+			page_candidate_id int(11) NOT NULL AUTO_INCREMENT,
+			image_candidate_id int(11) NOT NULL DEFAULT '0',
+			display_bubble tinyint(3) NOT NULL DEFAULT '0',
+			target_page_url varchar(1000) DEFAULT NULL
+		);";
+		return $sql;	
+	}
+	
 	public function getCMSSelectRowArgs() {
 		return $this->selectRowArgs ;
 	}

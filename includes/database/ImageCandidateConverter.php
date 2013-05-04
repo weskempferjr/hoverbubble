@@ -12,12 +12,51 @@ class ImageCandidateConverter implements CMSConverter {
 	private $imageCandidate ;
 	
 	
-	private static function setAlias() {
+	public static function setAlias() {
 		global $wpdb ;
 		if (!isset($wpdb->hbimagecandidates)) {
 			$wpdb->hbimagecandidates = $wpdb->prefix . 'hbimagecandidates';
 		}	
 	}
+	
+	public static function tableExists() {
+		
+		global $wpdb ;
+		$tablename = $wpdb->prefix . 'hbimagecandidates';
+		if( $wpdb->get_var("SHOW TABLES LIKE '$tablename'") != $tablename ) { 
+			return false ;
+		}
+		return true ;
+	}
+		
+	public static final function generateDDL() {
+		
+		global $wpdb ;
+		
+		self::setAlias();
+		
+        $sql =  "CREATE TABLE " . $wpdb->prefix . 'hbimagecandidates' . " ( 
+			image_candidate_id int(11) NOT NULL AUTO_INCREMENT,
+			target_image_url varchar(1000) DEFAULT NULL,
+			PRIMARY KEY  image_candidate_id (image_candidate_id)
+		);";
+		return $sql;	
+	}
+
+	public static final function generateUpgradeDDL() {
+		
+		global $wpdb ;
+		
+		self::setAlias();
+		
+        $sql =  "CREATE TABLE " . $wpdb->prefix . 'hbimagecandidates' . " ( 
+			image_candidate_id int(11) NOT NULL AUTO_INCREMENT,
+			target_image_url varchar(1000) DEFAULT NULL
+		);";
+		return $sql;	
+	}
+	
+	
 	public function getCMSSelectRowArgs() {
 		return $this->selectRowArgs ;
 	}

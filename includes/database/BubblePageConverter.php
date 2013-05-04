@@ -12,11 +12,56 @@ class BubblePageConverter implements CMSConverter {
 	private $bubblePage ;
 	
 	
-	private static function setAlias() {
+	public static function setAlias() {
 		global $wpdb ;
 		if (!isset($wpdb->hbbubblepages)) {
 			$wpdb->hbbubblepages = $wpdb->prefix . 'hbbubblepages';
 		}	
+	}
+	
+	public static final function generateDDL() {
+		
+		global $wpdb ;
+		
+		self::setAlias() ;
+		
+        $sql =  "CREATE TABLE ". $wpdb->prefix . 'hbbubblepages' . " ( 
+			bubble_page_id int(11) unsigned NOT NULL AUTO_INCREMENT,
+			bubble_id mediumint(12) NOT NULL,
+			page_candidate_id int(11) NOT NULL,
+			PRIMARY KEY  bubble_page_id (bubble_page_id),
+			KEY  page_candidate_id (page_candidate_id),
+			KEY  bubble_id (bubble_id),
+			CONSTRAINT wp_hbbubblepages_ibfk_1 FOREIGN KEY (page_candidate_id) REFERENCES wp_hbpagecandidates (page_candidate_id) ON DELETE CASCADE ON UPDATE CASCADE,
+			CONSTRAINT wp_hbbubblepages_ibfk_2 FOREIGN KEY (bubble_id) REFERENCES wp_hoverbubbles (bubble_id) ON DELETE CASCADE ON UPDATE CASCADE 
+		) ;";
+		
+		return $sql;	
+	}
+	
+	public static function tableExists() {
+		
+		global $wpdb ;
+		$tablename = $wpdb->prefix . 'hbbubblepages';
+		if( $wpdb->get_var("SHOW TABLES LIKE '$tablename'") != $tablename ) { 
+			return false ;
+		}
+		return true ;
+	}
+	
+	public static final function generateUpgradeDDL() {
+		
+		global $wpdb ;
+		
+		self::setAlias() ;
+		
+        $sql =  "CREATE TABLE ". $wpdb->prefix . 'hbbubblepages' . " ( 
+			bubble_page_id int(11) unsigned NOT NULL AUTO_INCREMENT,
+			bubble_id mediumint(12) NOT NULL,
+			page_candidate_id int(11) NOT NULL
+		) ;";
+		
+		return $sql;	
 	}
 	public function getCMSSelectRowArgs() {
 		return $this->selectRowArgs ;

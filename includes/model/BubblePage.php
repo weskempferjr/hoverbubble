@@ -9,7 +9,7 @@ require_once( TNOTW_HOVERBUBBLE_DIR . "includes/database/DatabaseFactory.php");
 class BubblePage implements DBMap {
 	
 	private static $databaseConnector = null;
-	private $tableName = "hbbubblepages";
+	private static $tableName = "hbbubblepages";
 	
 	private $bubblePageID = 0;
 	private $pageCandidateID = 0;
@@ -133,23 +133,7 @@ class BubblePage implements DBMap {
 		
 	}
 	
-	public static final function generateDDL() {
-		$sql =  "CREATE TABLE IF NOT EXISTS ". $hbtable . " (
-		 	bubble_page_id int(11) unsigned NOT NULL AUTO_INCREMENT,
- 		 	bubble_id` mediumint(12) NOT NULL,
- 		 	page_candidate_id int(11) NOT NULL,
- 			PRIMARY KEY (bubble_page_id),
-  			KEY page_candidate_id (page_candidate_id),
-  			KEY bubble_id (bubble_id),
-  			CONSTRAINT wp_hbbubblepages_ibfk_2 FOREIGN KEY (bubble_id) REFERENCES `wp_hoverbubbles` (`bubble_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  			CONSTRAINT wp_hbbubblepages_ibfk_1 FOREIGN KEY `page_candidate_id) REFERENCES wp_hbpagecandidates (page_candidate_id) ON DELETE CASCADE ON UPDATE CASCADE";
-		return $sql;	
-	}
-	
-	public static final function getTableName(){
-		return $this->tableName;
-	}
-	
+
 	
 	private static function getDatabase() {
 		if ( self::$databaseConnector == null ) {

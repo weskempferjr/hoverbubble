@@ -13,12 +13,86 @@ class BubbleConfigConverter implements CMSConverter {
 	private $bubbleConfig ;
 	
 	
-	private static function setAlias() {
+	public static function setAlias() {
 		global $wpdb ;
 		if (!isset($wpdb->hoverbubbles)) {
 			$wpdb->hoverbubbles = $wpdb->prefix . 'hoverbubbles';
 		}	
 	}
+	
+	public static final function generateDDL() {
+		global $wpdb ;
+		
+		self::setAlias() ;
+		
+       $sql = "CREATE TABLE " . $wpdb->prefix . 'hoverbubbles' . " ( 
+					bubble_id mediumint(12) NOT NULL AUTO_INCREMENT,
+					bubble_name varchar(50) NOT NULL DEFAULT '',
+					bubble_description varchar(1000) DEFAULT NULL,
+					bubble_message varchar(4000) NOT NULL DEFAULT '',
+					bubble_fill_color varchar(50) DEFAULT NULL,
+					bubble_tail_length smallint(4) unsigned DEFAULT NULL,
+					bubble_tail_direction char(2) DEFAULT NULL,
+					bubble_tail_x smallint(4) unsigned DEFAULT NULL,
+					bubble_tail_y smallint(4) unsigned DEFAULT NULL,
+					bubble_corner_radius smallint(4) unsigned DEFAULT NULL,
+					bubble_outline_color varchar(50) DEFAULT NULL,
+					bubble_outline_width smallint(4) unsigned DEFAULT NULL,
+					canvas_border_style varchar(100) DEFAULT NULL,
+					content_area_width smallint(4) unsigned DEFAULT NULL,
+					content_area_height smallint(4) unsigned DEFAULT NULL,
+					target_image_id bigint(20) unsigned DEFAULT NULL,
+					target_image_url varchar(1000) DEFAULT NULL,
+					bubble_delay int(11) DEFAULT '0',
+					bubble_duration int(11) DEFAULT '-1',
+					PRIMARY KEY  bubble_id (bubble_id),
+					UNIQUE KEY  bubble_name (bubble_name)
+				) ;";
+		
+			return $sql;	
+	}
+	
+	public static function tableExists() {
+		
+		global $wpdb ;
+		$tablename = $wpdb->prefix . 'hoverbubbles';
+		if( $wpdb->get_var( "SHOW TABLES LIKE '$tablename'" ) != $tablename ) { 
+			return false ;
+		}
+		return true ;
+	}
+	
+	public static final function generateUpgradeDDL() {
+		global $wpdb ;
+		
+		self::setAlias() ;
+		
+       $sql = "CREATE TABLE " . $wpdb->prefix . 'hoverbubbles' . " ( 
+					bubble_id mediumint(12) NOT NULL AUTO_INCREMENT,
+					bubble_name varchar(50) NOT NULL DEFAULT '',
+					bubble_description varchar(1000) DEFAULT NULL,
+					bubble_message varchar(4000) NOT NULL DEFAULT '',
+					bubble_fill_color varchar(50) DEFAULT NULL,
+					bubble_tail_length smallint(4) unsigned DEFAULT NULL,
+					bubble_tail_direction char(2) DEFAULT NULL,
+					bubble_tail_x smallint(4) unsigned DEFAULT NULL,
+					bubble_tail_y smallint(4) unsigned DEFAULT NULL,
+					bubble_corner_radius smallint(4) unsigned DEFAULT NULL,
+					bubble_outline_color varchar(50) DEFAULT NULL,
+					bubble_outline_width smallint(4) unsigned DEFAULT NULL,
+					canvas_border_style varchar(100) DEFAULT NULL,
+					content_area_width smallint(4) unsigned DEFAULT NULL,
+					content_area_height smallint(4) unsigned DEFAULT NULL,
+					target_image_id bigint(20) unsigned DEFAULT NULL,
+					target_image_url varchar(1000) DEFAULT NULL,
+					bubble_delay int(11) DEFAULT '0',
+					bubble_duration int(11) DEFAULT '-1'
+				) ;";
+		
+			return $sql;	
+	}
+	
+	
 	public function getCMSSelectRowArgs() {
 		return $this->selectRowArgs ;
 	}

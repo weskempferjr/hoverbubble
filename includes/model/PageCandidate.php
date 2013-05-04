@@ -9,7 +9,7 @@ require_once( TNOTW_HOVERBUBBLE_DIR . "includes/database/DatabaseFactory.php");
 class PageCandidate implements DBMap {
 	
 	private static $databaseConnector = null;
-	private $tableName = "hbpagecandidates";
+	private static $tableName = "hbpagecandidates";
 	
 	private $pageCandidateID = 0;
 	private $targetPageURL = "";
@@ -143,20 +143,7 @@ class PageCandidate implements DBMap {
 		
 	}
 	
-	public static final function generateDDL() {
-		$sql =  "CREATE TABLE IF NOT EXISTS ". $hbtable . " (	
-			page_candidate_id int(11) NOT NULL AUTO_INCREMENT,	
-			image_candidate_id int(11) NOT NULL AUTO_INCREMENT,
-			target_page_url varchar(1000) DEFAULT NULL,
-			display_bubble tinyint(1) NOT NULL,			
-			UNIQUE KEY page_candidate_id (page_candidate_id),
-			CONSTRAINT wp_hbpagecandidates_ibfk_1 FOREIGN KEY (image_candidate_id) REFERENCES wp_hbimagecandidates ";
-		return $sql;	
-	}
-	
-	public static final function getTableName(){
-		return $this->tableName;
-	}
+
 	
 	
 	private static function getDatabase() {

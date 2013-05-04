@@ -26,13 +26,21 @@ License: GPL2
 
 // require_once( plugin_dir_path(__FILE__) . "constants.php");
 
-define('TNOTW_HOVERBUBBLE_VERSION', '0.1');
+define('TNOTW_HOVERBUBBLE_VERSION', '0.5');
 define('TNOTW_HOVERBUBBLE_VERSION_OPTION_KEY', 'tnotw_hoverbubble_version');
 define('TNOTW_HOVERBUBBLE_DIR', plugin_dir_path(__FILE__));
 define('TNOTW_HOVERBBUBLE_URL', plugin_dir_url(__FILE__));
-define('TNOTW_DEFAULT_EXCLUSION_LIST', '.jpg .png .gif .pdf .mp3');
+
 
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/cms/WPRegistrar.php");
+require_once( TNOTW_HOVERBUBBLE_DIR . "includes/database/DatabaseFactory.php");
+require_once( TNOTW_HOVERBUBBLE_DIR . "includes/database/BubbleConfigConverter.php");
+require_once( TNOTW_HOVERBUBBLE_DIR . "includes/database/ImageCandidateConverter.php");
+require_once( TNOTW_HOVERBUBBLE_DIR . "includes/database/PageCandidateConverter.php");
+require_once( TNOTW_HOVERBUBBLE_DIR . "includes/database/BubblePageConverter.php");
+
+
+
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/controllers/BubbleSettingsController.php");
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/controllers/BubbleConfigAjaxController.php");
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/controllers/BubbleEditActionController.php");
@@ -66,7 +74,7 @@ class HoverBubblePlugin {
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
 		register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
 		// register_uninstall_hook( __FILE__, array( $this, 'uninstall' ) );
-		register_uninstall_hook( __FILE__, 'HoverBubblePlugin::uninstall'  );
+		// register_uninstall_hook( __FILE__, 'HoverBubblePlugin::uninstall'  );
 		
 		
 		// register ajax function
@@ -96,7 +104,7 @@ class HoverBubblePlugin {
 	
 	// TODO: handle wpmu 
 	
-	public function activite ( $networkwide ) {
+	public function activate ( $networkwide ) {
 		
 		global $wpdb ;
 		if (function_exists('is_multisite') && is_multisite()) {
@@ -110,8 +118,10 @@ class HoverBubblePlugin {
             	switch_to_blog( $old_blog );
             	return;
 			}
-			site_activate();
+		
 		}
+		
+		$this->site_activate( $wpdb->blogid );
 		
 	}
 	
@@ -124,7 +134,7 @@ class HoverBubblePlugin {
 	    if (is_plugin_active_for_network('hoverbubbles/hoverbubbles.php')) {
 	        $old_blog = $wpdb->blogid;
 	        switch_to_blog($blog_id);
-	        site_activate( $blog_id );
+	        $this->site_activate( $blog_id );
 	        switch_to_blog($old_blog);
    	 	}
 	}
@@ -132,30 +142,28 @@ class HoverBubblePlugin {
 	public function site_activate( $blog_id ) {
 		
 	
-		$settings = SettingsFactory::getSettings();	
-		if (function_exists('is_multisite') && is_multisite()) {
-			$settings->setCrawlPath( get_home_url( $blog_id, '', 'http' ) );
-		} 
-		else {
-			$settings->setCrawlPath( home_url('', 'http') );
+		$settings = SettingsFactory::getSettings();			
+		$settings->initialize( $blog_id );
+		
+		$database = DatabaseFactory::getDatabase();
+
+		if ( ! BubbleConfigConverter::tableExists() ) {
+			$database->createTable( BubbleConfigConverter::generateDDL() );	
 		}
-		
-		$settings->setExclusionList( TNOTW_DEFAULT_EXCLUSION_LIST ) ;
-		$settings->store();
-		
-		require_once("database/WPDatabase.php");
-		WPDatabase::createTable( 	BubbleConfig::generateDDL(), 
- 									BubbleConfig::getTableName() );
+
+		if ( ! ImageCandidateConverter::tableExists() ) {
+ 			$database->createTable( ImageCandidateConverter::generateDDL() );
+		}
+
+		if ( ! PageCandidateConverter::tableExists() ) {
+ 			$database->createTable( PageCandidateConverter::generateDDL() );
+		}
+
+		if ( ! BubblePageConverter::tableExists() ) {
+ 			$database->createTable(	BubblePageConverter::generateDDL() );
+		}
  									
- 		WPDatabase::createTable( 	ImageCandidate::generateDDL(),
- 									ImageCandidate::getTableName() );
- 									
- 		WPDatabase::createTable( 	PageCandidate::generateDDL(),
- 									PageCandidate::getTableName() );
- 									
- 		WPDatabase::createTable(	BubblePage::generateDDL(),
- 									BubblePage::getTableName() );
- 									
+ 		update_option(TNOTW_HOVERBUBBLE_VERSION_OPTION_KEY, TNOTW_HOVERBUBBLE_VERSION);
  		
 	}
 	
@@ -230,16 +238,18 @@ class HoverBubblePlugin {
 	public function check_table_update() {
 		
 		global $wpdb;
-		
-		// TODO: define table name in constant
-		$hbtable = $wpdb->prefix . "hoverbubbles";
 	
 		$installed_ver = get_option( TNOTW_HOVERBUBBLE_VERSION_OPTION_KEY );
 	
 		if( $installed_ver != TNOTW_HOVERBUBBLE_VERSION ) {
-			$sql = BubbleConfig::generateDDL();
-			require_once(ABSPATH . 'wp-admin/upgrade-functions.php');
-			dbDelta($sql);
+			
+			$database = DatabaseFactory::getDatabase();
+			
+			$database->createTable( BubbleConfigConverter::generateUpgradeDDL() );									
+ 			$database->createTable( ImageCandidateConverter::generateUpgradeDDL() );									
+ 			$database->createTable( PageCandidateConverter::generateUpgradeDDL() );									
+ 			$database->createTable(	BubblePageConverter::generateUpgradeDDL() );
+ 									
 			update_option(TNOTW_HOVERBUBBLE_VERSION_OPTION_KEY, TNOTW_HOVERBUBBLE_VERSION);
 		}
 	}

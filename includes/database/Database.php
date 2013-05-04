@@ -6,7 +6,7 @@ interface Database {
 	public function updateRows ($cmsConverter );
 	public function insertRow( $cmsConverter );
 	public function deleteRow( $cmsConverter );
-	public function createTable( $ddl, $tablename );
+	public function createTable( $ddl );
 }
 
 ?>

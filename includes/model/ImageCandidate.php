@@ -8,7 +8,7 @@ require_once( TNOTW_HOVERBUBBLE_DIR . "includes/database/DatabaseFactory.php");
 class ImageCandidate implements DBMap {
 	
 	private static $databaseConnector = null;
-	private $tableName = "hbimagecandidates";
+	private static $tableName = "hbimagecandidates";
 	
 	private $imageCandidateID = 0;
 	private $targetImageURL = "";
@@ -119,17 +119,7 @@ class ImageCandidate implements DBMap {
 		
 	}
 	
-	public static final function generateDDL() {
-		$sql =  "CREATE TABLE IF NOT EXISTS ". $hbtable . " (		
-			image_candidate_id int(11) NOT NULL AUTO_INCREMENT,
-			target_image_url varchar(1000) DEFAULT NULL,
-			UNIQUE KEY image_candidate_id (image_candidate_id)";
-		return $sql;	
-	}
-	
-	public static final function getTableName(){
-		return $this->tableName;
-	}
+
 	
 	
 	private static function getDatabase() {
