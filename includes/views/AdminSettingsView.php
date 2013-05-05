@@ -102,7 +102,12 @@ class AdminSettingsView {
 			</form>
 			<p>Once the Crawl Path and Exclusion list are specified, press the Generate Image Button to generate the target image table. <i>The
 			Generator must be run at least once immediately after installation.</i></p>
-			<button id="genimagetab" class="button-primary">Generate Image Table</button>
+			<table>
+			<tr>
+			<td><button id="genimagetab" class="button-primary">Generate Image Table</button></td>
+			<td><img id="genimagetabind" alt="" style="visibility: hidden" src="<?php echo plugins_url('hoverbubble/assets/img/ajax-loader.gif') ;?>"></td>
+			</tr>
+			</table>
 		</div>
 		<?php
 		}

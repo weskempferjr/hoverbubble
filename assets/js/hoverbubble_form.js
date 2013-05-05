@@ -6,6 +6,7 @@ jQuery(document).ready(function($) {
 
 	$("#genimagetab").click( function(e) {
 		e.preventDefault();
+		$("#genimagetabind").css({"visibility":"visible"});
 		$.ajax({
 			url:  wpsiteinfo.site_url + '/wp-admin/admin-ajax.php',
 			data:{
@@ -14,6 +15,7 @@ jQuery(document).ready(function($) {
 	 		},
 			dataType: 'JSON',
 			success:function(data){
+				$("#genimagetabind").css({"visibility":"hidden"});
 				if ( data.errorData != null && data.errorData == 'true' ) {
 					reportError( data );
 					return;
@@ -22,6 +24,7 @@ jQuery(document).ready(function($) {
 				alert("Gen image table status = " + data.updateTablesStatus );
 	        },
 			error: function(errorThrown){
+				$("#genimagetabind").css({"visibility":"hidden"});
 				alert('Error retrieving gen image table status from server:' + errorThrown.responseText.substring(0,500) );
 				console.log(errorThrown);
 	        }
