@@ -477,7 +477,7 @@ function displayBubble(bubbleConfig){
 
 	 img_div.append('<div id="' + contentDivID + '"  style="visibility:hidden;z-index:20;position:absolute;top:' +  etop +  'px;left:' + eleft + 'px"></div>');
 	 
-	 jQuery("#" + contentDivID ).append('<embed  type="text/html" width="' + contentAreaWidth + 'px" height="' + contentAreaHeight + 'px" src="' + wpsiteinfo.site_url + '/index.php?hb_bubble_id='+ bubbleID +'">');
+	 jQuery("#" + contentDivID ).append('<object  type="text/html" width="' + contentAreaWidth + 'px" height="' + contentAreaHeight + 'px" data="' + wpsiteinfo.site_url + '/index.php?hb_bubble_id='+ bubbleID +'">');
 
 	 // Display bubble as indicated by delay and duration. 
 	 setTimeout( function() {

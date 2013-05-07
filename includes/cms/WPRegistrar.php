@@ -4,12 +4,17 @@ class WPRegistrar {
 	
 	public static function registerAssets() {
 		
+		// Don't bother with old versions of IE 
+		if ( self::isUnsupportedBrowser() ) {
+			return; 
+		}
+		
 		wp_register_script(	'hoverbubble-js', 
 							plugins_url() . '/hoverbubble/assets/js/hoverbubble.js', 
 		 					array( 'jquery' ) 
 			);
-		wp_enqueue_script( 'hoverbubble-js' );  
-	
+		wp_enqueue_script( 'hoverbubble-js' ); 
+			
 		$wp_js_info = array('site_url' => __(site_url()));
 		wp_localize_script('hoverbubble-js', 'wpsiteinfo', $wp_js_info );
 	}
@@ -69,6 +74,19 @@ class WPRegistrar {
 		
 		wp_enqueue_style('hb.admin.form', 
 			$plugins_url . '/hoverbubble/assets/css/admin_form.css');
+	}
+	
+	private static function isUnsupportedBrowser() {
+		$ua_array = preg_split("/;/", $_SERVER['HTTP_USER_AGENT'] );
+		foreach ( $ua_array as $item ) {
+			if ( 	strpos( $item, "MSIE 6", 0) !== FALSE || 
+					strpos( $item, "MSIE 7", 0) !== FALSE || 
+					strpos( $item, "MSIE 8", 0) !== FALSE ) {
+				return TRUE ;
+			}
+		}
+
+		return FALSE ;
 	}
 	
 }
