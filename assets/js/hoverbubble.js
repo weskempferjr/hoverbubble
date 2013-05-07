@@ -111,7 +111,12 @@ function displayBubble(bubbleConfig){
 	// Force tail direction to lower case. All code in this
 	// script assumes lower case. 
 	var bubbleTailDirection = bubbleConfig.bubbleTailDirection.toLowerCase(); ;
-	var canvasBorderStyle = bubbleConfig.canvasBorderStyle ;
+	//  TODO: this is a place holder for now. This field was removed because
+	//  it id not seem necessary. It was used for troubleshooting in early
+	// development but may be useful in for future functionality. Hardcode
+	// value for now. 
+	// var canvasBorderStyle = bubbleConfig.canvasBorderStyle.
+	var canvasBorderStyle =  '0px solid #000000';
 	var targetImageURL = bubbleConfig.targetImageURL  ;
 	
 	var targetImageContainerID = bubbleConfig.targetImageContainerID ;

@@ -22,12 +22,14 @@ class AdminEditView {
 			<col  style="width: 20%">
 			<col  style="width: 80%">
 			<?php if ( $action == "add") { ?>
+				<?php  wp_nonce_field('bubble_add') ;?>
 				<tr>
 				<td><p id="bubblenamelabel">Bubble Name:<p></td> 
 	 			<td><input id="bubblename" type="text" name="bubble_name" value="<?php echo $bubble->getBubbleName(); ?>" autofocus required /> </td>
 				</tr>
 			<?php } 
 			else { ?>
+				<?php  wp_nonce_field('bubble_edit_bubble_id' . $bubble->getBubbleID() ) ;?>				
 				<tr>
 				<td>Bubble Name:</td> 
 	 			<td><input type="hidden" name="bubble_name" value="<?php echo $bubble->getBubbleName(); ?>" /> <?php echo $bubble->getBubbleName(); ?></td>
@@ -89,10 +91,6 @@ class AdminEditView {
 			<tr>
 			<td><p id="tailtipylabel">Bubble Tail Tip Y Coordinate:</p></td>
 			<td><input id ="tailtipy" type="number" step="1" min="0" max="2000" name="bubble_tail_y" value="<?php echo $bubble->getBubbleTailY(); ?>" />  </td>
-			</tr>
-			<tr>
-			<td>Canvas Border Style :</td>
-			<td> <input id="borderstyle" type="text" name="canvas_border_style" value="<?php echo $bubble->getCanvasBorderStyle(); ?>" />  </td>
 			</tr>
 			<tr>
 			<td><p id="caheightlabel">Content Area Height:</p></td>

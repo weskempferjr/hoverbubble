@@ -68,9 +68,9 @@ class BubbleConfigAjaxController {
 
 		if (array_key_exists('hb_bubble_id', $wp->query_vars) ) {
 			$bubble_id = $wp->query_vars['hb_bubble_id'];
-			// TODO: error handling here/run through prepare			
-			// $bubble = $wpdb->get_row( "SELECT bubble_message FROM $wpdb->hoverbubbles WHERE bubble_id = " . $bubble_id , ARRAY_A );
-		    // echo base64_decode($bubble['bubble_message']);
+			
+			// Make sure query parameter is indeed something resembling a bubble id.
+			$bubble_id = absint( $bubble_id );
 		    
 			$bubble = new BubbleConfig();
 			$bubble->restore($bubble_id);
@@ -88,7 +88,17 @@ class BubbleConfigAjaxController {
 		
 		$currentPage = rtrim( $_SERVER['HTTP_REFERER'], "/" );
 		
-		$image_list = $_REQUEST['imageInfoData'];
+		
+		
+		$raw_image_list = $_REQUEST['imageInfoData'];
+		
+		// srcrub image list of suspect input
+		$image_list = array();
+		foreach ( $raw_image_list as $image_url ) {
+			array_push( $image_list,  esc_url( $image_url, array('http', 'https') ) ) ;
+		}
+		
+		
 		$where_clause = "target_image_url IN (";
 	
 		$img_count = count( $image_list );
@@ -146,6 +156,7 @@ class BubbleConfigAjaxController {
 	
 	private static function retrievePageCandidates( $targetImageURL, $bubbleID ) {
 		
+		$targetImageURL = esc_url( $targetImageURL, array('http', 'https') );
 		$whereClause = "target_image_url = '" . trim($targetImageURL ) . "'";
 		
 		// TODO: This would be cleaner with a getRow call guaranteed to return 1 record. 
@@ -223,7 +234,6 @@ class BubbleConfigAjaxController {
 					'bubbleTailY' => $bubbleConfig->getBubbleTailY(),
 					'contentAreaHeight' => $bubbleConfig->getContentAreaHeight(),
 					'contentAreaWidth' => $bubbleConfig->getContentAreaWidth(),
-					'canvasBorderStyle' => $bubbleConfig->getCanvasBorderStyle(),
 					'targetImageURL' => $bubbleConfig->getTargetImageURL(),
 					'bubbleDelay' => $bubbleConfig->getBubbleDelay(),
 					'bubbleDuration' => $bubbleConfig->getBubbleDuration()

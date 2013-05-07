@@ -149,7 +149,6 @@ class BubbleConfigConverter implements CMSConverter {
 				bubble_tail_direction,				
 				bubble_tail_x,
 				bubble_tail_y,
-				canvas_border_style,
 				content_area_height,
 				content_area_width,				
 				target_image_id,
@@ -157,7 +156,7 @@ class BubbleConfigConverter implements CMSConverter {
 				bubble_description,
 				bubble_delay,
 				bubble_duration
-			) VALUES ( %d, %s, %s, %s, %d, %d, %s, %d, %s, %d, %d, %s, %d, %d, %d, %s, %s, %d, %d )",
+			) VALUES ( %d, %s, %s, %s, %d, %d, %s, %d, %s, %d, %d, %d, %d, %d, %s, %s, %d, %d )",
 			'wpPrepareValues' => $object->objectToColumns( true ),
 			'wpTableName' => 'hoverbubbles'
 		);
@@ -185,7 +184,6 @@ class BubbleConfigConverter implements CMSConverter {
 				bubble_tail_direction = %s,
 				bubble_tail_x = %d,
 				bubble_tail_y = %d,
-				canvas_border_style = %s,
 				content_area_height = %d,
 				content_area_width = %d,
 				target_image_id = %d,

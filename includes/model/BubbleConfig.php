@@ -33,7 +33,6 @@ class BubbleConfig implements DBMap {
 	private $bubbleTailY = 0;
 	private $contentAreaHeight = 0;
 	private $contentAreaWidth = 0;
-	private $canvasBorderStyle = "";
 	private $targetImageURL = "";
 	private $bubbleDescription = "";
 	private $bubbleDelay = 0 ;
@@ -55,7 +54,6 @@ class BubbleConfig implements DBMap {
 		$this->bubbleTailY = 0;
 		$this->contentAreaWidth = 150;
 		$this->contentAreaHeight = 150;
-		$this->canvasBorderStyle =  "0px solid #000000";
 		$this->targetImageID = "" ;
 		$this->bubbleDescription = "";
 		$this->bubbleDelay = 0;
@@ -261,13 +259,6 @@ class BubbleConfig implements DBMap {
 		return $this->contentAreaHeight;
 	}
 
-	public function setCanvasBorderStyle( $style ) {
-		$this->canvasBorderStyle = $style;
-	}
-	
-	public function getCanvasBorderStyle() {
-		return $this->canvasBorderStyle;
-	}
 
 	public function setTargetImageURL( $imageURL ) {
 		$this->targetImageURL = $imageURL;
@@ -336,7 +327,6 @@ class BubbleConfig implements DBMap {
 		$this->bubbleTailY = $columnValues['bubble_tail_y'];
 		$this->contentAreaHeight = $columnValues['content_area_height'];
 		$this->contentAreaWidth = $columnValues['content_area_width'];
-		$this->canvasBorderStyle = $columnValues['canvas_border_style'];
 		$this->targetImageURL = $columnValues['target_image_url'];
 		$this->bubbleDescription = $columnValues['bubble_description'];
 		$this->bubbleDelay = $columnValues['bubble_delay'];
@@ -364,7 +354,6 @@ class BubbleConfig implements DBMap {
 			'bubble_tail_direction' => $this->bubbleTailDirection,
 			'bubble_tail_x' => $this->bubbleTailX,
 			'bubble_tail_y' => $this->bubbleTailY,
-			'canvas_border_style' => $this->canvasBorderStyle,
 			'content_area_height' => $this->contentAreaHeight,
 			'content_area_width' => $this->contentAreaWidth,
 			'target_image_id' => $this->targetImageID,
@@ -399,7 +388,6 @@ class BubbleConfig implements DBMap {
 			'bubble_tail_direction' => $this->bubbleTailDirection,
 			'bubble_tail_x' => $this->bubbleTailX,
 			'bubble_tail_y' => $this->bubbleTailY,
-			'canvas_border_style' => $this->canvasBorderStyle,
 			'content_area_height' => $this->contentAreaHeight,
 			'content_area_width' => $this->contentAreaWidth,
 			'target_image_id' => $this->targetImageID,

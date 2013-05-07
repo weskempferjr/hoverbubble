@@ -7,6 +7,7 @@ require_once( TNOTW_HOVERBUBBLE_DIR . "includes/model/BubblePage.php");
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/cms/WPRegistrar.php");
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/controllers/BubbleSettingsController.php");
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/controllers/ErrorController.php");
+require_once( TNOTW_HOVERBUBBLE_DIR . "includes/util/BubbleEditScrubber.php" );
 
 
 
@@ -33,26 +34,32 @@ class BubbleEditActionController {
 	
 	public static function displayEditActionView($statusMessage){
 		
-		$edit_action = $_GET['action'] ;
+		$edit_action = $_GET['action'] ;		
 		
 		try {
 			switch ( $edit_action ) {
-			case "add":
+			case "add":				
+				
 				$bubble = new BubbleConfig();
 				self::setViewImageCandidateList();
 				AdminEditView::displayBubbleEditPage($bubble,"add", $statusMessage);	
 				break;
 			case "edit":
-				$bubble_id = $_GET['bubble_id'];
+				$bubble_id = $_GET['bubble_id'];								
 				$bubble = new BubbleConfig();
 				$bubble->restore($bubble_id);
 				self::setViewImageCandidateList();
 				AdminEditView::displayBubbleEditPage($bubble,"edit", $statusMessage);
 				break;
+				
 			case "delete":
 				// Don't generate page but delete immediately. Assumes confirmation
 				// on the client side (i.e, the action is not cancelled).
 				$bubble_id = $_GET['bubble_id'];
+				
+				// verify nonce
+				$nonce_action = 'bubble_delete_bubble_id' . $bubble_id ;
+				check_admin_referer( $nonce_action );
 				
 				BubbleConfig::delete( $bubble_id ) ;
 				WPRegistrar::registerAdminAssets();
@@ -73,20 +80,28 @@ class BubbleEditActionController {
 	public static function dispatchEditAction() {
 		
 		$edit_action =  $_POST['edit_action'];
+		
+		// scrub input before attempting to process it. 
+		$scrubbed = BubbleEditScrubber::scrub( $_POST );
 	
 		try {
 			switch ( $edit_action ) {
-				case "add":
+				case "add":					
+					$nonce_action = 'bubble_add' ;
+					check_admin_referer( $nonce_action );
 					$bubble = new BubbleConfig();
-					$bubble->columnsToObject($_POST, false);
+					$bubble->columnsToObject($scrubbed, false);
 					$bubble->insert();
-					self::insertBubblePages( $bubble, $_POST['bubble_pages'] );
+					self::insertBubblePages( $bubble, $scrubbed['bubble_pages'] );
 					break;
 				case "edit":
 					$bubble = new BubbleConfig();
-					$bubble->columnsToObject($_POST, false);
+					$bubble->columnsToObject($scrubbed, false);
+					// verify nonce
+					$nonce_action = 'bubble_edit_bubble_id' . $bubble->getBubbleID() ;
+					check_admin_referer( $nonce_action );
 					$bubble->update();
-					self::updateBubblePages( $bubble, $_POST['bubble_pages'] );
+					self::updateBubblePages( $bubble, $scrubbed['bubble_pages'] );
 					break;
 				default:
 					throw new Exception("Error: this is a bug. Unknown edit action", -1);

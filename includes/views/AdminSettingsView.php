@@ -56,6 +56,8 @@ class AdminSettingsView {
 						$delete_page_url = add_query_arg(	"bubble_id", 
 										$bubble->getBubbleID(), 
 										$delete_page_url);
+										
+						$delete_page_url = wp_nonce_url( $delete_page_url, 'bubble_delete_bubble_id' . $bubble->getBubbleID() );
 	
 						?>
 						<tr>

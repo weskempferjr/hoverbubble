@@ -6,6 +6,8 @@ require_once( TNOTW_HOVERBUBBLE_DIR . "includes/controllers/ErrorController.php"
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/views/AdminSettingsView.php");
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/config/SettingsFactory.php");
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/config/Settings.php");
+require_once( TNOTW_HOVERBUBBLE_DIR . "includes/util/SettingsScrubber.php" );
+require_once( TNOTW_HOVERBUBBLE_DIR . "includes/util/Logger.php" );
 
 
 
@@ -41,14 +43,15 @@ class BubbleSettingsController {
 	
 public static function dispatchEditAction() {
 		
-	
+		
 		try {
 			if ( isset( $_POST['hb_settings'] ) ) {
 				if ( ! isset( self::$settings ) ) {
 					self::$settings = SettingsFactory::getSettings();	
 				}
-				self::$settings->setCrawlPath( $_POST['crawlpath'] );
-				self::$settings->setExclusionList( $_POST['exclusionlist'] ) ;
+				$scrubbed = SettingsScrubber::scrub( $_POST ) ;
+				self::$settings->setCrawlPath( $scrubbed['crawlpath'] );
+				self::$settings->setExclusionList( $scrubbed['exclusionlist'] ) ;
 				self::$settings->store();
 			}
 		}
