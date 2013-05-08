@@ -32,7 +32,7 @@ class PageCandidateConverter implements CMSConverter {
 			display_bubble tinyint(3) NOT NULL DEFAULT '0',
 			PRIMARY KEY  page_candidate_id (page_candidate_id),
 			KEY  image_candidate_id (image_candidate_id),
-			CONSTRAINT wp_hbpagecandidates_ibfk_1 FOREIGN KEY (image_candidate_id) REFERENCES wp_hbimagecandidates (image_candidate_id) ON DELETE CASCADE ON UPDATE CASCADE 
+			CONSTRAINT " . $wpdb->prefix . 'hbpagecandidates_ibfk_1'  . " FOREIGN KEY (image_candidate_id) REFERENCES " . $wpdb->prefix . 'hbimagecandidates' . " (image_candidate_id) ON DELETE CASCADE ON UPDATE CASCADE 
 		);";
 		return $sql;	
 	}

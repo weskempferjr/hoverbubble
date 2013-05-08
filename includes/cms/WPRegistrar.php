@@ -4,7 +4,7 @@ class WPRegistrar {
 	
 	public static function registerAssets() {
 		
-		// Don't bother with old versions of IE 
+		// Don't bother with old versions of IE, or user agent not set. 
 		if ( self::isUnsupportedBrowser() ) {
 			return; 
 		}
@@ -77,6 +77,11 @@ class WPRegistrar {
 	}
 	
 	private static function isUnsupportedBrowser() {
+		
+		if ( !isset( $_SERVER['HTTP_USER_AGENT']  ) ) {
+			return true ;
+		}
+		
 		$ua_array = preg_split("/;/", $_SERVER['HTTP_USER_AGENT'] );
 		foreach ( $ua_array as $item ) {
 			if ( 	strpos( $item, "MSIE 6", 0) !== FALSE || 

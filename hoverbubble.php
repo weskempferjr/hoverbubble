@@ -113,7 +113,7 @@ class HoverBubblePlugin {
 				$blogids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
 				foreach ($blogids as $blog_id) {
                 	switch_to_blog( $blog_id );
-                	site_activate( $blob_id );
+                	$this->site_activate( $blog_id );
             	}
             	switch_to_blog( $old_blog );
             	return;

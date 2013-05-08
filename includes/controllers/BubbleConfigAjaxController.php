@@ -19,6 +19,11 @@ class BubbleConfigAjaxController {
 		try {
 			switch($_REQUEST['fn']){
 				case 'get_bubble_config':
+					// If these are not set, consider it an invalid request.
+					if ( !isset( $_REQUEST['imageInfoData'] ) || !isset( $_REQUEST['documentURL'] ) ) {
+						throw new Exception("Invalid bubble config request.") ;
+					}
+		
 					$output = self::retrieveBubbleConfigs();
 					break;
 				case 'does_bubble_name_exist':
@@ -85,11 +90,8 @@ class BubbleConfigAjaxController {
 		// Clients sends a list of images on the 
 		// current pages. Retrive bubbles associated
 		// only with those images.
-		
-		$currentPage = rtrim( $_SERVER['HTTP_REFERER'], "/" );
-		
-		
-		
+						
+		$currentPage = rtrim( $_REQUEST['documentURL'], '/' );
 		$raw_image_list = $_REQUEST['imageInfoData'];
 		
 		// srcrub image list of suspect input

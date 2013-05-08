@@ -3,32 +3,38 @@ jQuery(document).ready(function($) {
 
 
 	var imageSourceArray = getImageList();
-	var imageInfoData = JSON.stringify(imageSourceArray);
-	
-	$.ajax({
-		url:  wpsiteinfo.site_url + '/wp-admin/admin-ajax.php',
-		data:{
-			'action':'tnotw_hoverbubble_ajax',
-			'fn':'get_bubble_config',
-			'bubble_id':1,
-			'imageInfoData': imageSourceArray
- 		},
-		dataType: 'JSON',
-		success:function(data){
-			if ( data.errorData != null && data.errorData == 'true' ) {
-				reportError( data );
-				return;
-			}
-			// save data for browser window events.
-			saveBubbleConfig( data );
-			displayBubbles(data);
-        },
-		error: function(errorThrown){
-			alert('Error retrieving bubble configurations:' + errorThrown.responseText.substring(0,500) );
-			console.log(errorThrown);
-        }
 
-	});
+	
+	if ( imageSourceArray.length > 0 ) {
+		
+		var imageInfoData = JSON.stringify(imageSourceArray);
+		
+		$.ajax({
+			url:  wpsiteinfo.site_url + '/wp-admin/admin-ajax.php',
+			data:{
+				'action':'tnotw_hoverbubble_ajax',
+				'fn':'get_bubble_config',
+				'bubble_id':1,
+				'imageInfoData': imageSourceArray,
+				'documentURL' : document.URL
+	 		},
+			dataType: 'JSON',
+			success:function(data){
+				if ( data.errorData != null && data.errorData == 'true' ) {
+					reportError( data );
+					return;
+				}
+				// save data for browser window events.
+				saveBubbleConfig( data );
+				displayBubbles(data);
+	        },
+			error: function(errorThrown){
+				alert('Error retrieving bubble configurations:' + errorThrown.responseText.substring(0,500) );
+				console.log(errorThrown);
+	        }
+	
+		});
+	}
 
 	$(window).resize(function(){
 		displayBubbles( retrieveBubbleConfig() );

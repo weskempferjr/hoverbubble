@@ -187,7 +187,12 @@ class ImageListGenerator {
 		// handler. 
 		if ( @$doc->loadHTMLFile($pageURL) === false ) {
 			libxml_clear_errors();
-			throw new Exception('ImageListGenerator could not load URL:' . $pageURL );
+			if ( self::isCrawlPathURL( $pageURL ) ) {
+			 	throw new Exception('ImageListGenerator could not load crawl path URL:' . $pageURL );
+			}
+			else {
+				Logger::logError( 'ImageListGenertator could not page URL: ' . $pageURL ) ;
+			}
 		}
 		
 		// get list of images on this page. 
@@ -227,6 +232,17 @@ class ImageListGenerator {
 			}	
 		}
 		
+	}
+	
+	private static function isCrawlPathURL( $pageURL ) {
+		
+		$pageURL = rtrim( $pageURL, '/' );
+		foreach ( self::$settings->getCrawlPathArray() as $crawlPathURL  ) {
+			if ( $pageURL === $crawlPathURL ) {
+				return true;
+			}
+		}
+		return false ;
 	}
 	
 	

@@ -32,8 +32,8 @@ class BubblePageConverter implements CMSConverter {
 			PRIMARY KEY  bubble_page_id (bubble_page_id),
 			KEY  page_candidate_id (page_candidate_id),
 			KEY  bubble_id (bubble_id),
-			CONSTRAINT wp_hbbubblepages_ibfk_1 FOREIGN KEY (page_candidate_id) REFERENCES wp_hbpagecandidates (page_candidate_id) ON DELETE CASCADE ON UPDATE CASCADE,
-			CONSTRAINT wp_hbbubblepages_ibfk_2 FOREIGN KEY (bubble_id) REFERENCES wp_hoverbubbles (bubble_id) ON DELETE CASCADE ON UPDATE CASCADE 
+			CONSTRAINT " . $wpdb->prefix . 'hbbubblepages_ibfk_1' . " FOREIGN KEY (page_candidate_id) REFERENCES " . $wpdb->prefix . 'hbpagecandidates' . " (page_candidate_id) ON DELETE CASCADE ON UPDATE CASCADE,
+			CONSTRAINT " . $wpdb->prefix . 'hbbubblepages_ibfk_2' . " FOREIGN KEY (bubble_id) REFERENCES " . $wpdb->prefix . 'hoverbubbles' . " (bubble_id) ON DELETE CASCADE ON UPDATE CASCADE 
 		) ;";
 		
 		return $sql;	
