@@ -1,5 +1,8 @@
 <?php
 
+
+require_once( TNOTW_HOVERBUBBLE_DIR . "includes/lib/Mobile_Detect.php");
+
 class WPRegistrar {
 	
 	public static function registerAssets() {
@@ -7,6 +10,12 @@ class WPRegistrar {
 		// Don't bother with old versions of IE, or user agent not set. 
 		if ( self::isUnsupportedBrowser() ) {
 			return; 
+		}
+		
+		// TODO: mobile stategy. Until then...
+		$detect = new Mobile_Detect();
+		if ($detect->isMobile()) {
+ 			return ;
 		}
 		
 		wp_register_script(	'hoverbubble-js', 
