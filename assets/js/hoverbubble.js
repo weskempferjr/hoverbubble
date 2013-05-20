@@ -10,7 +10,7 @@ jQuery(document).ready(function($) {
 		var imageInfoData = JSON.stringify(imageSourceArray);
 		
 		$.ajax({
-			url:  wpsiteinfo.site_url + '/wp-admin/admin-ajax.php',
+			url:  objectl10n.wpsiteinfo.site_url + '/wp-admin/admin-ajax.php',
 			data:{
 				'action':'tnotw_hoverbubble_ajax',
 				'fn':'get_bubble_config',
@@ -29,7 +29,7 @@ jQuery(document).ready(function($) {
 				displayBubbles(data);
 	        },
 			error: function(errorThrown){
-				alert('Error retrieving bubble configurations:' + errorThrown.responseText.substring(0,500) );
+				alert( objectl10n.retrieve_bubble_config_error + errorThrown.responseText.substring(0,500) );
 				console.log(errorThrown);
 	        }
 	
@@ -41,7 +41,7 @@ jQuery(document).ready(function($) {
 	});
 	
 	function reportError( errorData ) {
-		var errorString = "Server error:" + errorData.errorMessage ;
+		var errorString = objectl10n.server_error + errorData.errorMessage ;
 		alert( errorString );
 	}
 });
@@ -483,7 +483,7 @@ function displayBubble(bubbleConfig){
 
 	 img_div.append('<div id="' + contentDivID + '"  style="visibility:hidden;z-index:20;position:absolute;top:' +  etop +  'px;left:' + eleft + 'px"></div>');
 	 
-	 jQuery("#" + contentDivID ).append('<object  type="text/html" width="' + contentAreaWidth + 'px" height="' + contentAreaHeight + 'px" data="' + wpsiteinfo.site_url + '/index.php?hb_bubble_id='+ bubbleID +'">');
+	 jQuery("#" + contentDivID ).append('<object  type="text/html" width="' + contentAreaWidth + 'px" height="' + contentAreaHeight + 'px" data="' + objectl10n.wpsiteinfo.site_url + '/index.php?hb_bubble_id='+ bubbleID +'">');
 
 	 // Display bubble as indicated by delay and duration. 
 	 setTimeout( function() {

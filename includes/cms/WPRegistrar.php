@@ -25,7 +25,12 @@ class WPRegistrar {
 		wp_enqueue_script( 'hoverbubble-js' ); 
 			
 		$wp_js_info = array('site_url' => __(site_url()));
-		wp_localize_script('hoverbubble-js', 'wpsiteinfo', $wp_js_info );
+		// wp_localize_script('hoverbubble-js', 'wpsiteinfo', $wp_js_info );
+		wp_localize_script('hoverbubble-js', 'objectl10n', array(
+			'wpsiteinfo' => $wp_js_info,
+			'retrieve_bubble_config_error' => __('Error retrieving bubble configurations:',  TNOTW_HB_TEXTDOMAIN ),
+			'server_error' => __('Server error:', TNOTW_HB_TEXTDOMAIN )
+		));
 	}
 	
 	public static function registerAdminAssets() {
@@ -35,7 +40,32 @@ class WPRegistrar {
 			 plugins_url() . '/hoverbubble/assets/js/hoverbubble_form.js',  array( 'wp-color-picker' ) );
 
 		$wp_js_info = array('site_url' => __(site_url()));
-		wp_localize_script('hoverbubble-form-js', 'wpsiteinfo', $wp_js_info );
+		
+		wp_localize_script('hoverbubble-form-js', 'objectl10n', array(
+			'wpsiteinfo' => $wp_js_info,
+			'genimagestatus' => __('Gen image table status = ', TNOTW_HB_TEXTDOMAIN ),
+			'gen_image_status_retrieve_error' => __('Error retrieving gen image table status from server:', TNOTW_HB_TEXTDOMAIN),
+			'page_candidate_retrieve_error' => __('Error retrieving page candidate list from server:', TNOTW_HB_TEXTDOMAIN ),
+			'outline_width_label' => __('Outline Width:', TNOTW_HB_TEXTDOMAIN ),
+			'tail_length_label' => __('Bubble Tail Length:', TNOTW_HB_TEXTDOMAIN ),
+			'corner_radius_label' => __('Bubble Corner Radius:', TNOTW_HB_TEXTDOMAIN ),
+			'tail_tip_x_label' => __('Bubble Tail Tip X Coordinate:', TNOTW_HB_TEXTDOMAIN ),
+			'tail_tip_y_label' => __('Bubble Tail Tip Y Coordinate:', TNOTW_HB_TEXTDOMAIN ),
+			'content_area_height_label' => __('Content Area Heigth:', TNOTW_HB_TEXTDOMAIN ),
+			'content_area_width_label' => __('Content Area Width:', TNOTW_HB_TEXTDOMAIN ),
+			'delay_label' => __('Delay (in ms):', TNOTW_HB_TEXTDOMAIN ),
+			'duration_label' => __('Duration (in ms):', TNOTW_HB_TEXTDOMAIN ),
+			'bubble_name_req_label' => __('Bubble Name required:', TNOTW_HB_TEXTDOMAIN ),
+			'bubble_name_label' => __('Bubble Name:', TNOTW_HB_TEXTDOMAIN ),
+			'dup_bubble_name_label' => __('Duplicate bubble name!:', TNOTW_HB_TEXTDOMAIN ),
+			'check_bubble_avail_error' => __('Error checking bubble name availability:', TNOTW_HB_TEXTDOMAIN ),
+			'ok' => __('OK', TNOTW_HB_TEXTDOMAIN ),
+			'cancel' => __('Cancel', TNOTW_HB_TEXTDOMAIN ),
+			'must_be_num' => __('must be a number within the range', TNOTW_HB_TEXTDOMAIN ),
+			'server_error' => __('Server error:', TNOTW_HB_TEXTDOMAIN ),
+			'none' => __('None', TNOTW_HB_TEXTDOMAIN ),
+			'confirm_delete_title' => __('Confirm Bubble Delete', TNOTW_HB_TEXTDOMAIN )	
+			));
 			 
 		$plugins_url = plugins_url() ;	
 			 

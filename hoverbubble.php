@@ -30,6 +30,7 @@ define('TNOTW_HOVERBUBBLE_VERSION', '0.5');
 define('TNOTW_HOVERBUBBLE_VERSION_OPTION_KEY', 'tnotw_hoverbubble_version');
 define('TNOTW_HOVERBUBBLE_DIR', plugin_dir_path(__FILE__));
 define('TNOTW_HOVERBBUBLE_URL', plugin_dir_url(__FILE__));
+define('TNOTW_HB_TEXTDOMAIN', 'hoverbubble');
 
 
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/cms/WPRegistrar.php");
@@ -56,8 +57,8 @@ require_once( TNOTW_HOVERBUBBLE_DIR . "includes/controllers/HelpController.php")
 class HoverBubblePlugin {
 	
 	public function __construct() {
-		// TODO: add localization code
-		// add_action( 'init', array( $this, 'plugin_textdomain' ) );
+		// localization
+		add_action( 'init', array( $this, 'plugin_textdomain' ) );
 		
 		// check table configuration after upgrade.
 		add_action('plugins_loaded', array($this,'check_table_update'));
@@ -261,6 +262,10 @@ class HoverBubblePlugin {
 		<p>Delete this bubble?</p>
 		</div>
 		<?php
+	}
+	
+	public function plugin_textdomain() {
+		load_plugin_textdomain('hoverbubble', false, basename(dirname(__FILE__)) . '/languages' );		
 	}
 }
 

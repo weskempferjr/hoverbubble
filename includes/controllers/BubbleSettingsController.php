@@ -17,7 +17,7 @@ class BubbleSettingsController {
 	
 	public static function routeRequest( $statusMessage ){
 		if (!current_user_can('manage_options')) {
-			wp_die('You do not have sufficient permissions to access this page.');
+			wp_die(__('You do not have sufficient permissions to access this page.', TNOTW_HB_TEXTDOMAIN ) );
 		}
 		
 		if ( $_SERVER["REQUEST_METHOD"] == "POST" ) {
@@ -37,7 +37,7 @@ class BubbleSettingsController {
 			AdminSettingsView::displayBubbleSettingsPage($bubbles, self::$settings , $statusMessage);
 		}
 		catch ( Exception $e ) {
-			ErrorController::displayErrorPage($e, "BubbleSettingsController error in displayActionEditActionView");
+			ErrorController::displayErrorPage($e, __('BubbleSettingsController error in displayActionEditActionView', TNOTW_HB_TEXTDOMAIN));
 		}
 	}
 	
@@ -56,7 +56,7 @@ public static function dispatchEditAction() {
 			}
 		}
 		catch (Exception $e ) {
-			ErrorController::displayErrorPage($e, "BubbleSettingsController error in dispatchEditAction");			
+			ErrorController::displayErrorPage($e, __( 'BubbleSettingsController error in dispatchEditAction', TNOTW_HB_TEXTDOMAIN ) );			
 		}
 	}
 }

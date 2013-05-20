@@ -18,7 +18,7 @@ class BubbleEditActionController {
 	
 	public static function routeRequest( $statusMessage ) {
 		if (!current_user_can('manage_options')) {
-			wp_die('YOU do not have sufficient permissions to access this page.');
+			wp_die(__('You do not have sufficient permissions to access this page.', TNOTW_HB_TEXTDOMAIN ) );
 		}
 
 		// Render the HTML for the Settings page or include a file that does
@@ -63,12 +63,12 @@ class BubbleEditActionController {
 				
 				BubbleConfig::delete( $bubble_id ) ;
 				WPRegistrar::registerAdminAssets();
-				$statusMessge = "Delete of $bubble_id succeeded.";
+				$statusMessge = sprintf(__('Delete of %d succeeded.', TNOTW_HB_TEXTDOMAIN ), $bubble_id );
 				BubbleSettingsController::displaySettingsView($statusMessge);								
 				break;
 				
 			default:				
-				ErrorController::displayErrorPage( new Exception(""), "Error: this is a bug. Unknown edit action");
+				throw new Exception( __('Error: Unknown view edit page action', TNOTW_HB_TEXTDOMAIN) );
 				break;
 			}
 		} 
@@ -93,6 +93,7 @@ class BubbleEditActionController {
 					$bubble->columnsToObject($scrubbed, false);
 					$bubble->insert();
 					self::insertBubblePages( $bubble, $scrubbed['bubble_pages'] );
+					$status = __('Add succeeded.', TNOTW_HB_TEXTDOMAIN );
 					break;
 				case "edit":
 					$bubble = new BubbleConfig();
@@ -102,19 +103,19 @@ class BubbleEditActionController {
 					check_admin_referer( $nonce_action );
 					$bubble->update();
 					self::updateBubblePages( $bubble, $scrubbed['bubble_pages'] );
+					$status = __('Edit succeeded.', TNOTW_HB_TEXTDOMAIN );
 					break;
 				default:
-					throw new Exception("Error: this is a bug. Unknown edit action", -1);
+					throw new Exception( __('Error: Unknown edit action', TNOTW_HB_TEXTDOMAIN) );
 					break;
 			}
 	
 			WPRegistrar::registerAdminAssets();
-			$status = "Update (" . $edit_action .  ")succeeded." ;
 			BubbleSettingsController::routeRequest( $status );					
 			
 		}
 		catch (Exception $e ) {
-			ErrorController::displayErrorPage($e, "BubbleEditActionController error in dispatchEditAction");			
+			ErrorController::displayErrorPage($e, __( 'BubbleEditActionController error in dispatchEditAction', TNOTW_HB_TEXTDOMAIN ));			
 		}
 	}
 	

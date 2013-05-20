@@ -21,7 +21,7 @@ class BubbleConfigAjaxController {
 				case 'get_bubble_config':
 					// If these are not set, consider it an invalid request.
 					if ( !isset( $_REQUEST['imageInfoData'] ) || !isset( $_REQUEST['documentURL'] ) ) {
-						throw new Exception("Invalid bubble config request.") ;
+						throw new Exception(_e('Invalid bubble config request.', TNOTW_HB_TEXTDOMAIN) );
 					}
 		
 					$output = self::retrieveBubbleConfigs();
@@ -40,7 +40,7 @@ class BubbleConfigAjaxController {
 					$output = self::retrievePageCandidates( $_REQUEST['target_image_url'], $_REQUEST['bubble_id'] );
 					break;
 				default:
-					$output = 'No function specified, check your jQuery.ajax() call';
+					$output = __('Unknown ajax request sent from client.', TNOTW_HB_TEXTDOMAIN );
 				break;
 	
 			}
@@ -113,7 +113,7 @@ class BubbleConfigAjaxController {
 				$where_clause .= ',';
 			}
 		}
-		// TODO: error checking
+
 		
 		$bubbles = BubbleConfig::retrieveBubbles($where_clause);
 		$configArray = array();

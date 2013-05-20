@@ -1,0 +1,314 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: hoverbubble01\n"
+"POT-Creation-Date: 2013-05-20 16:05-0600\n"
+"PO-Revision-Date: 2013-05-20 16:06-0600\n"
+"Last-Translator: Wes Kempfer <wkempferjr@gmail.com>\n"
+"Language-Team: TNOTW <wkempferjr@gmail.com>\n"
+"Language: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.5\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../includes/cms/WPRegistrar.php:31
+msgid "Error retrieving bubble configurations:"
+msgstr "Error retrieving bubble configurations:"
+
+#: ../includes/cms/WPRegistrar.php:32 ../includes/cms/WPRegistrar.php:66
+msgid "Server error:"
+msgstr "Server error:"
+
+#: ../includes/cms/WPRegistrar.php:33
+msgid "Confirm Bubble Delete"
+msgstr "Confirm Bubble Delete"
+
+#: ../includes/cms/WPRegistrar.php:47
+msgid "Gen image table status = "
+msgstr "Generate image table status = "
+
+#: ../includes/cms/WPRegistrar.php:48
+msgid "Error retrieving gen image table status from server:"
+msgstr "Error retrieving gen image table status from server:"
+
+#: ../includes/cms/WPRegistrar.php:49
+msgid "Error retrieving page candidate list from server:"
+msgstr "Error retrieving page candidate list from server:"
+
+#: ../includes/cms/WPRegistrar.php:50
+#, fuzzy
+msgid "Outline Width:"
+msgstr "Outline Width:"
+
+#: ../includes/cms/WPRegistrar.php:51 ../includes/views/AdminEditView.php:63
+msgid "Bubble Tail Length:"
+msgstr "Tail Length:"
+
+#: ../includes/cms/WPRegistrar.php:52 ../includes/views/AdminEditView.php:84
+msgid "Bubble Corner Radius:"
+msgstr "Corner Radius:"
+
+#: ../includes/cms/WPRegistrar.php:53 ../includes/views/AdminEditView.php:88
+msgid "Bubble Tail Tip X Coordinate:"
+msgstr "Tail Tip X Coordinate:"
+
+#: ../includes/cms/WPRegistrar.php:54 ../includes/views/AdminEditView.php:92
+msgid "Bubble Tail Tip Y Coordinate:"
+msgstr "Tail Tip Y Coordinate:"
+
+#: ../includes/cms/WPRegistrar.php:55
+#, fuzzy
+msgid "Content Area Heigth:"
+msgstr "Content Area Height:"
+
+#: ../includes/cms/WPRegistrar.php:56 ../includes/views/AdminEditView.php:100
+msgid "Content Area Width:"
+msgstr "Content Area Width:"
+
+#: ../includes/cms/WPRegistrar.php:57
+#, fuzzy
+msgid "Delay (in ms):"
+msgstr "Delay (in ms):"
+
+#: ../includes/cms/WPRegistrar.php:58
+#, fuzzy
+msgid "Duration (in ms):"
+msgstr "Duration (in ms):"
+
+#: ../includes/cms/WPRegistrar.php:59
+msgid "Bubble Name required:"
+msgstr "Bubble Name required:"
+
+#: ../includes/cms/WPRegistrar.php:60 ../includes/views/AdminEditView.php:27
+#: ../includes/views/AdminEditView.php:34
+#, fuzzy
+msgid "Bubble Name:"
+msgstr "Bubble Name:"
+
+#: ../includes/cms/WPRegistrar.php:61
+msgid "Duplicate bubble name!:"
+msgstr "Duplicate bubble name!:"
+
+#: ../includes/cms/WPRegistrar.php:62
+msgid "Error checking bubble name availability:"
+msgstr "Error checking bubble name availability:"
+
+#: ../includes/cms/WPRegistrar.php:63
+msgid "OK"
+msgstr "OK"
+
+#: ../includes/cms/WPRegistrar.php:64
+msgid "Cancel"
+msgstr "Cancel"
+
+#: ../includes/cms/WPRegistrar.php:65
+msgid "must be a number within the range"
+msgstr "must be a number within the range"
+
+#: ../includes/cms/WPRegistrar.php:67
+msgid "None"
+msgstr "None"
+
+#: ../includes/controllers/BubbleConfigAjaxController.php:24
+msgid "Invalid bubble config request."
+msgstr "Invalid bubble config request."
+
+#: ../includes/controllers/BubbleConfigAjaxController.php:43
+msgid "Unknown ajax request sent from client."
+msgstr "Unknown ajax request sent from client."
+
+#: ../includes/controllers/BubbleEditActionController.php:21
+#: ../includes/controllers/BubbleSettingsController.php:20
+msgid "You do not have sufficient permissions to access this page."
+msgstr "You do not have sufficient permissions to access this page."
+
+#: ../includes/controllers/BubbleEditActionController.php:66
+#, php-format
+msgid "Delete of %d succeeded."
+msgstr "Delete of %d succeeded."
+
+#: ../includes/controllers/BubbleEditActionController.php:71
+msgid "Error: Unknown view edit page action"
+msgstr "Error: Unknown view edit page action"
+
+#: ../includes/controllers/BubbleEditActionController.php:96
+msgid "Add succeeded."
+msgstr "Add succeeded."
+
+#: ../includes/controllers/BubbleEditActionController.php:106
+msgid "Edit succeeded."
+msgstr "Edit succeeded."
+
+#: ../includes/controllers/BubbleEditActionController.php:109
+msgid "Error: Unknown edit action"
+msgstr "Error: Unknown edit action"
+
+#: ../includes/controllers/BubbleEditActionController.php:118
+msgid "BubbleEditActionController error in dispatchEditAction"
+msgstr "BubbleEditActionController error in dispatchEditAction"
+
+#: ../includes/controllers/BubbleSettingsController.php:40
+msgid "BubbleSettingsController error in displayActionEditActionView"
+msgstr "BubbleSettingsController error in displayActionEditActionView"
+
+#: ../includes/controllers/BubbleSettingsController.php:59
+msgid "BubbleSettingsController error in dispatchEditAction"
+msgstr "BubbleSettingsController error in dispatchEditAction"
+
+#: ../includes/views/AdminEditView.php:18
+#, php-format
+msgid "Here is the hoverbubble edit page for bubble_id = %d"
+msgstr "Edit page for bubble_id = %d"
+
+#: ../includes/views/AdminEditView.php:39
+msgid "Bubble Message:"
+msgstr "Message:"
+
+#: ../includes/views/AdminEditView.php:45
+msgid "Bubble Description:"
+msgstr "Description:"
+
+#: ../includes/views/AdminEditView.php:51
+msgid "Bubble Fill Color:"
+msgstr "Fill Color:"
+
+#: ../includes/views/AdminEditView.php:55
+msgid "Bubble Outline Color:"
+msgstr "Outline Color:"
+
+#: ../includes/views/AdminEditView.php:59
+msgid "Bubble Outline Width:"
+msgstr "Outline Width:"
+
+#: ../includes/views/AdminEditView.php:67
+msgid "Bubble Tail Direction:"
+msgstr "Tail Direction:"
+
+#: ../includes/views/AdminEditView.php:71
+msgid "N"
+msgstr "N"
+
+#: ../includes/views/AdminEditView.php:72
+msgid "NE"
+msgstr "NE"
+
+#: ../includes/views/AdminEditView.php:73
+msgid "E"
+msgstr "E"
+
+#: ../includes/views/AdminEditView.php:74
+msgid "SE"
+msgstr "SE"
+
+#: ../includes/views/AdminEditView.php:75
+msgid "S"
+msgstr "S"
+
+#: ../includes/views/AdminEditView.php:76
+msgid "SW"
+msgstr "SW"
+
+#: ../includes/views/AdminEditView.php:77
+msgid "W"
+msgstr "W"
+
+#: ../includes/views/AdminEditView.php:78
+msgid "NW"
+msgstr "NW"
+
+#: ../includes/views/AdminEditView.php:96
+msgid "Content Area Height:"
+msgstr "Content Area Height:"
+
+#: ../includes/views/AdminEditView.php:105
+msgid "Bubble Delay (in ms):"
+msgstr "Delay (in ms):"
+
+#: ../includes/views/AdminEditView.php:110
+msgid "Bubble Duration (in ms):"
+msgstr "Duration (in ms):"
+
+#: ../includes/views/AdminEditView.php:115
+msgid "Target Image URL  :"
+msgstr "Target Image URL  :"
+
+#: ../includes/views/AdminEditView.php:131
+msgid "Page Display List:"
+msgstr "Page Display List:"
+
+#: ../includes/views/AdminEditView.php:133
+msgid "Submit"
+msgstr "Submit"
+
+#: ../includes/views/AdminEditView.php:133
+msgid "Reset"
+msgstr "Reset"
+
+#: ../includes/views/AdminSettingsView.php:13
+msgid "Hover Bubbles"
+msgstr "Hover Bubbles"
+
+#: ../includes/views/AdminSettingsView.php:13
+msgid "Add New"
+msgstr "Add New"
+
+#: ../includes/views/AdminSettingsView.php:27
+#: ../includes/views/AdminSettingsView.php:34
+msgid "Bubble ID"
+msgstr "Bubble ID"
+
+#: ../includes/views/AdminSettingsView.php:28
+#: ../includes/views/AdminSettingsView.php:35
+msgid "Name"
+msgstr "Name"
+
+#: ../includes/views/AdminSettingsView.php:29
+#: ../includes/views/AdminSettingsView.php:36
+#, fuzzy
+msgid "Description"
+msgstr "Description:"
+
+#: ../includes/views/AdminSettingsView.php:67
+msgid "Edit"
+msgstr "Edit"
+
+#: ../includes/views/AdminSettingsView.php:67
+msgid "Delete"
+msgstr "Delete"
+
+#: ../includes/views/AdminSettingsView.php:75
+msgid "General Settings"
+msgstr "General Settings"
+
+#: ../includes/views/AdminSettingsView.php:76
+#, fuzzy
+msgid "Target Image List Generator"
+msgstr "Target Image URL  :"
+
+#: ../includes/views/AdminSettingsView.php:82
+msgid "Crawl Path:"
+msgstr "Crawl Path"
+
+#: ../includes/views/AdminSettingsView.php:85
+msgid "Exclusion List:"
+msgstr "Exclusion List"
+
+#: ../includes/views/AdminSettingsView.php:92
+msgid ""
+"Press this button to update the image table after installation, if the above "
+"settings are changed, or after adding new content."
+msgstr ""
+"Press this button to update the image table after installation, if the above "
+"settings are changed, or after adding new content."
+
+#: ../includes/views/AdminSettingsView.php:95
+msgid "Generate Image Table"
+msgstr "Generate Image Table"
+
+#: ../includes/views/ErrorView.php:6
+msgid "Uh oh! Something really bad has happened!"
+msgstr "Uh oh! Something really bad has happened!"

@@ -8,7 +8,7 @@ jQuery(document).ready(function($) {
 		e.preventDefault();
 		$("#genimagetabind").css({"visibility":"visible"});
 		$.ajax({
-			url:  wpsiteinfo.site_url + '/wp-admin/admin-ajax.php',
+			url:  objectl10n.wpsiteinfo.site_url + '/wp-admin/admin-ajax.php',
 			data:{
 				'action':'tnotw_hoverbubble_ajax',
 				'fn':'gen_site_image_list'
@@ -20,12 +20,11 @@ jQuery(document).ready(function($) {
 					reportError( data );
 					return;
 				}
-
-				alert("Gen image table status = " + data.updateTablesStatus );
+				alert( objectl10n.genimagestatus + data.updateTablesStatus );
 	        },
 			error: function(errorThrown){
 				$("#genimagetabind").css({"visibility":"hidden"});
-				alert('Error retrieving gen image table status from server:' + errorThrown.responseText.substring(0,500) );
+				alert( objectl10n.gen_image_status_retrieve_error + errorThrown.responseText.substring(0,500) );
 				console.log(errorThrown);
 	        }
 		});
@@ -41,7 +40,6 @@ jQuery(document).ready(function($) {
 	});
 	
 	$("#imageurl").change( function(e) {
-		// alert("ImageURL select callback executed");
 		
 		// get selection
 		var targetImageURL = $("#imageurl :selected").text();
@@ -52,7 +50,7 @@ jQuery(document).ready(function($) {
 		var bubbleID = $("#bubbleidhid").val();
 		
 		$.ajax({
-			url:  wpsiteinfo.site_url + '/wp-admin/admin-ajax.php',
+			url:  objectl10n.wpsiteinfo.site_url + '/wp-admin/admin-ajax.php',
 			data:{
 				'action':'tnotw_hoverbubble_ajax',
 				'fn':'get_page_candidate_list',
@@ -68,7 +66,7 @@ jQuery(document).ready(function($) {
 				displayPageCandidateSelect( data );
 	        },
 			error: function(errorThrown){
-				alert('Error retrieving page candidate list from server:' + errorThrown.responseText.substring(0,500) );
+				alert( objectl10n.page_candidate_retrieve_error + errorThrown.responseText.substring(0,500) );
 				console.log(errorThrown);
 	        }
 
@@ -78,47 +76,59 @@ jQuery(document).ready(function($) {
 	});
 	
 	$("#outlinewidth").blur( function(event) {
-		validateNumberField("Outline Width:","outlinewidthlabel", "outlinewidth");
+		validateNumberField( objectl10n.outline_width_label ,"outlinewidthlabel", "outlinewidth");
 	});
 	
 	$("#taillength").blur( function(event) {
-		validateNumberField("Bubble Tail Length:","taillengthlabel", "taillength");
+		validateNumberField( objectl10n.tail_length_label ,"taillengthlabel", "taillength");
 	});
 	
 	$("#cornerradius").blur( function(event) {
-		validateNumberField("Bubble Corner Radius:","cornerradiuslabel", "cornerradius");
+		validateNumberField( objectl10n.corner_radius_label,"cornerradiuslabel", "cornerradius");
 	});
 
 	$("#tailtipx").blur( function(event) {
-		validateNumberField("Bubble Tail Tip X Coordinate:","tailtipxlabel", "tailtipx");
+		validateNumberField( objectl10n.tail_tip_x_label ,"tailtipxlabel", "tailtipx");
 	});
 
 	$("#tailtipy").blur( function(event) {
-		validateNumberField("Bubble Tail Tip Y Coordinate:","tailtipylabel", "tailtipy");
+		validateNumberField( objectl10n.tail_tip_y_label ,"tailtipylabel", "tailtipy");
 	});
 	
 	$("#caheight").blur( function(event) {
-		validateNumberField("Content Area Heigth:","caheightlabel", "caheight");
+		validateNumberField( objectl10n.content_area_height_label ,"caheightlabel", "caheight");
 	});
 	
 	$("#cawidth").blur( function(event) {
-		validateNumberField("Content Area Width:","cawidthlabel", "cawidth");
+		validateNumberField( objectl10n.content_area_width_label, "cawidthlabel", "cawidth");
 	});
+	
+	$("#bubbledelay").blur( function(event) {
+		validateNumberField( objectl10n.delay_label, "delaylabel", "bubbledelay");
+	});
+	
+	$("#bubbleduration").blur( function(event) {
+		validateNumberField( objectl10n.duration_label, "durationlabel", "bubbleduration");
+	});
+	
+
 	
 	$("#bubblename").blur( function(event) {
 		var bubble_name = $("#bubblename").val();
 		if (bubble_name.length == 0) {
-			$("#bubblenamelabel").html("Bubble Name required:");
+			// l10n
+			$("#bubblenamelabel").html( objectl10n.bubble_name_req_label );
 			$("#bubblenamelabel").css("color","red");
 			return;
 		}
 		else {
-			$("#bubblenamelabel").html("Bubble Name:");
+			// l10n
+			$("#bubblenamelabel").html( objectl10n.bubble_name_label );
 			$("#bubblenamelabel").css("color","black");
 		}
 		
 		$.ajax({
-			url:  wpsiteinfo.site_url + '/wp-admin/admin-ajax.php',
+			url:  objectl10n.wpsiteinfo.site_url + '/wp-admin/admin-ajax.php',
 			data:{
 				'action':'tnotw_hoverbubble_ajax',
 				'fn':'does_bubble_name_exist',
@@ -133,14 +143,13 @@ jQuery(document).ready(function($) {
 				}
 				
 				if ( data.bubbleExists == true ) {
-
-					$("#bubblenamelabel").html("Duplicate bubble name!:");
+					$("#bubblenamelabel").html( objectl10n.dup_bubble_name_label );
 					$("#bubblenamelabel").css("color","red");
 					return;
 				}
 	        },
 			error: function(errorThrown){
-				alert('Error checking bubble name availability:' + errorThrown.responseText.substring(0,500) );
+				alert( objectl10n.check_bubble_avail_error + errorThrown.responseText.substring(0,500) );
 				console.log(errorThrown);
 	        }
 
@@ -149,19 +158,20 @@ jQuery(document).ready(function($) {
 		
 	
 	});
-	
+	// l10n text
 	$("#dialog").dialog({
 		autoOpen: false,
 		modal: true,
+		title: objectl10n.confirm_delete_title,
 		open: function() {
 				$(this).siblings('.ui-dialog-buttonpane').find('button:eq(1)').focus();
 			},
 		buttons: [ 
-			{ text: "OK", click: function() { 
+			{ text: objectl10n.ok , click: function() { 
 				$( this ).dialog( "close" );
 				window.location = $(this).data('delete_target').href ;				
 			}},
-			{ text: "Cancel", click: function() { $( this ).dialog( "close" ); }} 
+			{ text: objectl10n.cancel, click: function() { $( this ).dialog( "close" ); }} 
 		]
 	});
 
@@ -200,14 +210,14 @@ jQuery(document).ready(function($) {
 	$("#imageurl").trigger("change");
 	
 	
-	
+	// l10n
 	function validateNumberField( labelText, labelID, inputID ) {
 		var value = $("#" + inputID ).val();
 		value = parseInt(value);
 		var min = $("#" + inputID ).attr("min");
 		var max = $("#" + inputID ).attr("max");
 		if ( isNaN( value ) || (value < min || value > max ) ) {
-			$("#" + labelID ).html( labelText + " must be a number from " + min + " to " + max + ":");
+			$("#" + labelID ).html( labelText + " " + objectl10n.must_be_num + " " + min + " - " + max + ":");
 			$("#" + labelID ).css("color","red");
 			return;
 		}
@@ -248,13 +258,13 @@ jQuery(document).ready(function($) {
 		
 		// If no displayed pages, force selection to none.
 		if ( somethingSelected == false ) {
-			$("#pageurlinput option[value='None']").prop('selected',true);
+			$("#pageurlinput option[value='" + objectl10n.none + "']").prop('selected',true);
 		}
 		
 	}
 	
 	function reportError( errorData ) {
-		var errorString = "Server error:" + errorData.errorMessage ;
+		var errorString = objectl10n.server_error + errorData.errorMessage ;
 		alert( errorString );
 	}
 });
