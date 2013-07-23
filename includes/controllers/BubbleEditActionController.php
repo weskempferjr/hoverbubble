@@ -8,6 +8,8 @@ require_once( TNOTW_HOVERBUBBLE_DIR . "includes/cms/WPRegistrar.php");
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/controllers/BubbleSettingsController.php");
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/controllers/ErrorController.php");
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/util/BubbleEditScrubber.php" );
+require_once( TNOTW_HOVERBUBBLE_DIR . "includes/cms/CMSInfoFactory.php");
+
 
 
 
@@ -88,9 +90,16 @@ class BubbleEditActionController {
 			switch ( $edit_action ) {
 				case "add":					
 					$nonce_action = 'bubble_add' ;
+					// TODO: CMS/WP dependency 
 					check_admin_referer( $nonce_action );
-					$bubble = new BubbleConfig();
+					
+					$bubble = new BubbleConfig();									
 					$bubble->columnsToObject($scrubbed, false);
+					
+					// Set author based on current user. 
+					$bubbleAuthor = self::getAuthorID() ;					
+					$bubble->setBubbleAuthor($bubbleAuthor) ;
+					
 					$bubble->insert();
 					self::insertBubblePages( $bubble, $scrubbed['bubble_pages'] );
 					$status = __('Add succeeded.', TNOTW_HB_TEXTDOMAIN );
@@ -99,6 +108,7 @@ class BubbleEditActionController {
 					$bubble = new BubbleConfig();
 					$bubble->columnsToObject($scrubbed, false);
 					// verify nonce
+					// TODO: This is wordpress dependency that needs to be hidden.
 					$nonce_action = 'bubble_edit_bubble_id' . $bubble->getBubbleID() ;
 					check_admin_referer( $nonce_action );
 					$bubble->update();
@@ -190,6 +200,13 @@ class BubbleEditActionController {
 				BubblePage::delete( $bubblePage->getBubblePageID() );
 		}
 	}
+	
+	private static function getAuthorID() {
+		$cmsInfo = CMSInfoFactory::getCMSInfo();
+		return $cmsInfo->getAuthorID();
+	}
+	
+
 	
 			
 }

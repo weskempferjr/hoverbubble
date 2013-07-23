@@ -45,6 +45,8 @@ class BubbleConfigConverter implements CMSConverter {
 					target_image_url varchar(1000) DEFAULT NULL,
 					bubble_delay int(11) DEFAULT '0',
 					bubble_duration int(11) DEFAULT '-1',
+					bubble_author bigint(20) unsigned NOT NULL DEFAULT '0',
+					published tinyint(3) unsigned NOT NULL DEFAULT '0'
 					PRIMARY KEY  bubble_id (bubble_id),
 					UNIQUE KEY  bubble_name (bubble_name)
 				) ;";
@@ -86,7 +88,9 @@ class BubbleConfigConverter implements CMSConverter {
 					target_image_id bigint(20) unsigned DEFAULT NULL,
 					target_image_url varchar(1000) DEFAULT NULL,
 					bubble_delay int(11) DEFAULT '0',
-					bubble_duration int(11) DEFAULT '-1'
+					bubble_duration int(11) DEFAULT '-1',
+					bubble_author bigint(20) unsigned NOT NULL DEFAULT '0',
+					published tinyint(3) unsigned NOT NULL DEFAULT '0'
 				) ;";
 		
 			return $sql;	
@@ -136,6 +140,12 @@ class BubbleConfigConverter implements CMSConverter {
 		
 		$this->bubbleConfig = $object ;
 		
+		// Get WP author information and set in bubble config option.
+		global $current_user ;
+		get_currentuserinfo();
+		$object->setBubbleAuthor( $current_user->ID );
+		
+		
 		$this->insertArgs = array(
 			'wpPrepareFormat' => "(	
 				bubble_id,
@@ -155,8 +165,10 @@ class BubbleConfigConverter implements CMSConverter {
 				target_image_url,
 				bubble_description,
 				bubble_delay,
-				bubble_duration
-			) VALUES ( %d, %s, %s, %s, %d, %d, %s, %d, %s, %d, %d, %d, %d, %d, %s, %s, %d, %d )",
+				bubble_duration,
+				bubble_author,
+				published
+			) VALUES ( %d, %s, %s, %s, %d, %d, %s, %d, %s, %d, %d, %d, %d, %d, %s, %s, %d, %d, %d, %d )",
 			'wpPrepareValues' => $object->objectToColumns( true ),
 			'wpTableName' => 'hoverbubbles'
 		);
@@ -172,6 +184,9 @@ class BubbleConfigConverter implements CMSConverter {
 		
 		self::setAlias();
 		
+		
+		// Note that bubble_author is not updated. This based on the
+		// assumption that authorship will not be modifiable. 
 		$this->updateArgs = array( 
 			'wpPrepareFormat' => "
 				bubble_name = %s,
@@ -190,7 +205,9 @@ class BubbleConfigConverter implements CMSConverter {
 				target_image_url = %s,
 				bubble_description = %s,
 				bubble_delay = %d,
-				bubble_duration = %d
+				bubble_duration = %d,
+				bubble_author = %d,
+				published = %d
 			WHERE bubble_id = %d
 			",
 			'wpPrepareValues' => $object->objectToColumnsForUpdate( true ),
@@ -222,6 +239,10 @@ class BubbleConfigConverter implements CMSConverter {
 	
 	public function setUID( $uid ) {
 		$this->bubbleConfig->setBubbleID( $uid );
+	}
+	
+	public function setAuthor( $author ) {
+		$this->bubbleConfig->setBubbleAuthor( $author );
 	}
 }
 

@@ -120,6 +120,15 @@ class BubbleConfigAjaxController {
 		
 		// TODO: create a view to simplify this mess. 
 		foreach ( $bubbles as $bubble ) {
+			
+			// See if bubble has published flag set. If not
+			// allow only author to view it. 
+			if ( $bubble->getPublished() == FALSE ) {
+				$currentUser = wp_get_current_user() ;
+				if ( $currentUser->ID != $bubble->getBubbleAuthor() ) {
+					continue;
+				}	
+			}
 			// Verify if bubble should appear on current page.
 			// First get the image candidate ID for the target image URL.  
 			$targetImageURL = $bubble->getTargetImageURL();

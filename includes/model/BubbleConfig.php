@@ -37,6 +37,8 @@ class BubbleConfig implements DBMap {
 	private $bubbleDescription = "";
 	private $bubbleDelay = 0 ;
 	private $bubbleDuration = -1;
+	private $bubbleAuthor = 0;
+	private $published = FALSE;
 	
 	private $whereClause = "";
 	
@@ -58,6 +60,8 @@ class BubbleConfig implements DBMap {
 		$this->bubbleDescription = "";
 		$this->bubbleDelay = 0;
 		$this->bubbleDuration = -1;
+		$this->bubbleAuthor = 0;
+		$this->published = FALSE ;
 
 	}
 	
@@ -292,6 +296,22 @@ class BubbleConfig implements DBMap {
 		return $this->bubbleDuration;
 	}
 	
+	public function setBubbleAuthor( $bubbleAuthor ) {
+		$this->bubbleAuthor = $bubbleAuthor ;
+	}
+	
+	public function getBubbleAuthor() {
+		return $this->bubbleAuthor ;
+	}
+	
+	public function setPublished( $published ) {
+		$this->published = $published ;
+	}
+	
+	public function getPublished() {
+		return $this->published ;
+	}
+	
 	public function setWhereClause ( $whereClause ) {
 		$this->whereClause = $whereClause ;
 	}
@@ -331,6 +351,8 @@ class BubbleConfig implements DBMap {
 		$this->bubbleDescription = $columnValues['bubble_description'];
 		$this->bubbleDelay = $columnValues['bubble_delay'];
 		$this->bubbleDuration = $columnValues['bubble_duration'];
+		$this->bubbleAuthor = $columnValues['bubble_author'];
+		$this->published = $columnValues['published'];
 	}
 	
 	public function objectToColumns( $dbwrite ) {
@@ -360,7 +382,9 @@ class BubbleConfig implements DBMap {
 			'target_image_url' => $this->targetImageURL,
 			'bubble_description' => $this->bubbleDescription,
 			'bubble_delay' => $this->bubbleDelay,
-			'bubble_duration' => $this->bubbleDuration	
+			'bubble_duration' => $this->bubbleDuration,
+			'bubble_author' => $this->bubbleAuthor,
+			'published' => $this->published	
 		);
 		return $columnValues ;
 		
@@ -395,7 +419,9 @@ class BubbleConfig implements DBMap {
 			'bubble_description' => $this->bubbleDescription,
 			'bubble_delay' => $this->bubbleDelay,
 			'bubble_duration' => $this->bubbleDuration,
-			'bubble_id' => $this->bubbleID		
+			'bubble_author' => $this->bubbleAuthor,
+			'published' => $this->published,
+			'bubble_id' => $this->bubbleID	
 		);
 		return $columnValues ;
 		

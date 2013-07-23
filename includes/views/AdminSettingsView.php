@@ -1,5 +1,7 @@
 <?php
 
+require_once( TNOTW_HOVERBUBBLE_DIR . "includes/cms/CMSInfoFactory.php");
+
 class AdminSettingsView {
 	public static function displayBubbleSettingsPage( $bubbles, $settings, $statusMessage ) {
 		
@@ -26,14 +28,18 @@ class AdminSettingsView {
 				<tr>
 				<th><?php _e('Bubble ID', TNOTW_HB_TEXTDOMAIN )?></th>
 				<th><?php _e('Name', TNOTW_HB_TEXTDOMAIN )?></th>
+				<th><?php _e('Author', TNOTW_HB_TEXTDOMAIN )?></th>
 				<th><?php _e('Description', TNOTW_HB_TEXTDOMAIN) ?></th>
+				<th><?php _e('Published', TNOTW_HB_TEXTDOMAIN) ?></th>				
 				</tr>
 				</thead>
 				<tfoot>
 				<tr>
 				<th><?php _e('Bubble ID', TNOTW_HB_TEXTDOMAIN )?></th>
 				<th><?php _e('Name', TNOTW_HB_TEXTDOMAIN )?></th>
+				<th><?php _e('Author', TNOTW_HB_TEXTDOMAIN )?></th>				
 				<th><?php _e('Description', TNOTW_HB_TEXTDOMAIN) ?></th>
+				<th><?php _e('Published', TNOTW_HB_TEXTDOMAIN) ?></th>
 				</tr>
 				</tfoot>
 				<tbody>			
@@ -63,7 +69,17 @@ class AdminSettingsView {
 						<tr>
 						<td><?php echo $bubble->getBubbleID(); ?> </td>
 						<td><?php echo $bubble->getBubbleName(); ?> </td>
+						<td><?php echo self::getBubbleAuthorLogin( $bubble->getBubbleAuthor() ) ;?></td>
 						<td><?php echo $bubble->getBubbleDescription(); ?> </td>
+						<td><?php 
+							if ( $bubble->getPublished() != 0 )  {
+								_e('Yes', TNOTW_HB_TEXTDOMAIN) ;
+							}
+							else {
+								_e('No', TNOTW_HB_TEXTDOMAIN) ; 
+							}
+							?>
+						</td>
 						<td><a href="<?php echo $edit_page_url?>"> <?php _e('Edit', TNOTW_HB_TEXTDOMAIN) ;?></a> | <a class="hbdelete" href="<?php echo $delete_page_url?>"> <?php _e('Delete', TNOTW_HB_TEXTDOMAIN) ;?></a></td>
 						</tr>
 						<?php
@@ -98,6 +114,12 @@ class AdminSettingsView {
 			</table>
 		</div>
 		<?php
+		}
+		
+		private static function getBubbleAuthorLogin( $authorID ) {
+			$cmsInfo = CMSInfoFactory::getCMSInfo();
+			return $cmsInfo->getAuthorLogin( $authorID );
+			
 		}
 }
 ?>

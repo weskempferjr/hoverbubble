@@ -48,6 +48,10 @@ class AdminEditView {
 			</td> 
 			</tr>
 			<tr>
+			<td><label for="published"><?php echo __('Published:', TNOTW_HB_TEXTDOMAIN) ;?></label></td>
+			<td><input name="published" id="pubcb" type="checkbox" value="published" <?php if ( $bubble->getPublished() != FALSE ) echo " checked" ; ?>/></td>
+			<tr>
+			<tr>
 			<td><?php echo __('Bubble Fill Color:', TNOTW_HB_TEXTDOMAIN ); ?></td> 
 	 		<td><input class="colorfield" type="text" name="bubble_fill_color" value="<?php echo $bubble->getBubbleFillColor(); ?>" /> </td>
 			</tr>
@@ -135,6 +139,7 @@ class AdminEditView {
 			</tr>
 			</table>
 			<input  id="bubbleidhid" type="hidden" name="bubble_id" value="<?php echo $bubble->getBubbleID(); ?>" />
+			<input  id="bubbleauthorhid" type="hidden" name="bubble_author" value="<?php echo $bubble->getBubbleAuthor(); ?>" />	
 			<input type="hidden" name="edit_action" value="<?php echo $action ?>" />
 		</form>
 	</div>

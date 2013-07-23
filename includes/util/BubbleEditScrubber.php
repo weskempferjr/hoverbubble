@@ -24,6 +24,14 @@ class BubbleEditScrubber {
 		$scrubbed['bubble_delay'] = absint( $inputData['bubble_delay'] ) ;
 		$scrubbed['bubble_duration'] = self::sanitizeBubbleDuration( $inputData['bubble_duration'] ) ;
 		$scrubbed['bubble_pages'] = self::sanitizeBubblePages( $inputData['bubble_pages'] );
+		$scrubbed['bubble_author'] = $inputData['bubble_author'];
+		
+		if ( isset( $inputData['published'] ) ) {
+			$scrubbed['published'] = TRUE ;
+		}
+		else {
+			$scrubbed['published'] = FALSE ;
+		}
 				
 		return $scrubbed ;
 	} 
@@ -41,13 +49,20 @@ class BubbleEditScrubber {
 	private static function sanitizeBubblePages( $bubblePages ) {
 		
 		$validBubblePages = array();
-		foreach ( $bubblePages as $bubblePage ) {
-			$tmpBP = absint( $bubblePage );
-			if ( $tmpBP == 0 ) {
-				Logger::logError("BubbleEditScrubber: invalid bubble page ID in form input. Ignoring." );
-			}
-			else {
-				array_push( $validBubblePages, $tmpBP );
+		
+		// If none selected, just return the array as is. 
+		if ( $bubblePages[0] == "None" ) {
+			array_push( $validBubblePages, "None" );
+		}
+		else {
+			foreach ( $bubblePages as $bubblePage ) {
+				$tmpBP = absint( $bubblePage );
+				if ( $tmpBP == 0 ) {
+					Logger::logError("BubbleEditScrubber: invalid bubble page ID in form input. Ignoring." );
+				}
+				else {
+					array_push( $validBubblePages, $tmpBP );
+				}
 			}
 		}
 		return $validBubblePages ;
