@@ -20,7 +20,7 @@ class BubbleEditScrubber {
 		$scrubbed['content_area_width'] = absint( $inputData['content_area_width'] ) ;
 		$scrubbed['content_area_height'] = absint( $inputData['content_area_height'] ) ;
 		$scrubbed['target_image_url'] = esc_url( $inputData['target_image_url'], array('http','https') );
-		$scrubbed['bubble_description'] = sanitize_text_field( $inputData['bubble_description'] );
+		$scrubbed['bubble_description'] = sanitize_text_field( stripslashes_deep( $inputData['bubble_description'] ) );
 		$scrubbed['bubble_delay'] = absint( $inputData['bubble_delay'] ) ;
 		$scrubbed['bubble_duration'] = self::sanitizeBubbleDuration( $inputData['bubble_duration'] ) ;
 		$scrubbed['bubble_pages'] = self::sanitizeBubblePages( $inputData['bubble_pages'] );
@@ -79,6 +79,7 @@ class BubbleEditScrubber {
 			case 'S':
 			case 'SW':
 			case 'SE':
+			case 'NONE':
 				$validDirection = $direction ;
 				break;			
 			default:

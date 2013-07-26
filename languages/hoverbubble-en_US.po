@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: hoverbubble01\n"
-"POT-Creation-Date: 2013-06-12 16:04-0800\n"
-"PO-Revision-Date: 2013-06-12 16:06-0800\n"
+"POT-Creation-Date: 2013-07-23 16:52-0800\n"
+"PO-Revision-Date: 2013-07-23 16:53-0800\n"
 "Last-Translator: Wes Kempfer <wkempferjr@gmail.com>\n"
 "Language-Team: TNOTW <wkempferjr@gmail.com>\n"
 "Language: English\n"
@@ -44,15 +44,15 @@ msgstr "Outline Width:"
 msgid "Bubble Tail Length:"
 msgstr "Tail Length:"
 
-#: ../includes/cms/WPRegistrar.php:51 ../includes/views/AdminEditView.php:88
+#: ../includes/cms/WPRegistrar.php:51 ../includes/views/AdminEditView.php:90
 msgid "Bubble Corner Radius:"
 msgstr "Corner Radius:"
 
-#: ../includes/cms/WPRegistrar.php:52 ../includes/views/AdminEditView.php:92
+#: ../includes/cms/WPRegistrar.php:52 ../includes/views/AdminEditView.php:94
 msgid "Bubble Tail Tip X Coordinate:"
 msgstr "Tail Tip X Coordinate:"
 
-#: ../includes/cms/WPRegistrar.php:53 ../includes/views/AdminEditView.php:96
+#: ../includes/cms/WPRegistrar.php:53 ../includes/views/AdminEditView.php:98
 msgid "Bubble Tail Tip Y Coordinate:"
 msgstr "Tail Tip Y Coordinate:"
 
@@ -61,7 +61,7 @@ msgstr "Tail Tip Y Coordinate:"
 msgid "Content Area Heigth:"
 msgstr "Content Area Height:"
 
-#: ../includes/cms/WPRegistrar.php:55 ../includes/views/AdminEditView.php:104
+#: ../includes/cms/WPRegistrar.php:55 ../includes/views/AdminEditView.php:106
 msgid "Content Area Width:"
 msgstr "Content Area Width:"
 
@@ -224,31 +224,35 @@ msgstr "W"
 msgid "NW"
 msgstr "NW"
 
-#: ../includes/views/AdminEditView.php:100
+#: ../includes/views/AdminEditView.php:83
+msgid "NONE"
+msgstr "NONE"
+
+#: ../includes/views/AdminEditView.php:102
 msgid "Content Area Height:"
 msgstr "Content Area Height:"
 
-#: ../includes/views/AdminEditView.php:109
+#: ../includes/views/AdminEditView.php:111
 msgid "Bubble Delay (in ms):"
 msgstr "Delay (in ms):"
 
-#: ../includes/views/AdminEditView.php:114
+#: ../includes/views/AdminEditView.php:116
 msgid "Bubble Duration (in ms):"
 msgstr "Duration (in ms):"
 
-#: ../includes/views/AdminEditView.php:119
+#: ../includes/views/AdminEditView.php:121
 msgid "Target Image URL  :"
 msgstr "Target Image URL  :"
 
-#: ../includes/views/AdminEditView.php:135
+#: ../includes/views/AdminEditView.php:137
 msgid "Page Display List:"
 msgstr "Page Display List:"
 
-#: ../includes/views/AdminEditView.php:137
+#: ../includes/views/AdminEditView.php:139
 msgid "Submit"
 msgstr "Submit"
 
-#: ../includes/views/AdminEditView.php:137
+#: ../includes/views/AdminEditView.php:139
 msgid "Reset"
 msgstr "Reset"
 
@@ -261,52 +265,66 @@ msgid "Add New"
 msgstr "Add New"
 
 #: ../includes/views/AdminSettingsView.php:29
-#: ../includes/views/AdminSettingsView.php:37
+#: ../includes/views/AdminSettingsView.php:38
 msgid "Bubble ID"
 msgstr "Bubble ID"
 
 #: ../includes/views/AdminSettingsView.php:30
-#: ../includes/views/AdminSettingsView.php:38
+#: ../includes/views/AdminSettingsView.php:39
 msgid "Name"
 msgstr "Name"
 
 #: ../includes/views/AdminSettingsView.php:31
-#: ../includes/views/AdminSettingsView.php:39
+#: ../includes/views/AdminSettingsView.php:40
 msgid "Author"
 msgstr "Author"
 
 #: ../includes/views/AdminSettingsView.php:32
-#: ../includes/views/AdminSettingsView.php:40
+#: ../includes/views/AdminSettingsView.php:41
 #, fuzzy
 msgid "Description"
 msgstr "Description:"
 
-#: ../includes/views/AdminSettingsView.php:72
+#: ../includes/views/AdminSettingsView.php:33
+#: ../includes/views/AdminSettingsView.php:42
+#, fuzzy
+msgid "Published"
+msgstr "Published"
+
+#: ../includes/views/AdminSettingsView.php:76
+msgid "Yes"
+msgstr "Yes"
+
+#: ../includes/views/AdminSettingsView.php:79
+msgid "No"
+msgstr "No"
+
+#: ../includes/views/AdminSettingsView.php:83
 msgid "Edit"
 msgstr "Edit"
 
-#: ../includes/views/AdminSettingsView.php:72
+#: ../includes/views/AdminSettingsView.php:83
 msgid "Delete"
 msgstr "Delete"
 
-#: ../includes/views/AdminSettingsView.php:80
+#: ../includes/views/AdminSettingsView.php:91
 msgid "General Settings"
 msgstr "General Settings"
 
-#: ../includes/views/AdminSettingsView.php:81
+#: ../includes/views/AdminSettingsView.php:92
 #, fuzzy
 msgid "Target Image List Generator"
 msgstr "Target Image URL  :"
 
-#: ../includes/views/AdminSettingsView.php:87
+#: ../includes/views/AdminSettingsView.php:98
 msgid "Crawl Path:"
 msgstr "Crawl Path"
 
-#: ../includes/views/AdminSettingsView.php:90
+#: ../includes/views/AdminSettingsView.php:101
 msgid "Exclusion List:"
 msgstr "Exclusion List"
 
-#: ../includes/views/AdminSettingsView.php:97
+#: ../includes/views/AdminSettingsView.php:108
 msgid ""
 "Press this button to update the image table after installation, if the above "
 "settings are changed, or after adding new content."
@@ -314,7 +332,7 @@ msgstr ""
 "Press this button to update the image table after installation, if the above "
 "settings are changed, or after adding new content."
 
-#: ../includes/views/AdminSettingsView.php:100
+#: ../includes/views/AdminSettingsView.php:111
 msgid "Generate Image Table"
 msgstr "Generate Image Table"
 

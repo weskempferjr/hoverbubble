@@ -32,7 +32,7 @@
  * @version     2.6.0
  */
 
-class Mobile_Detect {
+class TNOTW_Mobile_Detect {
 
     protected $scriptVersion = '2.6.0';
 

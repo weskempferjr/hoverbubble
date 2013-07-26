@@ -668,6 +668,7 @@ function calculateCanvasDimensions( bubbleDimensions, tailLength, tailDirection,
 	// Determine canvas top, left coordinates
 	switch ( tailDirection ) {
 		case "nw":
+		case "none":
 			canvasDimensions.left = tailCoordinates.x;
 			canvasDimensions.top = tailCoordinates.y;
 			break;

@@ -13,7 +13,7 @@ class WPRegistrar {
 		}
 		
 		// TODO: mobile stategy. Until then...
-		$detect = new Mobile_Detect();
+		$detect = new TNOTW_Mobile_Detect();
 		if ($detect->isMobile()) {
  			return ;
 		}

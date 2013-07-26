@@ -80,6 +80,8 @@ class AdminEditView {
 			<td><?php _e('SW')?> <input type="radio" name="bubble_tail_direction" value ="SW" <?php if ($bubble->getBubbleTailDirection() == "SW") echo 'checked' ; ?>/>&nbsp </td>
 			<td><?php _e('W')?> <input type="radio" name="bubble_tail_direction" value ="W"  <?php if ($bubble->getBubbleTailDirection() == "W") echo 'checked' ; ?> />&nbsp </td>
 			<td><?php _e('NW')?> <input type="radio" name="bubble_tail_direction" value ="NW" <?php if ($bubble->getBubbleTailDirection() == "NW") echo 'checked' ; ?> />&nbsp </td>
+			<td><?php _e('NONE')?> <input type="radio" name="bubble_tail_direction" value ="NONE" <?php if ($bubble->getBubbleTailDirection() == "NONE") echo 'checked' ; ?> />&nbsp </td>
+			
 			</tr>
 			</table>
 			</td>
@@ -116,7 +118,7 @@ class AdminEditView {
 			</tr>
 			
 			<tr>
-			<td><?php echo __('Target Image URL  :', TNOTW_HB_TEXTDOMAIN ); ?></td>
+			<td><?php echo __('Target Image URL  :', TNOTW_HB_TEXTDOMAIN ); ?><img id="getpagelistind" alt="" style="visibility: hidden" src="<?php echo plugins_url('hoverbubble/assets/img/ajax-loader.gif') ;?>"/></td>		
 			<td>
 				<select id="imageurl" style="width: 80%"  name="target_image_url" >
 				<option <?php if ( $action == 'edit' ) echo 'select'?>></option>

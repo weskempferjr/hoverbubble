@@ -47,6 +47,8 @@ jQuery(document).ready(function($) {
 			return ;
 		}
 		
+		$("#getpagelistind").css({"visibility":"visible"});
+		
 		var bubbleID = $("#bubbleidhid").val();
 		
 		$.ajax({
@@ -59,6 +61,7 @@ jQuery(document).ready(function($) {
 	 		},
 			dataType: 'JSON',
 			success:function(data){
+				$("#getpagelistind").css({"visibility":"hidden"});
 				if ( data.errorData != null && data.errorData == 'true' ) {
 					reportError( data );
 					return;
@@ -66,6 +69,7 @@ jQuery(document).ready(function($) {
 				displayPageCandidateSelect( data );
 	        },
 			error: function(errorThrown){
+				$("#getpagelistind").css({"visibility":"hidden"});
 				alert( objectl10n.page_candidate_retrieve_error + errorThrown.responseText.substring(0,500) );
 				console.log(errorThrown);
 	        }
