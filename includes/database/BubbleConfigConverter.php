@@ -2,7 +2,14 @@
 
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/database/CMSConverter.php");
 
-
+/*
+ * BubbleConfigConverter class
+ * 
+ * This class provides that functions that map bubble config 
+ * relation data to a bubbleConfig object.
+ * 
+ * TODO: references to $wpdb should be hidden
+ */
 class BubbleConfigConverter implements CMSConverter {
 	
 	private $insertArgs ;
@@ -12,13 +19,33 @@ class BubbleConfigConverter implements CMSConverter {
 	private $selectRowsArgs ;
 	private $bubbleConfig ;
 	
-	
+	/*
+	 * Function: setAlias
+	 * 
+	 * Sets the alias for the bubble config table in the $wpdp
+	 * variable. 
+	 * TODO: wordpress dependency that should be hidden behind
+	 * an interface. 
+	 * Parameters: none
+	 * Return: none
+	 */
 	public static function setAlias() {
 		global $wpdb ;
 		if (!isset($wpdb->hoverbubbles)) {
 			$wpdb->hoverbubbles = $wpdb->prefix . 'hoverbubbles';
 		}	
 	}
+	
+	
+	/*
+	 * Function: generateDDL
+	 * 
+	 * This function stores the DDL necessary to create
+	 * the table associated with this object. 
+	 * 
+	 * Parameters: none
+	 * Return: a string containing the DDL for the object.
+	 */
 	
 	public static final function generateDDL() {
 		global $wpdb ;
@@ -54,6 +81,14 @@ class BubbleConfigConverter implements CMSConverter {
 			return $sql;	
 	}
 	
+	/*
+	 * Function: tableExists
+	 * 
+	 * Returns a boolean indicated whether the table for the object exists.
+	 * 
+	 * Paramters: none
+	 * Return: boolean indicating whether or not the table exists
+	 */
 	public static function tableExists() {
 		
 		global $wpdb ;
@@ -64,6 +99,15 @@ class BubbleConfigConverter implements CMSConverter {
 		return true ;
 	}
 	
+	/*
+	 * Function: generateUpgradeDLL
+	 * 
+	 * This function is intended to be called when upgrading
+	 * to new versions. 
+	 * 
+	 * Parameters: none
+	 * Return: a string containing the DDL for the object.
+	 */
 	public static final function generateUpgradeDDL() {
 		global $wpdb ;
 		
@@ -96,11 +140,29 @@ class BubbleConfigConverter implements CMSConverter {
 			return $sql;	
 	}
 	
-	
+	/*
+	 * Function: getCMSSelectRowArgs
+	 * 
+	 * Returns the select row args for the oject. Called by
+	 * the database object when retrieving an instance 
+	 * of this object from the database.
+	 * 
+	 * Parameters: none
+	 * Returns: selectRowArgs array. See setCMSSelectRowArgs
+	 */
 	public function getCMSSelectRowArgs() {
 		return $this->selectRowArgs ;
 	}
 	
+	/* 
+	 * Function: setCMSSelectRowArgs
+	 * 
+	 * Set the select row args for the object.
+	 * 
+	 * Parameters: $object, and instance of the object with the primary
+	 * key field set.
+	 * Returns: none
+	 */
 	public function setCMSSelectRowArgs( $object ) {
 		global $wpdb;
 		
@@ -113,10 +175,28 @@ class BubbleConfigConverter implements CMSConverter {
 		);
 	}
 	
+	/*
+	 * Function: getCMSSelectRowsArgs
+	 * 
+	 * Returns the select *rows* (plural) args for the object.
+	 * 
+	 * Parameters: none
+	 * Returns: selectRowsArgs array. See setCMSSelectRowsArgs
+	 * 
+	 */
 	public function getCMSSelectRowsArgs() {
 		return $this->selectRowsArgs ;
 	}
 	
+	
+	/* 
+	 * Function: setCMSSelectRowsArgs
+	 * 
+	 * Set the select rows (plural) args for the object.
+	 * 
+	 * Parameters: $whereClause -- a string containing the whereClause for retrieving multiple rows
+	 * Returns: none
+	 */
 	public function setCMSSelectRowsArgs( $whereClause ) {
 		global $wpdb;
 		
@@ -128,11 +208,24 @@ class BubbleConfigConverter implements CMSConverter {
 			'wpTableName' => 'hoverbubbles'
 		);
 	}
-	
+	/*
+	 * Function: getCMSInsertArgs
+	 * 
+	 * Return CMS insert args. Usually called byt the Database object. 
+	 */
 	public function getCMSInsertArgs() {
 		return $this->insertArgs;
 	}
 	
+	/*
+	 * Function: setCMSInsertArgs
+	 * 
+	 * This function is called when doing an insert. The object to be
+	 * inserted creates its respective converter, and then calls 
+	 * this method in the converter to stort the insert args (which is basically
+	 * just a string containing DML appropriate for the objects 
+	 * respective storage table. 
+	 */
 	public function setCMSInsertArgs( $object) {
 		global $wpdb;
 
@@ -174,10 +267,26 @@ class BubbleConfigConverter implements CMSConverter {
 		);
 	}
 	
+	/*
+	 * Function: getCMSUpdateArgs
+	 * 
+	 * This function is called by the Dabase object to get the 
+	 * update SQL for the object. 
+	 */
 	public function getCMSUpdateArgs() {
 		return $this->updateArgs;
 	}
 	
+	
+	/*
+	 * Function: setCMSUpdateArgs
+	 * 
+	 * This function is called when doing an update. The object to be
+	 * updated creates its respective converter, and then calls 
+	 * this method in the converter to stort the insert args (which is basically
+	 * just a string containing DML appropriate for the objects 
+	 * respective storage table. 
+	 */
 	public function setCMSUpdateArgs( $object) {
 		
 		global $wpdb;
@@ -215,10 +324,25 @@ class BubbleConfigConverter implements CMSConverter {
 		);
 	}
 	
+	/*
+	 * Function: getCMSUpdateArgs
+	 * 
+	 * This function is called by the Dabase object to get the 
+	 * delete SQL for the object. 
+	 */
 	public function getCMSDeleteArgs() {
 		return $this->deleteArgs;
 	}
-	
+
+	/*
+	 * Function: setCMSDeleteArgs
+	 * 
+	 * This function is called when doing an delete. The object to be
+	 * delete creates its respective converter, and then calls 
+	 * this method in the converter to store the delete args (which is basically
+	 * just a string containing DML appropriate for the objects 
+	 * respective storage table. 
+	 */
 	public function setCMSDeleteArgs( $object) {
 		
 		global $wpdb;
@@ -232,15 +356,34 @@ class BubbleConfigConverter implements CMSConverter {
 		);
 	}
 	
+	
+	/* 
+	 * Function: setImageURLFromCMS
+	 * 
+	 * TODO: document. 
+	 */
 	public function setImageURLFromCMS( $object ) {
 		$imageURL = WPResources::getImageURL( $object->getTargetImageID() );
 		$object->setTargetImageURL( $imageURL );
 	}
 	
+	/*
+	 * Function setUID
+	 * 
+	 * TODO: wordpress-specific requirement for assiging authorhip
+	 * when bubble is created. 
+	 */
+	
 	public function setUID( $uid ) {
 		$this->bubbleConfig->setBubbleID( $uid );
 	}
 	
+	/*
+	 * Function setUID
+	 * 
+	 * TODO: wordpress-specific requirement for assiging authorhip
+	 * when bubble is created. 
+	 */
 	public function setAuthor( $author ) {
 		$this->bubbleConfig->setBubbleAuthor( $author );
 	}

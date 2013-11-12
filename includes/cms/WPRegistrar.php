@@ -3,7 +3,32 @@
 
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/lib/Mobile_Detect.php");
 
+/*
+ * WPRegistrar class
+ * 
+ * 	This class is a wrapper around Wordpress specific registration 
+ * 	functions such as wp_register/enqueue_script. 
+ * 
+ * 	TODO: This class should implement an interface so that 
+ *  registars for other CMSs are supported. The interface should
+ *  follow the same pattern as the CMSInfo interface. 
+ */
+
 class WPRegistrar {
+	
+	/*
+	 * Function: registerAssets
+	 * Parameters: none
+	 * Return: none
+	 * 
+	 * This function calls the neessary Wordpress registration 
+	 * and enqueue functions in order to register javascript files. 
+	 * 
+	 *  For wordpress, this happens to be a convenient place at which
+	 *  to disable the plugin if a device on which it cannot run properly
+	 *  is detected. TODO: find a more appropriate location for detecting 
+	 *  unsupported devices. 
+	 */
 	
 	public static function registerAssets() {
 		
@@ -33,6 +58,14 @@ class WPRegistrar {
 		));
 	}
 	
+	/* 
+	 * Function registerAdminAssets
+	 * 	Parameters: none
+	 * 	Return: none
+	 * 
+	 * 	Like the registerAssets function, this function registers assets required
+	 * 	by the admin UI. 
+	 */
 	public static function registerAdminAssets() {
 		//TODO: definition constant for path of assets/js
 	
@@ -115,6 +148,11 @@ class WPRegistrar {
 			$plugins_url . '/hoverbubble/assets/css/admin_form.css');
 	}
 	
+	/*
+	 * Function isUnsupportedBrowser.
+	 * Parameters: none
+	 * Return: true if browser is unsupported. 
+	 */
 	private static function isUnsupportedBrowser() {
 		
 		if ( !isset( $_SERVER['HTTP_USER_AGENT']  ) ) {

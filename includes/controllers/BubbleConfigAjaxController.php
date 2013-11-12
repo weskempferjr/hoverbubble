@@ -9,10 +9,50 @@ require_once( TNOTW_HOVERBUBBLE_DIR . "includes/controllers/ErrorController.php"
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/database/WPResources.php");
 require_once( TNOTW_HOVERBUBBLE_DIR . "includes/util/ImageListGenerator.php");
 
-
+/*
+ * BubbleConfigAjaxController class
+ * This class provides static functions that implement the 
+ * ajax controler functions for the plugin. The following 
+ * ajax request are supported:
+ * 
+ * Get Bubble Configs -- return the bubble configuration for 
+ * each bubble eligible for display on the current page. 
+ * 
+ * Does Bubble Name Exist -- returns boolean based on whether a 
+ * bubble exists with the specified name. 
+ * 
+ * Gen Site Image List -- this request initiates a site image 
+ * list generation, a process which crawls the site to create a list
+ * of potential target images. 
+ * 
+ * Get Page Candidate List -- for a specified image, this request 
+ * returns a list of URLs on which a target image appears on the site.
+ * 
+ * Get Bubble Content -- returns the content for a specified bubble. 
+ * 
+ */
 
 
 class BubbleConfigAjaxController {
+	
+	/*
+	 * Function: getBubbleConfigs
+	 * TODO: this function is misnamed as it actually does much
+	 * more than just retrieve bubble configuations. Should be
+	 * renamed to something like execRequest(). 
+	 * 
+	 * This function is registered as the ajax responder for the
+	 * plugin in Wordpress. It calls subordinate functions in order
+	 * to satisfy the request. The return string from the subordinate
+	 * function is output as a client response directly in this function.
+	 * 
+	 * If an exception is caught by this function, data related to the
+	 * exception are formated and sent as an error response to the
+	 * client. 
+	 * 
+	 * Parameters: none directly. Reads $_REQUEST for 'fn' parameter. 
+	 * 
+	 */
 	
 	public static function getBubbleConfigs() {
 		
@@ -66,6 +106,21 @@ class BubbleConfigAjaxController {
 		die;
 	}
 	
+	/*
+	 * Function: getBubbleContent
+	 * This function is registered as a query responder. Once a 
+	 * bubbles geometry is configured on the client side, a query 
+	 * is sent by the client to retrieve the HTML contents that
+	 * are to be displayed within the bubble. This function
+	 * retrieves the content for the specified bubble and outputs 
+	 * as as response. 
+	 * 
+	 * TODO: getBubbleContent should catch exceptions and report 
+	 * error conditions to the client. 
+	 * 
+	 * Paramters: $wp in order to extact query var hb_bubble_id. 
+	 * 
+	 */
 	public static function getBubbleContent($wp) {
 		
 		if ( $wp->query_vars == null )
@@ -84,6 +139,24 @@ class BubbleConfigAjaxController {
 	    }
 		
 	}
+	
+	/*
+	 * Function: retrieveBubbleConfigs
+	 * 
+	 * This function retrieves the configuration for each bubble eligle
+	 * to be displayed on the current page. The the curent page URL and
+	 * lists of images on the page is sent via the $_REQUEST global. The database
+	 * is queried to get a list of bubbles associated with 
+	 * the one or more of the images on the page. Each bubble is
+	 * then checked to see if has been published (ie, the published flag is set,
+	 * and that the bubble is displayable on the current page. All bubble configs
+	 * that meet these criteria are returned in a array to the caller. 
+	 * 
+	 *  Parameters: documentURL, imaageInfoData ( a list of image URLs) via $_REQUEST.
+	 *  Returns: bubbleConfigArray
+	 *  
+	 *  Exceptions thrown: database-related exceptions may be thrown by this function. 
+	 */
 	
 	private static function retrieveBubbleConfigs() {
 
@@ -165,6 +238,25 @@ class BubbleConfigAjaxController {
 	
 	}
 	
+	
+	/*
+	 * Function: retrievePageCandidates
+	 * 
+	 * A page candidate in a page on which bubble appears, or can potentially
+	 * appear. This function returns an array containing an array of 'mapped' page
+	 * candidates (the page URLs on which an image appears) and optionally a second 
+	 * array containing the pages IDs on which a specified bubble has been
+	 * selected to appear. In the bubble editor UI, the array is used to 
+	 * display the pages on which a selected target image appears. When editing
+	 * and existing bubble, the array of page IDs are used to indicate on
+	 * which pages the currently edited bubble has been selected to appear. 
+	 * 
+	 * The term 'mapped' in this context refers to a domain object that has been
+	 * converted to an associative array ready for display in the UI. 
+	 * 
+	 * Parameters: targetImageURL, bubbleID
+	 * Return: an array of two arrays -- mappedPageCandidates and display page IDs. 
+	 */
 	private static function retrievePageCandidates( $targetImageURL, $bubbleID ) {
 		
 		$targetImageURL = esc_url( $targetImageURL, array('http', 'https') );
@@ -206,6 +298,13 @@ class BubbleConfigAjaxController {
 		
 	}
 	
+	/*
+	 * Function: doesBubbleNameExist
+	 * Determine if bubble with specified name exists.
+	 * 
+	 * Parameters: none directly. $_REQUEST refereences for the parameter 'bubble_name'.
+	 * Return: A boolean indicating whether or not a bubble with the specified name exists.
+	 */
 	private static function doesBubbleNameExist() {
 		$bubble_name = $_REQUEST['bubble_name'];
 		$where_clause = "bubble_name = '" . $bubble_name . "'" ;
@@ -220,9 +319,17 @@ class BubbleConfigAjaxController {
 		
 	}
 	
+	/*
+	 * Function: mapConfig
+	 * 
+	 * Take a bubbleConfig object and copy its contents to an associative array
+	 * for use in the admin UI and on the the client side. 
+	 * 
+	 * Parameters: bubbleConfig -- bubbleConfig ojbect.
+	 * Return: an associative array containing bubble config data. 
+	 * TODO: move to BubbleConfig
+	 */
 	
-	
-	// TODO: move to BubbleConfig
 	private static function mapConfig( $bubbleConfig ) {
 		
 		// $imageURL = WPResources::getImageURL( $bubbleConfig->getTargetImageID() );
@@ -252,7 +359,14 @@ class BubbleConfigAjaxController {
 		return $mappedConfig ;
 	}
 	
-	// TODO: move to PageCandidate
+	/*
+	 * Function: mapPageCandidate
+	 * 
+	 * Return an associative array containing page Candidate data
+	 * Paramters: a pageCandidate object
+	 * Return: an associative array for use in the admin UI. 
+	 * TODO: move to PageCandidate
+	 */
 	private static function mapPageCandidate( $pageCandidate ) {
 		$mappedPageConfig = array(
 			'pageCandidateID' => $pageCandidate->getPageCandidateID(),
