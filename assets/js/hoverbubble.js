@@ -49,9 +49,13 @@ jQuery(document).ready(function($) {
 
 function displayBubbles(data)
 {
+	
+	jQuery('head').append(document.createElement('style'));
+	var bubbleStyleSheet = document.styleSheets[document.styleSheets.length-1];
+	 
 	for ( i = 0 ; i <	data.length ; i++ )
 	{
-		displayBubble(data[i]);
+		displayBubble(data[i], bubbleStyleSheet );
 	} 
 }
 
@@ -96,7 +100,9 @@ function restoreImageURL( imageURL ) {
 	
 }
 
-function displayBubble(bubbleConfig){
+
+
+function displayBubble(bubbleConfig, bubbleStyleSheet ){
 
 	//var bubbleMessage = bubbleConfig.bubbleMessage ;
 	var bubbleID = bubbleConfig.bubbleID ;
@@ -106,7 +112,8 @@ function displayBubble(bubbleConfig){
 	var bubbleOutlineColor = bubbleConfig.bubbleOutlineColor;
 	var bubbleOutlineWidth = parseInt(bubbleConfig.bubbleOutlineWidth);
 	var bubbleTailX = parseInt(bubbleConfig.bubbleTailX) ;
-	var bubbleTailY = parseInt(bubbleConfig.bubbleTailY) ;	var bubbleAspectRatio =  parseInt(bubbleConfig.bubbleAspectRatio) ;
+	var bubbleTailY = parseInt(bubbleConfig.bubbleTailY) ;	
+	var bubbleAspectRatio =  parseInt(bubbleConfig.bubbleAspectRatio) ;
 
 	var contentAreaWidth = parseInt(bubbleConfig.contentAreaWidth);
 	var contentAreaHeight = parseInt(bubbleConfig.contentAreaHeight);
@@ -117,12 +124,7 @@ function displayBubble(bubbleConfig){
 	// Force tail direction to lower case. All code in this
 	// script assumes lower case. 
 	var bubbleTailDirection = bubbleConfig.bubbleTailDirection.toLowerCase(); ;
-	//  TODO: this is a place holder for now. This field was removed because
-	//  it id not seem necessary. It was used for troubleshooting in early
-	// development but may be useful in for future functionality. Hardcode
-	// value for now. 
-	// var canvasBorderStyle = bubbleConfig.canvasBorderStyle.
-	var canvasBorderStyle =  '0px solid #000000';
+	
 	var targetImageURL = bubbleConfig.targetImageURL  ;
 	
 	var targetImageContainerID = bubbleConfig.targetImageContainerID ;
@@ -132,14 +134,15 @@ function displayBubble(bubbleConfig){
 
 	// wrap target image in div, call remove in case it previously exists. 
 	var the_image = "";
-	if ( jQuery("#" + targetImageContainerID ).length == 0 ) {
-		var the_image = jQuery("img[src='" + targetImageURL	+ "']");
-		the_image.wrap('<div id="' + targetImageContainerID + '"/></div>');
-	}
+	//         if ( jQuery("#" + targetImageContainerID ).length == 0 ) {
+	var the_image = jQuery("img[src='" + targetImageURL	+ "']");
+	var imageDivPosition = the_image.position();
+	the_image.wrap('<div id="' + targetImageContainerID + '" style="top:' + imageDivPosition.top + 'px; left:' + imageDivPosition.left + 'px"/></div>');
+	//          } 
+	
 
 	var img_div = jQuery("#" + targetImageContainerID); 
-	var imageDivPosition = img_div.position();
-	
+	// imageDivPosition = img_div.position();
 
 	textAreaDimensions = new Object();
 	textAreaDimensions.width = contentAreaWidth;
@@ -167,8 +170,8 @@ function displayBubble(bubbleConfig){
 
 	
 
-	var top = imageDivPosition.top + canvasAreaDimensions.top ;
-	var left = imageDivPosition.left +   canvasAreaDimensions.left;
+	// var top = imageDivPosition.top + canvasAreaDimensions.top ;
+	// var left = imageDivPosition.left +   canvasAreaDimensions.left;
 	
 
 	// tail dimensions 
@@ -186,7 +189,6 @@ function displayBubble(bubbleConfig){
 	var canvas_h = canvasAreaDimensions.height ;
 	var canvas_w_attr = canvas_w + "px" ; 
 	var canvas_h_attr = canvas_h + "px" ;
-	var canvas_border_style = canvasBorderStyle ;
 
 
 
@@ -195,34 +197,23 @@ function displayBubble(bubbleConfig){
 
 
 	// remove previous instance if it exists.
-	jQuery("#" + bubbleCanvasID ).remove();
 	jQuery("#" + contentDivID ).remove();
 	jQuery("#" + contentEmbedID ).remove();
 
-	img_div.append('<canvas id="' + bubbleCanvasID + '" width="' + canvas_w + '" height="' + canvas_h + '" > </canvas>');
-	var canvasElement=document.getElementById( bubbleCanvasID );
-	var ctx=canvasElement.getContext("2d");
-
-	var scale_factor = backingScale(ctx) ;
 
 	// center position of bubble rectangle relative canvas origin. 
-	var center_x = ( canvas_w / 2 ) * scale_factor ;
-	var center_y = ( canvas_h / 2 ) * scale_factor ;
-	
+	// var center_x = ( canvas_w / 2 ) * scale_factor ;
+	// var center_y = ( canvas_h / 2 ) * scale_factor ;
+	var center_x = ( canvas_w / 2 ) ;
+	var center_y = ( canvas_h / 2 ) ;
 	
 
 	// scaled dimensions
-	var bubble_w = bubbleAreaDimensions.width * scale_factor;
-	var bubble_h = bubbleAreaDimensions.height * scale_factor;
-
-	// Start for for text
-	//var text_x = center_x ;
-	// var text_y = center_y ; used with center align
-	// var text_padding_x = 5 ;
-	// var text_padding_y = 15;	
-	// var max_text_width = bubble_w - ( textPadding.x * 2 );
-	// text_x = bubble_w - max_text_width / 2;
-	// text_y = ( center_y - ( bubble_h / 2 ) ) + textPadding.y;
+	// var bubble_w = bubbleAreaDimensions.width * scale_factor;
+	// var bubble_h = bubbleAreaDimensions.height * scale_factor;
+	var bubble_w = bubbleAreaDimensions.width ;
+	var bubble_h = bubbleAreaDimensions.height ;
+	
 	
 	// Calculate text origin. 
 	var text_x =  Math.round(( canvasAreaDimensions.width  - textAreaDimensions.width ) / 2);
@@ -240,267 +231,244 @@ function displayBubble(bubbleConfig){
 	var start_point = getBubbleDrawStartPoint( bubbleTailDirection );
 
 
-	jQuery("#" + bubbleCanvasID ).css({"border": canvas_border_style,"position":"absolute","z-index":"10","visibility":"hidden"});
-	jQuery("#" + bubbleCanvasID ).css({"top":top,"left":left });
-
-
-	ctx.save();
-
-
-
-	if ( start_point == "nw" ) {
-		var start_path_x = left_x + corner_r ;
-		var start_path_y = top_y ;
-
-		var first_arc_x1 = right_x ;
-		var first_arc_y1 = top_y ;
-		var first_arc_x2 = right_x ;
-		var first_arc_y2 = top_y + corner_r ;
-
-		var second_arc_x1 = right_x ;
-		var second_arc_y1 = bottom_y ;
-		var second_arc_x2 = right_x - corner_r ;
-		var second_arc_y2 = bottom_y ;
-
-		var third_arc_x1 = left_x ;
-		var third_arc_y1 = bottom_y ;
-		var third_arc_x2 = left_x ;
-		var third_arc_y2 = bottom_y - corner_r ;
-
-		var fourth_arc_x1 = left_x ;
-		var fourth_arc_y1 = top_y ;
-		var fourth_arc_x2 = left_x + corner_r ;
-		var fourth_arc_y2 = top_y ;
-
-
-		// for tail off of corner
-		var tail_base_x = left_x ; 
-		var tail_base_y = top_y + corner_r ;
-
-		
-		// canvas origin
-		var tail_point_x = 0 + bubbleOutlineWidth;
-		var tail_point_y = 0 + bubbleOutlineWidth;
-		
-		// for tail off of side.
-		var tail_side_base_x1 = left_x ;
-		var tail_side_base_y1 = center_y + tail_base_offset ;
-		var tail_side_base_x2 = left_x ;
-		var tail_side_base_y2 = center_y - tail_base_offset ;
-
-		// 
-		// var tail_side_point_x = left_x - tail_length ;
-		// var tail_side_point_y = center_y ;
-		// To the west side of the canvas.
-		var tail_side_point_x = 0 + bubbleOutlineWidth ;
-		var tail_side_point_y = Math.round( canvasAreaDimensions.height / 2 );
-		
-		
-	} 
-	else if ( start_point == "ne" ) {
-		var start_path_x = right_x ;
-		var start_path_y = top_y + corner_r ;
-
-		var first_arc_x1 = right_x ;
-		var first_arc_y1 = bottom_y ;
-		var first_arc_x2 = right_x - corner_r ;
-		var first_arc_y2 = bottom_y ;
-
-		var second_arc_x1 = left_x ;
-		var second_arc_y1 = bottom_y ;
-		var second_arc_x2 = left_x ;
-		var second_arc_y2 = bottom_y - corner_r ;
-
-		var third_arc_x1 = left_x ;
-		var third_arc_y1 = top_y ;
-		var third_arc_x2 = left_x + corner_r ;
-		var third_arc_y2 = top_y ;
-
-		var fourth_arc_x1 = right_x ;
-		var fourth_arc_y1 = top_y ;
-		var fourth_arc_x2 = right_x ;
-		var fourth_arc_y2 = top_y + corner_r ;
-
-		// for tail off of corner.
-		var tail_base_x =  right_x - corner_r ; 
-		var tail_base_y = top_y ;
-		
-		// To the northeast corner.
-		var tail_point_x = canvasAreaDimensions.width - bubbleOutlineWidth; 
-		var tail_point_y = 0 + bubbleOutlineWidth;
-
-		// for tail off of side.
-		var tail_side_base_x1 = center_x - tail_base_offset ;
-		var tail_side_base_y1 = top_y ;
-		var tail_side_base_x2 = center_x + tail_base_offset ;
-		var tail_side_base_y2 = top_y ;
-
-		// var tail_side_point_x = center_x ;
-		// var tail_side_point_y = top_y - tail_length ;
-		// To the North side of the canvas
-		var tail_side_point_x = Math.round( canvasAreaDimensions.width / 2 );
-		var tail_side_point_y = 0 + bubbleOutlineWidth;
-
-	}
-	else if ( start_point == "se" ) {
-
-		var start_path_x = right_x - corner_r ;
-		var start_path_y = bottom_y ;
-
-		var first_arc_x1 = left_x ;
-		var first_arc_y1 = bottom_y ;
-		var first_arc_x2 = left_x ;
-		var first_arc_y2 = bottom_y - corner_r ;
-
-		var second_arc_x1 = left_x ;
-		var second_arc_y1 = top_y ;
-		var second_arc_x2 = left_x + corner_r ;
-		var second_arc_y2 = top_y ;
-
-		var third_arc_x1 = right_x ;
-		var third_arc_y1 = top_y ;
-		var third_arc_x2 = right_x ;
-		var third_arc_y2 = top_y + corner_r ;
-
-		var fourth_arc_x1 = right_x ;
-		var fourth_arc_y1 = bottom_y ;
-		var fourth_arc_x2 = right_x - corner_r ;
-		var fourth_arc_y2 = bottom_y ;
-
-		// for tail of of corner
-		var tail_base_x = right_x  ; 
-		var tail_base_y =  bottom_y - corner_r  ;
-
-		//
-		// var tail_point_x = right_x + tail_offset_x ; 
-		// var tail_point_y = bottom_y + tail_offset_y ; 
-		// To the southeast corner
-		var tail_point_x = canvasAreaDimensions.width - bubbleOutlineWidth;
-		var tail_point_y = canvasAreaDimensions.height - bubbleOutlineWidth;
-
-		// for tail off of side.
-		var tail_side_base_x1 = right_x ;
-		var tail_side_base_y1 = center_y - tail_base_offset ;
-		var tail_side_base_x2 = right_x ;
-		var tail_side_base_y2 = center_y + tail_base_offset ;
-
-		// var tail_side_point_x = right_x + tail_length ;
-		// var tail_side_point_y = center_y ;
-		// To the east side. 
-		var tail_side_point_x = canvasAreaDimensions.width - bubbleOutlineWidth;
-		var tail_side_point_y = Math.round( canvasAreaDimensions.height /2 );
-		
-
-
-	} 
-	else if ( start_point == "sw" ) {
-
-		var start_path_x = left_x ;
-		var start_path_y = bottom_y - corner_r ;
-
-		var first_arc_x1 = left_x ;
-		var first_arc_y1 = top_y ;
-		var first_arc_x2 = left_x + corner_r;
-		var first_arc_y2 = top_y ;
-
-		var second_arc_x1 = right_x ;
-		var second_arc_y1 = top_y ;
-		var second_arc_x2 = right_x ;
-		var second_arc_y2 = top_y + corner_r;
-
-		var third_arc_x1 = right_x ;
-		var third_arc_y1 = bottom_y ;
-		var third_arc_x2 = right_x - corner_r ;
-		var third_arc_y2 = bottom_y ;
-
-		var fourth_arc_x1 = left_x ;
-		var fourth_arc_y1 = bottom_y ;
-		var fourth_arc_x2 = left_x ;
-		var fourth_arc_y2 = bottom_y - corner_r ;
-
-		var tail_base_x = left_x + corner_r ; 
-		var tail_base_y = bottom_y ;
-
-		// var tail_point_x = left_x - tail_offset_x ; 
-		// var tail_point_y = bottom_y + tail_offset_y ; 
-		var tail_point_x  = 0 + bubbleOutlineWidth ;
-		var tail_point_y = canvasAreaDimensions.height  - bubbleOutlineWidth ;
-
-		// for tail off of side.
-		var tail_side_base_x1 = center_x + tail_base_offset ;
-		var tail_side_base_y1 = bottom_y ;
-		var tail_side_base_x2 = center_x - tail_base_offset ;
-		var tail_side_base_y2 = bottom_y ;
-
-		// To the south
-		var tail_side_point_x = Math.round(canvasAreaDimensions.width / 2 )  ;
-		var tail_side_point_y = canvasAreaDimensions.height - bubbleOutlineWidth ;
-	} 
-		 
-	ctx.strokeStyle = strokeColor ;
-	ctx.lineWidth = strokeWidth ; 
-	ctx.beginPath(); 
-	ctx.moveTo( start_path_x, start_path_y);
-
-	// Note that ctx.lineTo calls are not needed. 
-	// See http://www.dbp-consulting.com/tutorials/canvas/CanvasArcTo.html. 
-
-	//find start of	right side line and arc to it from end of top line
-	ctx.arcTo( first_arc_x1, first_arc_y1, first_arc_x2, first_arc_y2, corner_r );
-	
-	// find end of right line, find start of bottom line and arc to it from end of right side line
-	ctx.arcTo( second_arc_x1, second_arc_y1, second_arc_x2, second_arc_y2, corner_r );
-
-	// find end of bottom line, find start of left line and arc to it from end of bottom side line
-	ctx.arcTo( third_arc_x1, third_arc_y1, third_arc_x2, third_arc_y2, corner_r );
-
-	if ( tail_style == "none" ) {
-		// find end of left line, find start of	top line and arc to it from end of left side line
-		ctx.arcTo( fourth_arc_x1, fourth_arc_y1, fourth_arc_x2, fourth_arc_y2, corner_r );
-	} 
-	else if ( tail_style == "corner" ) {
-		ctx.lineTo( tail_base_x, tail_base_y );
-		ctx.lineTo( tail_point_x, tail_point_y );
-		ctx.closePath();
-	}
-	else if ( tail_style = "side" ) {
-		ctx.lineTo( tail_side_base_x1, tail_side_base_y1 ); 
-		ctx.lineTo( tail_side_point_x, tail_side_point_y );
-		ctx.lineTo( tail_side_base_x2, tail_side_base_y2 ); 
-		ctx.arcTo( fourth_arc_x1, fourth_arc_y1, fourth_arc_x2, fourth_arc_y2, corner_r );
-	}
-
-	// draw it
-	ctx.stroke();
-
-	ctx.fillStyle = bubbleFillColor ;
-	ctx.fill(); 
+	var contentDivPos = getContentDivPosition( bubbleConfig );
+	var wrapperTop = imageDivPosition.top + contentDivPos.top ;
+	var wrapperLeft = imageDivPosition.left +   contentDivPos.left;
 	
 	
-	 var canvasPosition = jQuery("#" + bubbleCanvasID ).position();
-	 var etop = canvasPosition.top + ( ( canvas_h - contentAreaHeight ) / 2 );
-	 var eleft = canvasPosition.left + ( ( canvas_w - contentAreaWidth ) / 2 );
-
-	 img_div.append('<div id="' + contentDivID + '"  style="visibility:hidden;z-index:20;position:absolute;top:' +  etop +  'px;left:' + eleft + 'px"></div>');
+	
+	img_div.append('<div id="' + contentDivID + '"  style="visibility:hidden;z-index:20;position:absolute;top:' +  wrapperTop +  'px;left:' + wrapperLeft + 'px"></div>');
 	 
-	 jQuery("#" + contentDivID ).append('<object  type="text/html" width="' + contentAreaWidth + 'px" height="' + contentAreaHeight + 'px" data="' + objectl10n.wpsiteinfo.site_url + '/index.php?hb_bubble_id='+ bubbleID +'">');
+	jQuery("#" + contentDivID ).append('<object  type="text/html" width="' + contentAreaWidth + 'px" height="' + contentAreaHeight + 'px" data="' + objectl10n.wpsiteinfo.site_url + '/index.php?hb_bubble_id='+ bubbleID +'">');
 
+	 // set content div styles to create bubble
+	jQuery("#" + contentDivID ).css("width", contentAreaWidth );
+	jQuery("#" + contentDivID ).css("height", contentAreaHeight );
+	jQuery("#" + contentDivID ).css("padding", "0px" );
+	jQuery("#" + contentDivID ).css("background", bubbleFillColor );
+	jQuery("#" + contentDivID ).css("border-width", bubbleOutlineWidth );
+	jQuery("#" + contentDivID ).css("border-style", "solid");
+	jQuery("#" + contentDivID ).css("border-color", bubbleOutlineColor );
+	jQuery("#" + contentDivID ).css("border-radius", bubbleCornerRadius);
+	jQuery("#" + contentDivID ).css("-webkit-border-radius", bubbleCornerRadius);
+	jQuery("#" + contentDivID ).css("-moz-border-radius", bubbleCornerRadius);
+	 
+	if ( bubbleTailDirection != "none") {
+		 var tailStyleSheetRules = getTailStyleSheetRules( bubbleConfig );
+	
+		 // Draw tail by adding rules to bubbleSytleSheet
+		 var elementSelector = "#" + contentDivID + ":after" ;
+		 bubbleStyleSheet.insertRule( elementSelector + " {content: ''}", 0);
+		 bubbleStyleSheet.insertRule( elementSelector + " {position: absolute}", 0);
+		 
+	
+		 
+		 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterVerticalPos, 0 );
+		 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterHorizontalPos, 0 );
+		 bubbleStyleSheet.insertRule( elementSelector + " {border-style: solid}", 0);
+		 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterBorderWidth, 0 );
+		 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterBorderColor, 0 );
+		 
+	
+		 bubbleStyleSheet.insertRule( elementSelector + " {display: block}", 0);
+		 bubbleStyleSheet.insertRule( elementSelector + " {width: 0 }", 0);
+		 bubbleStyleSheet.insertRule( elementSelector + " {z-index: 1 }", 0);
+		 
+		 // draw tail outline
+		 elementSelector = "#" + contentDivID + ":before" ;
+		 bubbleStyleSheet.insertRule( elementSelector + " {content: ''}", 0);
+		 bubbleStyleSheet.insertRule( elementSelector + " {position: absolute}", 0);
+		 
+		 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeVerticalPos, 0 );
+		 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeHorizontalPos, 0 );
+		 bubbleStyleSheet.insertRule( elementSelector + " {border-style: solid}", 0);
+		 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeBorderWidth, 0 );
+		 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeBorderColor, 0 );
+		 
+		 bubbleStyleSheet.insertRule( elementSelector + " {display: block}", 0);
+		 bubbleStyleSheet.insertRule( elementSelector + " {width: 0 }", 0);
+		 bubbleStyleSheet.insertRule( elementSelector + " {z-index: 0 }", 0);
+	 }
+	 
 	 // Display bubble as indicated by delay and duration. 
 	 setTimeout( function() {
-		 	jQuery("#" + bubbleCanvasID ).css("visibility","visible").fadeIn("slow");
 		 	jQuery("#" + contentDivID ).css("visibility","visible").fadeIn("slow") ;
 		 	
 		 	if ( bubbleDuration > 0 ) {
 			 	setTimeout( function() {
 			 		jQuery("#" +  contentDivID ).fadeOut("slow");
-			 		jQuery("#" + bubbleCanvasID ).fadeOut("slow");
 			 	}, bubbleDuration );
 	 		}
 		}, bubbleDelay );
 	 
-	 ctx.restore();
 
 };
+
+
+function getContentDivPosition( bubbleConfig ) {
+	
+	var contentAreaWidth = parseInt(bubbleConfig.contentAreaWidth);
+	var contentAreaHeight = parseInt(bubbleConfig.contentAreaHeight);
+	var bubbleTailLength = parseInt(bubbleConfig.bubbleTailLength);
+	var bubbleTailX = parseInt(bubbleConfig.bubbleTailX) ;
+	var bubbleTailY = parseInt(bubbleConfig.bubbleTailY) ;	
+	var bubbleTailDirection = bubbleConfig.bubbleTailDirection.toLowerCase();
+	
+	// TODO: config parameter for position
+	var position = 0.5;
+	
+	var contentDivPos = new Object();
+	
+	// TODO: corner directions (nw, sw ) are to be removed.
+	switch ( bubbleTailDirection ) {
+	case "n":
+	case "ne":
+	case "nw":
+		contentDivPos.left = bubbleTailX - ( contentAreaWidth * position );
+		contentDivPos.top = bubbleTailY + bubbleTailLength ;				
+		break; 
+
+	case "se":
+	case "sw":
+	case "s":
+		contentDivPos.left = bubbleTailX - ( contentAreaWidth * position );
+		contentDivPos.top = bubbleTailY - bubbleTailLength - contentAreaHeight ;
+		break;
+
+	case "w":
+		contentDivPos.left = bubbleTailX + bubbleTailLength ;
+		contentDivPos.top = bubbleTailY - ( contentAreaHeight * position );
+		break;
+	
+	case "e":
+		contentDivPos.left = bubbleTailX - bubbleTailLength - contentAreaWidth;
+		contentDivPos.top = bubbleTailY - ( contentAreaHeight * position );
+		break;
+
+	default:
+		// TODO: error condition
+		alert("unknown bubble tail direction");
+		break ;
+			 
+	
+	}
+	
+	return contentDivPos;	
+	
+}
+
+// return object containing CSS rules for thoses properties dependent on tail and bubble geometry
+function getTailStyleSheetRules( bubbleConfig )
+{
+	var contentAreaWidth = parseInt(bubbleConfig.contentAreaWidth);
+	var contentAreaHeight = parseInt(bubbleConfig.contentAreaHeight);
+	var bubbleFillColor = bubbleConfig.bubbleFillColor ;
+	var bubbleTailLength = parseInt(bubbleConfig.bubbleTailLength);
+	var bubbleCornerRadius = parseInt(bubbleConfig.bubbleCornerRadius );
+	var bubbleOutlineColor = bubbleConfig.bubbleOutlineColor;
+	var bubbleOutlineWidth = parseInt(bubbleConfig.bubbleOutlineWidth);
+	var bubbleTailDirection = bubbleConfig.bubbleTailDirection.toLowerCase();
+	
+	//TODO need config vars for these: position, tail base width
+	var position = 0.5;
+	var tailBaseWidth = 10;
+	
+	var tailCSSRules = new Object();
+	
+	var outLineWidthOffset = bubbleOutlineWidth - 1;
+	
+	// position of the tail along side of bubble
+	var horizontalTailOffset =  ( contentAreaWidth * position ) - tailBaseWidth ;
+	var verticalTailOffset  = ( contentAreaHeight * position ) - tailBaseWidth ;
+	
+	var horizontalOutlineOffset = horizontalTailOffset - ( bubbleOutlineWidth - 1);
+	var verticalOutlineOffset = verticalTailOffset - ( bubbleOutlineWidth - 1 ) ;
+	
+	var tailOutlineLength =  bubbleTailLength +  ( 2 * bubbleOutlineWidth ) - 1 ;
+	
+	var outlineTailBaseWidth = tailBaseWidth + bubbleOutlineWidth - 1;
+	var outlineBubbleTailLength = bubbleTailLength + bubbleOutlineWidth - 1;
+	
+	var outlineHorizontalPos = contentAreaWidth + bubbleOutlineWidth ;
+	var outlineVerticalPos = contentAreaHeight + bubbleOutlineWidth ;
+	
+	
+	// Rules required:
+	// after horizontal position (left, right)
+	// after vertical position (top, bottom)
+	// after border-width
+	// after border-color
+	// before horizontal position (left, right)
+	// before vertical position (top, bottom)
+	// before border-width
+	// before border-color
+	
+	// TODO: corner directions (nw, sw ) are to be removed.
+	switch ( bubbleTailDirection ) {
+	case "n":
+	case "ne":
+	case "nw":
+		
+		tailCSSRules.afterVerticalPos = "{top: " +  bubbleTailLength * -1 + "px }" ;
+		tailCSSRules.afterHorizontalPos = "{left: " + horizontalTailOffset + "px }" ;
+		tailCSSRules.afterBorderWidth = "{border-width: " + 0 + " " + tailBaseWidth + "px " + bubbleTailLength + "px }" ;
+		tailCSSRules.afterBorderColor = "{border-color: " + bubbleFillColor + " transparent }" ;
+		
+		tailCSSRules.beforeVerticalPos = "{top: "  + tailOutlineLength * -1 + "px }";
+		tailCSSRules.beforeHorizontalPos = "{left: " + horizontalOutlineOffset + "px }";
+		tailCSSRules.beforeBorderWidth = "{border-width: " + 0 + " " + outlineTailBaseWidth + "px " + outlineBubbleTailLength + "px }" ;
+		tailCSSRules.beforeBorderColor = "{border-color: " + bubbleOutlineColor + " transparent }" ;
+		
+		break; 
+
+	case "se":
+	case "sw":
+	case "s":
+		tailCSSRules.afterVerticalPos = "{bottom: " +  bubbleTailLength * -1 + "px }" ;
+		tailCSSRules.afterHorizontalPos = "{left: " + horizontalTailOffset + "px }" ;
+		tailCSSRules.afterBorderWidth = "{border-width: " + bubbleTailLength + "px " + tailBaseWidth + "px 0}" ;
+		tailCSSRules.afterBorderColor = "{border-color: " + bubbleFillColor + " transparent }" ;
+		
+		tailCSSRules.beforeVerticalPos = "{top: "  + outlineVerticalPos + "px }";
+		tailCSSRules.beforeHorizontalPos = "{left: " + horizontalOutlineOffset + "px }";		
+		tailCSSRules.beforeBorderWidth = "{border-width: " + outlineBubbleTailLength + "px " + outlineTailBaseWidth + "px 0}" ;
+		tailCSSRules.beforeBorderColor = "{border-color: " + bubbleOutlineColor + " transparent }" ;
+		break;
+
+	case "w":
+		tailCSSRules.afterVerticalPos = "{top: " +  verticalTailOffset + "px }" ;
+		tailCSSRules.afterHorizontalPos = "{left: " + bubbleTailLength * -1 + "px }" ;
+		tailCSSRules.afterBorderWidth = "{border-width: "  + tailBaseWidth + "px " + bubbleTailLength + "px " + tailBaseWidth + "px 0}" ;
+		tailCSSRules.afterBorderColor = "{border-color: transparent " + bubbleFillColor + " }" ;
+		
+		tailCSSRules.beforeVerticalPos = "{top: "  + verticalOutlineOffset + "px }";
+		tailCSSRules.beforeHorizontalPos = "{left: " + tailOutlineLength * -1 + "px }";	
+		tailCSSRules.beforeBorderWidth = "{border-width: " + outlineTailBaseWidth + "px " + outlineBubbleTailLength + "px " + outlineTailBaseWidth + "px 0}" ;
+		tailCSSRules.beforeBorderColor = "{border-color: transparent " + bubbleOutlineColor + " }" ;
+		break;
+	
+	case "e":		
+		tailCSSRules.afterVerticalPos = "{top: " +  verticalTailOffset + "px }" ;
+		tailCSSRules.afterHorizontalPos = "{right: " + bubbleTailLength * -1 + "px }" ;
+		tailCSSRules.afterBorderWidth = "{border-width: "  + tailBaseWidth + "px 0 " + tailBaseWidth + "px " + bubbleTailLength + "px }" ;
+		tailCSSRules.afterBorderColor = "{border-color: transparent " + bubbleFillColor + " }" ;
+		
+		tailCSSRules.beforeVerticalPos = "{top: "  + verticalOutlineOffset + "px }";
+		tailCSSRules.beforeHorizontalPos = "{left: " + outlineHorizontalPos + "px }";	
+		tailCSSRules.beforeBorderWidth = "{border-width: " + outlineTailBaseWidth + "px 0 " + outlineTailBaseWidth + "px " + outlineBubbleTailLength + "px}" ;
+		tailCSSRules.beforeBorderColor = "{border-color: transparent " + bubbleOutlineColor + " }" ;
+		break;
+
+	default:
+		// TODO: error condition
+		break ;
+			 
+	
+	}
+	
+	return tailCSSRules;		
+	
+}
 
 // return tail style ("side" or "corner");
 function getBubbleTailStyle( bubbleTailDirection ) {
