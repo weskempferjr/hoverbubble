@@ -134,15 +134,13 @@ function displayBubble(bubbleConfig, bubbleStyleSheet ){
 
 	// wrap target image in div, call remove in case it previously exists. 
 	var the_image = "";
-	//         if ( jQuery("#" + targetImageContainerID ).length == 0 ) {
+
 	var the_image = jQuery("img[src='" + targetImageURL	+ "']");
 	var imageDivPosition = the_image.position();
 	the_image.wrap('<div id="' + targetImageContainerID + '" style="top:' + imageDivPosition.top + 'px; left:' + imageDivPosition.left + 'px"/></div>');
-	//          } 
 	
-
 	var img_div = jQuery("#" + targetImageContainerID); 
-	// imageDivPosition = img_div.position();
+
 
 	textAreaDimensions = new Object();
 	textAreaDimensions.width = contentAreaWidth;
@@ -160,76 +158,12 @@ function displayBubble(bubbleConfig, bubbleStyleSheet ){
 	var bubbleTailCoordinates = new Object();
 	bubbleTailCoordinates.x = bubbleTailX;
 	bubbleTailCoordinates.y = bubbleTailY;
-	var canvasAreaDimensions = calculateCanvasDimensions(	bubbleAreaDimensions,
-															bubbleTailLength,
-															bubbleTailDirection,
-															bubbleTailCoordinates);
-	// corner radius	
-	var corner_r = bubbleCornerRadius ;
-	
-
-	
-
-	// var top = imageDivPosition.top + canvasAreaDimensions.top ;
-	// var left = imageDivPosition.left +   canvasAreaDimensions.left;
-	
-
-	// tail dimensions 
-	var tail_length = bubbleTailLength ;
-	var tail_angle = Math.PI / 4;
-	var tail_offset_x = Math.round( tail_length *	Math.cos(tail_angle) );
-	var tail_offset_y = Math.round( tail_length *	Math.sin(tail_angle) );
-	// tail base width for side-based tail
-	var tail_base_w = corner_r ;
-	var tail_base_offset = corner_r /2 ;
-
-	// var canvas_w = canvasWidth;
-	// var canvas_h = canvasHeight; 
-	var canvas_w = canvasAreaDimensions.width ;
-	var canvas_h = canvasAreaDimensions.height ;
-	var canvas_w_attr = canvas_w + "px" ; 
-	var canvas_h_attr = canvas_h + "px" ;
-
-
-
-	var strokeColor = bubbleOutlineColor;
-	var strokeWidth = bubbleOutlineWidth;
 
 
 	// remove previous instance if it exists.
 	jQuery("#" + contentDivID ).remove();
 	jQuery("#" + contentEmbedID ).remove();
-
-
-	// center position of bubble rectangle relative canvas origin. 
-	// var center_x = ( canvas_w / 2 ) * scale_factor ;
-	// var center_y = ( canvas_h / 2 ) * scale_factor ;
-	var center_x = ( canvas_w / 2 ) ;
-	var center_y = ( canvas_h / 2 ) ;
-	
-
-	// scaled dimensions
-	// var bubble_w = bubbleAreaDimensions.width * scale_factor;
-	// var bubble_h = bubbleAreaDimensions.height * scale_factor;
-	var bubble_w = bubbleAreaDimensions.width ;
-	var bubble_h = bubbleAreaDimensions.height ;
-	
-	
-	// Calculate text origin. 
-	var text_x =  Math.round(( canvasAreaDimensions.width  - textAreaDimensions.width ) / 2);
-	var text_y =  Math.round(( canvasAreaDimensions.height  - textAreaDimensions.height ) / 2) + textPadding.y;
-	
- 
-	// x and y values needed for start/end path positions
-	var left_x = center_x - ( bubble_w / 2 );
-	var right_x = center_x + ( bubble_w / 2 );
-	var top_y = center_y - ( bubble_h / 2 );
-	var bottom_y = center_y + ( bubble_h / 2 );
-
-	// Determine start_point and tail style (corner or side) from bubbleTailDirection
-	var tail_style = getBubbleTailStyle( bubbleTailDirection );
-	var start_point = getBubbleDrawStartPoint( bubbleTailDirection );
-
+	 
 
 	var contentDivPos = getContentDivPosition( bubbleConfig );
 	var wrapperTop = imageDivPosition.top + contentDivPos.top ;
@@ -470,137 +404,8 @@ function getTailStyleSheetRules( bubbleConfig )
 	
 }
 
-// return tail style ("side" or "corner");
-function getBubbleTailStyle( bubbleTailDirection ) {
-
-	var tailStyle ;
-
-	switch ( bubbleTailDirection ) {
-		case "n":
-		case "s":
-		case "w":
-		case "e":
-			tailStyle = "side" ;
-			break;
-
-		case "nw":
-		case "sw":
-		case "ne":
-		case "se":
-			tailStyle = "corner" ;
-			break;
-
-		case "none":
-			tailStyle = "none" ;
-			break ;
-
-		default:
-			tailStyle = "none" ;
-			break ;
-				 
-
-	}
-	return tailStyle ;
-}
 
 
-// return drawing start point based on bubble tail direction
-function getBubbleDrawStartPoint( bubbleTailDirection ) {
-	var startPoint ;
-
-	switch ( bubbleTailDirection ) {
-
-		case "w":
-		case "nw":
-			startPoint = "nw" ;
-			break;
-
-		case "n":
-		case "ne":
-			startPoint = "ne" ;
-			break;
-
-		case "e":
-		case "se":
-			startPoint = "se" ;
-			break;
-
-		case "s":
-		case "sw":
-			startPoint = "sw" ;
-			break;
-
-		default:
-			startPoint = "sw" ;
-			break ;
-				 
-
-	}
-	return startPoint ;
-}
-
-
-function wrapText(context, text, x, y, maxWidth, bubbleFont) {
-	var words = text.split(' ');
-	var line = '';
-
-	// determine line height from font
-	var fontSizeStr = bubbleFont.split(' ') ;
-	var fontHeightStrRaw = fontSizeStr[0] ;
-	var fontHeightStr = fontHeightStrRaw.replace("px","");
-	var fontHeight = parseInt(fontHeightStr);
-	
-	var lineHeight = fontHeight + 4 ;
-	
-	for(var n = 0; n < words.length; n++) {
-		var testLine = line + words[n] + ' ';
-		var metrics = context.measureText(testLine);
-		var testWidth = metrics.width;
-		if(testWidth > maxWidth) {
-			context.fillText(line, x, y);
-			line = words[n] + ' ';
-			y += lineHeight;
-		}
-		else {
-			line = testLine;
-		}
-	}
-	context.fillText(line, x, y);
-}
-
-
-// calculate text area dimensions based on 
-// a line of text and an w:h ratio.
-
-function calculateTextDimensions(divObj, text, bubbleFont, aspectRatio, lineSpacing ) {
-	
-	var context = getTempContext(divObj);
-	context.font = bubbleFont ;
-	var metric = context.measureText(text);
-	var lineLength = metric.width;
-	
-	// TODO collapse of clean this up. Turn in to function.
-	var fontSizeStr = bubbleFont.split(' ') ;
-	var fontHeightStrRaw = fontSizeStr[0] ;
-	var fontHeightStr = fontHeightStrRaw.replace("px","");
-	var fontHeight = parseInt(fontHeightStr);
-	
-	var lineHeight = fontHeight + lineSpacing ;
-	var requiredArea = lineHeight * lineLength ;
-	
-	// calculate y 
-	var textHeight = Math.sqrt( requiredArea * aspectRatio );
-	var textWidth = textHeight * aspectRatio ;
-	
-	var textDimensions = new Object();
-	textDimensions.height = Math.round( textHeight ) ;
-	textDimensions.width = Math.round( textWidth );
-	
-	removeTempContext();
-	
-	return textDimensions ;
-	
-}
 
 // calculate bubble dimensions - the area that does not include the tail
 function calculateBubbleDimensions( textDimensions, textPadding ) {	
@@ -611,97 +416,8 @@ function calculateBubbleDimensions( textDimensions, textPadding ) {
 	
 }
 
-// calculate canvas dimensions by adding tail length to bubble dimension
-function calculateCanvasDimensions( bubbleDimensions, tailLength, tailDirection, tailCoordinates) {
-	var canvasDimensions = new Object();
-	var tailOffset = tailLength ;
-	switch ( tailDirection ) {
-		case "nw":
-		case "ne":
-		case "sw":
-		case "se":
-			var tailOffset = Math.round( tailLength * Math.sin(Math.PI / 4) );
-			break;
-		default:
-			// 10 pixels are added to prevent tip of tail from 
-			// being truncated. TODO: it may be necessary to 
-			// consider outline width as a factor. 
-			var tailOffset = tailLength ;
-			break;
-	}
-	
-	canvasDimensions.height = bubbleDimensions.height + tailOffset;
-	canvasDimensions.width = bubbleDimensions.width + tailOffset;
-	
-	// Determine canvas top, left coordinates
-	switch ( tailDirection ) {
-		case "nw":
-		case "none":
-			canvasDimensions.left = tailCoordinates.x;
-			canvasDimensions.top = tailCoordinates.y;
-			break;
-		case "ne":
-			canvasDimensions.left = tailCoordinates.x - canvasDimensions.width;
-			canvasDimensions.top = tailCoordinates.y;
-			break;
-		case "se":
-			canvasDimensions.left = tailCoordinates.x - canvasDimensions.width;
-			canvasDimensions.top = tailCoordinates.y - canvasDimensions.height;
-			break;
-		case "sw":
-			canvasDimensions.left = tailCoordinates.x;
-			canvasDimensions.top = tailCoordinates.y - canvasDimensions.height;
-			break;
-		case "n":
-			canvasDimensions.left = tailCoordinates.x - ( canvasDimensions.width / 2 );
-			canvasDimensions.top = tailCoordinates.y;
-			break;
-		case "e":
-			canvasDimensions.left = tailCoordinates.x - canvasDimensions.width;
-			canvasDimensions.top = tailCoordinates.y - ( canvasDimensions.height / 2 );
-			break;
-		case "s":
-			canvasDimensions.left = tailCoordinates.x - ( canvasDimensions.width / 2 );
-			canvasDimensions.top = tailCoordinates.y - canvasDimensions.height;
-			break;
-		case "w":
-			canvasDimensions.left = tailCoordinates.x ;
-			canvasDimensions.top = tailCoordinates.y - ( canvasDimensions.height / 2 );
-			break;
-		default:
-		// TODO: error condition here
-		break;
-}
-	
-	
-	return canvasDimensions ;
-	
 
-}
 
-// Create temp canvas and return context for use in calculating
-// text metrics. 
-function getTempContext( divObject ) {
-	
-	// TODO: define temp canvas name as a constant
-	divObject.append('<canvas id="HBTempCanvas" width="600" height="600" > </canvas>');
-	var canvasElement=document.getElementById( "HBTempCanvas" );
-	var ctx=canvasElement.getContext("2d");
-	return ctx ;
-}
-
-function removeTempContext() {
-	jQuery("#HBTempCanvas" ).remove();
-}
-
-function backingScale(context) {
-    if ('devicePixelRatio' in window) {
-        if (window.devicePixelRatio > 1 && context.webkitBackingStorePixelRatio < 2) {
-            return window.devicePixelRatio;
-        }
-    }
-    return 1;
-};
 
 function saveBubbleConfig( data ) {
 	
