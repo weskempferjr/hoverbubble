@@ -24,7 +24,11 @@ class BubbleEditScrubber {
 		$scrubbed['bubble_delay'] = absint( $inputData['bubble_delay'] ) ;
 		$scrubbed['bubble_duration'] = self::sanitizeBubbleDuration( $inputData['bubble_duration'] ) ;
 		$scrubbed['bubble_pages'] = self::sanitizeBubblePages( $inputData['bubble_pages'] );
-		$scrubbed['bubble_author'] = $inputData['bubble_author'];
+		$scrubbed['bubble_author'] = $inputData['bubble_author'];		
+		$scrubbed['bubble_tail_type'] = $inputData['bubble_tail_type'];
+		$scrubbed['text_padding'] = $inputData['text_padding'];
+		$scrubbed['bubble_tail_base_width'] = $inputData['bubble_tail_base_width'];
+		$scrubbed['bubble_tail_position'] = $inputData['bubble_tail_position'];
 		
 		if ( isset( $inputData['published'] ) ) {
 			$scrubbed['published'] = TRUE ;

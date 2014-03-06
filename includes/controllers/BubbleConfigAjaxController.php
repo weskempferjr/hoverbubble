@@ -354,7 +354,11 @@ class BubbleConfigAjaxController {
 					'contentAreaWidth' => $bubbleConfig->getContentAreaWidth(),
 					'targetImageURL' => $bubbleConfig->getTargetImageURL(),
 					'bubbleDelay' => $bubbleConfig->getBubbleDelay(),
-					'bubbleDuration' => $bubbleConfig->getBubbleDuration()
+					'bubbleDuration' => $bubbleConfig->getBubbleDuration(),
+					'bubbleTailType' => $bubbleConfig->getBubbleTailType(),
+					'textPadding' => $bubbleConfig->getTextPadding(),
+					'bubbleTailBaseWidth' => $bubbleConfig->getBubbleTailBaseWidth(),
+					'bubbleTailPosition' => $bubbleConfig->getBubbleTailPosition()
 		);
 		return $mappedConfig ;
 	}

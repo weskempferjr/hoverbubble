@@ -39,6 +39,10 @@ class BubbleConfig implements DBMap {
 	private $bubbleDuration = -1;
 	private $bubbleAuthor = 0;
 	private $published = FALSE;
+	private $bubbleTailType = "speech" ;   
+	private $textPadding = 10; 
+	private $bubbleTailBaseWidth = 10;
+	private $bubbleTailPosition = 0.5;
 	
 	private $whereClause = "";
 	
@@ -62,6 +66,11 @@ class BubbleConfig implements DBMap {
 		$this->bubbleDuration = -1;
 		$this->bubbleAuthor = 0;
 		$this->published = FALSE ;
+		$this->bubbleTailType = "speech" ;   
+		$this->textPadding = 10; 
+		$this->bubbleTailBaseWidth = 10;
+		$this->bubbleTailPosition = 0.5;
+		
 
 	}
 	
@@ -312,6 +321,38 @@ class BubbleConfig implements DBMap {
 		return $this->published ;
 	}
 	
+	public function setBubbleTailType( $bubbleTailType ) {
+		$this->bubbleTailType = $bubbleTailType ;
+	}
+	
+	public function getBubbleTailType() {
+		return $this->bubbleTailType ;
+	}
+	
+	public function setTextPadding( $textPadding ) {
+		$this->textPadding = $textPadding ;
+	}
+	
+	public function getTextPadding() {
+		return $this->textPadding ;
+	}
+	
+	public function setBubbleTailBaseWidth( $bubbleTailBaseWidth ) {
+		$this->bubbleTailBaseWidth = $bubbleTailBaseWidth ;
+	}
+	
+	public function getBubbleTailBaseWidth() {
+		return $this->bubbleTailBaseWidth ;
+	}
+	
+	public function setBubbleTailPosition( $bubbleTailPosition ) {
+		$this->bubbleTailPosition = $bubbleTailPosition ;
+	}
+	
+	public function getBubbleTailPosition() {
+		return $this->bubbleTailPosition ;
+	}
+ 	
 	public function setWhereClause ( $whereClause ) {
 		$this->whereClause = $whereClause ;
 	}
@@ -353,6 +394,10 @@ class BubbleConfig implements DBMap {
 		$this->bubbleDuration = $columnValues['bubble_duration'];
 		$this->bubbleAuthor = $columnValues['bubble_author'];
 		$this->published = $columnValues['published'];
+		$this->bubbleTailType = $columnValues['bubble_tail_type'];
+		$this->textPadding = $columnValues['text_padding'];
+		$this->bubbleTailBaseWidth = $columnValues['bubble_tail_base_width'];
+		$this->bubbleTailPosition = $columnValues['bubble_tail_position'];
 	}
 	
 	public function objectToColumns( $dbwrite ) {
@@ -384,7 +429,11 @@ class BubbleConfig implements DBMap {
 			'bubble_delay' => $this->bubbleDelay,
 			'bubble_duration' => $this->bubbleDuration,
 			'bubble_author' => $this->bubbleAuthor,
-			'published' => $this->published	
+			'published' => $this->published,
+			'bubble_tail_type' => $this->bubbleTailType,
+			'text_padding' => $this->textPadding,
+			'bubble_tail_base_width' => $this->bubbleTailBaseWidth,
+			'bubble_tail_position' => $this->bubbleTailPosition
 		);
 		return $columnValues ;
 		
@@ -421,6 +470,10 @@ class BubbleConfig implements DBMap {
 			'bubble_duration' => $this->bubbleDuration,
 			'bubble_author' => $this->bubbleAuthor,
 			'published' => $this->published,
+			'bubble_tail_type' => $this->bubbleTailType,
+			'text_padding' => $this->textPadding,
+			'bubble_tail_base_width' => $this->bubbleTailBaseWidth,
+			'bubble_tail_position' => $this->bubbleTailPosition,
 			'bubble_id' => $this->bubbleID	
 		);
 		return $columnValues ;

@@ -73,7 +73,11 @@ class BubbleConfigConverter implements CMSConverter {
 					bubble_delay int(11) DEFAULT '0',
 					bubble_duration int(11) DEFAULT '-1',
 					bubble_author bigint(20) unsigned NOT NULL DEFAULT '0',
-					published tinyint(3) unsigned NOT NULL DEFAULT '0'
+					published tinyint(3) unsigned NOT NULL DEFAULT '0',
+					bubble_tail_type char(40) NOT NULL DEFAULT 'speech',
+					text_padding smallint(6) NOT NULL DEFAULT '10',
+  					bubble_tail_base_width smallint(6) NOT NULL DEFAULT '10',
+  					bubble_tail_position float unsigned NOT NULL DEFAULT '0.5'
 					PRIMARY KEY  bubble_id (bubble_id),
 					UNIQUE KEY  bubble_name (bubble_name)
 				) ;";
@@ -134,7 +138,11 @@ class BubbleConfigConverter implements CMSConverter {
 					bubble_delay int(11) DEFAULT '0',
 					bubble_duration int(11) DEFAULT '-1',
 					bubble_author bigint(20) unsigned NOT NULL DEFAULT '0',
-					published tinyint(3) unsigned NOT NULL DEFAULT '0'
+					published tinyint(3) unsigned NOT NULL DEFAULT '0',
+					bubble_tail_type char(40) NOT NULL DEFAULT 'speech',
+					text_padding smallint(6) NOT NULL DEFAULT '10',
+  					bubble_tail_base_width smallint(6) NOT NULL DEFAULT '10',
+  					bubble_tail_position float unsigned NOT NULL DEFAULT '0.5'
 				) ;";
 		
 			return $sql;	
@@ -260,8 +268,12 @@ class BubbleConfigConverter implements CMSConverter {
 				bubble_delay,
 				bubble_duration,
 				bubble_author,
-				published
-			) VALUES ( %d, %s, %s, %s, %d, %d, %s, %d, %s, %d, %d, %d, %d, %d, %s, %s, %d, %d, %d, %d )",
+				published,
+				bubble_tail_type,
+				text_padding,
+				bubble_tail_base_width,
+				bubble_tail_position
+			) VALUES ( %d, %s, %s, %s, %d, %d, %s, %d, %s, %d, %d, %d, %d, %d, %s, %s, %d, %d, %d, %d, %s, %d, %d, %f )",
 			'wpPrepareValues' => $object->objectToColumns( true ),
 			'wpTableName' => 'hoverbubbles'
 		);
@@ -316,7 +328,11 @@ class BubbleConfigConverter implements CMSConverter {
 				bubble_delay = %d,
 				bubble_duration = %d,
 				bubble_author = %d,
-				published = %d
+				published = %d,
+				bubble_tail_type = %s,
+				text_padding = %d,
+				bubble_tail_base_width = %d,
+				bubble_tail_position = %f
 			WHERE bubble_id = %d
 			",
 			'wpPrepareValues' => $object->objectToColumnsForUpdate( true ),

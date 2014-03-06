@@ -117,6 +117,10 @@ function displayBubble(bubbleConfig, bubbleStyleSheet ){
 
 	var contentAreaWidth = parseInt(bubbleConfig.contentAreaWidth);
 	var contentAreaHeight = parseInt(bubbleConfig.contentAreaHeight);
+	var contentAreaTextPadding = parseInt(bubbleConfig.textPadding);
+	var bubbleTailBaseWidth = parseInt(bubbleConfig.bubbleTailBaseWidth);
+	var bubbleTailPosition = parseFloat( bubbleConfig.bubbleTailPosition );
+	var bubbleTailType = bubbleConfig.bubbleTailType;
 	
 	var bubbleDelay = parseInt( bubbleConfig.bubbleDelay );
 	var bubbleDuration = parseInt( bubbleConfig.bubbleDuration );
@@ -150,8 +154,8 @@ function displayBubble(bubbleConfig, bubbleStyleSheet ){
 	
 	// TODO: consider making textPadding a config parameter
 	var textPadding = new Object();
-	textPadding.x = 10;
-	textPadding.y = 10;
+	textPadding.x = contentAreaTextPadding;
+	textPadding.y = contentAreaTextPadding;
 	var bubbleAreaDimensions = calculateBubbleDimensions (	textAreaDimensions,
 															textPadding);
 	
@@ -178,7 +182,7 @@ function displayBubble(bubbleConfig, bubbleStyleSheet ){
 	 // set content div styles to create bubble
 	jQuery("#" + contentDivID ).css("width", contentAreaWidth );
 	jQuery("#" + contentDivID ).css("height", contentAreaHeight );
-	jQuery("#" + contentDivID ).css("padding", "0px" );
+	jQuery("#" + contentDivID ).css("padding", contentAreaTextPadding + "px" );
 	jQuery("#" + contentDivID ).css("background", bubbleFillColor );
 	jQuery("#" + contentDivID ).css("border-width", bubbleOutlineWidth );
 	jQuery("#" + contentDivID ).css("border-style", "solid");
@@ -188,41 +192,115 @@ function displayBubble(bubbleConfig, bubbleStyleSheet ){
 	jQuery("#" + contentDivID ).css("-moz-border-radius", bubbleCornerRadius);
 	 
 	if ( bubbleTailDirection != "none") {
-		 var tailStyleSheetRules = getTailStyleSheetRules( bubbleConfig );
+		
+		
+		
+		 var tailStyleSheetRules = getTailStyleSheetRules( bubbleConfig, bubbleAreaDimensions );
+		 
+		 switch ( bubbleTailType ) { 
+		 case "speech":
 	
-		 // Draw tail by adding rules to bubbleSytleSheet
-		 var elementSelector = "#" + contentDivID + ":after" ;
-		 bubbleStyleSheet.insertRule( elementSelector + " {content: ''}", 0);
-		 bubbleStyleSheet.insertRule( elementSelector + " {position: absolute}", 0);
+			 // Draw tail by adding rules to bubbleSytleSheet
+			 var elementSelector = "#" + contentDivID + ":after" ;
+			 bubbleStyleSheet.insertRule( elementSelector + " {content: ''}", 0);
+			 bubbleStyleSheet.insertRule( elementSelector + " {position: absolute}", 0);
+			 
+		
+			 
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterVerticalPos, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterHorizontalPos, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " {border-style: solid}", 0);
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterBorderWidth, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterBorderColor, 0 );
+
+		
+			 bubbleStyleSheet.insertRule( elementSelector + " {display: block}", 0);
+			 bubbleStyleSheet.insertRule( elementSelector + " {width: 0 }", 0);
+			 bubbleStyleSheet.insertRule( elementSelector + " {z-index: 1 }", 0);
+			 
+			 // draw tail outline
+			 elementSelector = "#" + contentDivID + ":before" ;
+			 bubbleStyleSheet.insertRule( elementSelector + " {content: ''}", 0);
+			 bubbleStyleSheet.insertRule( elementSelector + " {position: absolute}", 0);
+			 
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeVerticalPos, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeHorizontalPos, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " {border-style: solid}", 0);
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeBorderWidth, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeBorderColor, 0 );
+			
+			 
+			 bubbleStyleSheet.insertRule( elementSelector + " {display: block}", 0);
+			 bubbleStyleSheet.insertRule( elementSelector + " {width: 0 }", 0);
+			 bubbleStyleSheet.insertRule( elementSelector + " {z-index: 0 }", 0);
+			 break;
+			 
+		 case "thought" :
+			 // Draw tail by adding rules to bubbleSytleSheet
+			 var elementSelector = "#" + contentDivID + ":after" ;
+			 bubbleStyleSheet.insertRule( elementSelector + " {content: ''}", 0);
+			 bubbleStyleSheet.insertRule( elementSelector + " {position: absolute}", 0);
+			 
+		
+			 
+			 // Draw tail by adding rules to bubbleSytleSheet
+			 // little circle
+			 var elementSelector = "#" + contentDivID + ":after" ;
+			 bubbleStyleSheet.insertRule( elementSelector + " {content: ''}", 0);
+			 bubbleStyleSheet.insertRule( elementSelector + " {position: absolute}", 0);
+			 
+		
+			 
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterVerticalPos, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterHorizontalPos, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterWidth, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterHeight, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterWKBorderRadius, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterMozBorderRadius, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterBorderRadius, 0 );
+			 
+			 bubbleStyleSheet.insertRule( elementSelector + " {border-style: solid}", 0);
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterBorderWidth, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterBorderColor, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterFillColor, 0 );
+			 
+		
+			 bubbleStyleSheet.insertRule( elementSelector + " {display: block}", 0);
+			 // bubbleStyleSheet.insertRule( elementSelector + " {width: 0 }", 0);
+			 bubbleStyleSheet.insertRule( elementSelector + " {z-index: 1 }", 0);
+			 
+			 // big cirle
+			 elementSelector = "#" + contentDivID + ":before" ;
+			 bubbleStyleSheet.insertRule( elementSelector + " {content: ''}", 0);
+			 bubbleStyleSheet.insertRule( elementSelector + " {position: absolute}", 0);
+			 
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeVerticalPos, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeHorizontalPos, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeWidth, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeHeight, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeWKBorderRadius, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeMozBorderRadius, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeBorderRadius, 0 );
+			 
+			 bubbleStyleSheet.insertRule( elementSelector + " {border-style: solid}", 0);
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeBorderWidth, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeBorderColor, 0 );
+			 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeFillColor, 0 );
+			 
+			 bubbleStyleSheet.insertRule( elementSelector + " {display: block}", 0);
+			 // bubbleStyleSheet.insertRule( elementSelector + " {width: 0 }", 0);
+			 bubbleStyleSheet.insertRule( elementSelector + " {z-index: 0 }", 0);
+			 
+			 
+			 break;
+			
+			 
+		 default:
+			 break;
 		 
-	
+		 }
 		 
-		 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterVerticalPos, 0 );
-		 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterHorizontalPos, 0 );
-		 bubbleStyleSheet.insertRule( elementSelector + " {border-style: solid}", 0);
-		 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterBorderWidth, 0 );
-		 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.afterBorderColor, 0 );
-		 
-	
-		 bubbleStyleSheet.insertRule( elementSelector + " {display: block}", 0);
-		 bubbleStyleSheet.insertRule( elementSelector + " {width: 0 }", 0);
-		 bubbleStyleSheet.insertRule( elementSelector + " {z-index: 1 }", 0);
-		 
-		 // draw tail outline
-		 elementSelector = "#" + contentDivID + ":before" ;
-		 bubbleStyleSheet.insertRule( elementSelector + " {content: ''}", 0);
-		 bubbleStyleSheet.insertRule( elementSelector + " {position: absolute}", 0);
-		 
-		 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeVerticalPos, 0 );
-		 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeHorizontalPos, 0 );
-		 bubbleStyleSheet.insertRule( elementSelector + " {border-style: solid}", 0);
-		 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeBorderWidth, 0 );
-		 bubbleStyleSheet.insertRule( elementSelector + " " + tailStyleSheetRules.beforeBorderColor, 0 );
-		 
-		 bubbleStyleSheet.insertRule( elementSelector + " {display: block}", 0);
-		 bubbleStyleSheet.insertRule( elementSelector + " {width: 0 }", 0);
-		 bubbleStyleSheet.insertRule( elementSelector + " {z-index: 0 }", 0);
-	 }
+	 } // end if bubbleTailDirection
 	 
 	 // Display bubble as indicated by delay and duration. 
 	 setTimeout( function() {
@@ -292,7 +370,7 @@ function getContentDivPosition( bubbleConfig ) {
 }
 
 // return object containing CSS rules for thoses properties dependent on tail and bubble geometry
-function getTailStyleSheetRules( bubbleConfig )
+function getTailStyleSheetRules( bubbleConfig, bubbleAreaDimensions )
 {
 	var contentAreaWidth = parseInt(bubbleConfig.contentAreaWidth);
 	var contentAreaHeight = parseInt(bubbleConfig.contentAreaHeight);
@@ -302,18 +380,27 @@ function getTailStyleSheetRules( bubbleConfig )
 	var bubbleOutlineColor = bubbleConfig.bubbleOutlineColor;
 	var bubbleOutlineWidth = parseInt(bubbleConfig.bubbleOutlineWidth);
 	var bubbleTailDirection = bubbleConfig.bubbleTailDirection.toLowerCase();
+	var bubbleTailType = bubbleConfig.bubbleTailType;
 	
-	//TODO need config vars for these: position, tail base width
-	var position = 0.5;
-	var tailBaseWidth = 10;
+	
+	var position = parseFloat( bubbleConfig.bubbleTailPosition );
+	var tailBaseWidth = parseInt( bubbleConfig.bubbleTailBaseWidth );
 	
 	var tailCSSRules = new Object();
 	
 	var outLineWidthOffset = bubbleOutlineWidth - 1;
 	
 	// position of the tail along side of bubble
-	var horizontalTailOffset =  ( contentAreaWidth * position ) - tailBaseWidth ;
-	var verticalTailOffset  = ( contentAreaHeight * position ) - tailBaseWidth ;
+	// removed - tailBaseWidth
+	var tailBaseOffset = tailBaseWidth / 2 ;
+	
+	var horizontalTailOffset =  ( bubbleAreaDimensions.width * position ) - tailBaseOffset ;
+	var verticalTailOffset  = ( bubbleAreaDimensions.height * position ) - tailBaseOffset ;
+	
+	if ( bubbleTailType == "speech") { 
+		horizontalTailOffset =  ( bubbleAreaDimensions.width * position ) - tailBaseWidth ;
+		verticalTailOffset  = ( bubbleAreaDimensions.height * position ) - tailBaseWidth ;
+	}
 	
 	var horizontalOutlineOffset = horizontalTailOffset - ( bubbleOutlineWidth - 1);
 	var verticalOutlineOffset = verticalTailOffset - ( bubbleOutlineWidth - 1 ) ;
@@ -326,8 +413,31 @@ function getTailStyleSheetRules( bubbleConfig )
 	var outlineHorizontalPos = contentAreaWidth + bubbleOutlineWidth ;
 	var outlineVerticalPos = contentAreaHeight + bubbleOutlineWidth ;
 	
+
+	// Rules required for "thought" tail:
+	// for small circle
+	// after horizontal position (left, right)
+	// after vertical position (top, bottom)
+	// after border-width
+	// after border-color
+	// after border width
+	// after border color
+	// after background color
+	// after border radius
 	
-	// Rules required:
+	// for large circle
+	// before horizontal position (left, right)
+	// before vertical position (top, bottom)
+	// before width
+	// before height
+	// before border width
+	// before border color
+	// before background color
+	// before border radius
+	
+		
+	
+	// Rules required for speech tail:
 	// after horizontal position (left, right)
 	// after vertical position (top, bottom)
 	// after border-width
@@ -337,67 +447,207 @@ function getTailStyleSheetRules( bubbleConfig )
 	// before border-width
 	// before border-color
 	
-	// TODO: corner directions (nw, sw ) are to be removed.
-	switch ( bubbleTailDirection ) {
-	case "n":
-	case "ne":
-	case "nw":
-		
-		tailCSSRules.afterVerticalPos = "{top: " +  bubbleTailLength * -1 + "px }" ;
-		tailCSSRules.afterHorizontalPos = "{left: " + horizontalTailOffset + "px }" ;
-		tailCSSRules.afterBorderWidth = "{border-width: " + 0 + " " + tailBaseWidth + "px " + bubbleTailLength + "px }" ;
-		tailCSSRules.afterBorderColor = "{border-color: " + bubbleFillColor + " transparent }" ;
-		
-		tailCSSRules.beforeVerticalPos = "{top: "  + tailOutlineLength * -1 + "px }";
-		tailCSSRules.beforeHorizontalPos = "{left: " + horizontalOutlineOffset + "px }";
-		tailCSSRules.beforeBorderWidth = "{border-width: " + 0 + " " + outlineTailBaseWidth + "px " + outlineBubbleTailLength + "px }" ;
-		tailCSSRules.beforeBorderColor = "{border-color: " + bubbleOutlineColor + " transparent }" ;
-		
-		break; 
-
-	case "se":
-	case "sw":
-	case "s":
-		tailCSSRules.afterVerticalPos = "{bottom: " +  bubbleTailLength * -1 + "px }" ;
-		tailCSSRules.afterHorizontalPos = "{left: " + horizontalTailOffset + "px }" ;
-		tailCSSRules.afterBorderWidth = "{border-width: " + bubbleTailLength + "px " + tailBaseWidth + "px 0}" ;
-		tailCSSRules.afterBorderColor = "{border-color: " + bubbleFillColor + " transparent }" ;
-		
-		tailCSSRules.beforeVerticalPos = "{top: "  + outlineVerticalPos + "px }";
-		tailCSSRules.beforeHorizontalPos = "{left: " + horizontalOutlineOffset + "px }";		
-		tailCSSRules.beforeBorderWidth = "{border-width: " + outlineBubbleTailLength + "px " + outlineTailBaseWidth + "px 0}" ;
-		tailCSSRules.beforeBorderColor = "{border-color: " + bubbleOutlineColor + " transparent }" ;
-		break;
-
-	case "w":
-		tailCSSRules.afterVerticalPos = "{top: " +  verticalTailOffset + "px }" ;
-		tailCSSRules.afterHorizontalPos = "{left: " + bubbleTailLength * -1 + "px }" ;
-		tailCSSRules.afterBorderWidth = "{border-width: "  + tailBaseWidth + "px " + bubbleTailLength + "px " + tailBaseWidth + "px 0}" ;
-		tailCSSRules.afterBorderColor = "{border-color: transparent " + bubbleFillColor + " }" ;
-		
-		tailCSSRules.beforeVerticalPos = "{top: "  + verticalOutlineOffset + "px }";
-		tailCSSRules.beforeHorizontalPos = "{left: " + tailOutlineLength * -1 + "px }";	
-		tailCSSRules.beforeBorderWidth = "{border-width: " + outlineTailBaseWidth + "px " + outlineBubbleTailLength + "px " + outlineTailBaseWidth + "px 0}" ;
-		tailCSSRules.beforeBorderColor = "{border-color: transparent " + bubbleOutlineColor + " }" ;
-		break;
 	
-	case "e":		
-		tailCSSRules.afterVerticalPos = "{top: " +  verticalTailOffset + "px }" ;
-		tailCSSRules.afterHorizontalPos = "{right: " + bubbleTailLength * -1 + "px }" ;
-		tailCSSRules.afterBorderWidth = "{border-width: "  + tailBaseWidth + "px 0 " + tailBaseWidth + "px " + bubbleTailLength + "px }" ;
-		tailCSSRules.afterBorderColor = "{border-color: transparent " + bubbleFillColor + " }" ;
+	switch ( bubbleTailType ) {
 		
-		tailCSSRules.beforeVerticalPos = "{top: "  + verticalOutlineOffset + "px }";
-		tailCSSRules.beforeHorizontalPos = "{left: " + outlineHorizontalPos + "px }";	
-		tailCSSRules.beforeBorderWidth = "{border-width: " + outlineTailBaseWidth + "px 0 " + outlineTailBaseWidth + "px " + outlineBubbleTailLength + "px}" ;
-		tailCSSRules.beforeBorderColor = "{border-color: transparent " + bubbleOutlineColor + " }" ;
-		break;
+	case "speech":
+	
+		// TODO: corner directions (nw, sw ) are to be removed.
+		switch ( bubbleTailDirection ) {
+		case "n":
+		case "ne":
+		case "nw":
+			
+			tailCSSRules.afterVerticalPos = "{top: " +  bubbleTailLength * -1 + "px }" ;
+			tailCSSRules.afterHorizontalPos = "{left: " + horizontalTailOffset + "px }" ;
+			tailCSSRules.afterBorderWidth = "{border-width: " + 0 + " " + tailBaseWidth + "px " + bubbleTailLength + "px }" ;
+			tailCSSRules.afterBorderColor = "{border-color: " + bubbleFillColor + " transparent }" ;
+			
+			tailCSSRules.beforeVerticalPos = "{top: "  + tailOutlineLength * -1 + "px }";
+			tailCSSRules.beforeHorizontalPos = "{left: " + horizontalOutlineOffset + "px }";
+			tailCSSRules.beforeBorderWidth = "{border-width: " + 0 + " " + outlineTailBaseWidth + "px " + outlineBubbleTailLength + "px }" ;
+			tailCSSRules.beforeBorderColor = "{border-color: " + bubbleOutlineColor + " transparent }" ;
+			
+			break; 
+	
+		case "se":
+		case "sw":
+		case "s":
+			tailCSSRules.afterVerticalPos = "{bottom: " +  bubbleTailLength * -1 + "px }" ;
+			tailCSSRules.afterHorizontalPos = "{left: " + horizontalTailOffset + "px }" ;
+			tailCSSRules.afterBorderWidth = "{border-width: " + bubbleTailLength + "px " + tailBaseWidth + "px 0}" ;
+			tailCSSRules.afterBorderColor = "{border-color: " + bubbleFillColor + " transparent }" ;
+			
+			tailCSSRules.beforeVerticalPos = "{bottom: "  + tailOutlineLength * -1 + "px }";
+			tailCSSRules.beforeHorizontalPos = "{left: " + horizontalOutlineOffset + "px }";		
+			tailCSSRules.beforeBorderWidth = "{border-width: " + outlineBubbleTailLength + "px " + outlineTailBaseWidth + "px 0}" ;
+			tailCSSRules.beforeBorderColor = "{border-color: " + bubbleOutlineColor + " transparent }" ;
+			break;
+	
+		case "w":
+			tailCSSRules.afterVerticalPos = "{top: " +  verticalTailOffset + "px }" ;
+			tailCSSRules.afterHorizontalPos = "{left: " + bubbleTailLength * -1 + "px }" ;
+			tailCSSRules.afterBorderWidth = "{border-width: "  + tailBaseWidth + "px " + bubbleTailLength + "px " + tailBaseWidth + "px 0}" ;
+			tailCSSRules.afterBorderColor = "{border-color: transparent " + bubbleFillColor + " }" ;
+			
+			tailCSSRules.beforeVerticalPos = "{top: "  + verticalOutlineOffset + "px }";
+			tailCSSRules.beforeHorizontalPos = "{left: " + tailOutlineLength * -1 + "px }";	
+			tailCSSRules.beforeBorderWidth = "{border-width: " + outlineTailBaseWidth + "px " + outlineBubbleTailLength + "px " + outlineTailBaseWidth + "px 0}" ;
+			tailCSSRules.beforeBorderColor = "{border-color: transparent " + bubbleOutlineColor + " }" ;
+			break;
+		
+		case "e":		
+			tailCSSRules.afterVerticalPos = "{top: " +  verticalTailOffset + "px }" ;
+			tailCSSRules.afterHorizontalPos = "{right: " + bubbleTailLength * -1 + "px }" ;
+			tailCSSRules.afterBorderWidth = "{border-width: "  + tailBaseWidth + "px 0 " + tailBaseWidth + "px " + bubbleTailLength + "px }" ;
+			tailCSSRules.afterBorderColor = "{border-color: transparent " + bubbleFillColor + " }" ;
+			
+			tailCSSRules.beforeVerticalPos = "{top: "  + verticalOutlineOffset + "px }";
+			tailCSSRules.beforeHorizontalPos = "{right: " + tailOutlineLength * -1  + "px }";
+			tailCSSRules.beforeBorderWidth = "{border-width: " + outlineTailBaseWidth + "px 0 " + outlineTailBaseWidth + "px " + outlineBubbleTailLength + "px}" ;
+			tailCSSRules.beforeBorderColor = "{border-color: transparent " + bubbleOutlineColor + " }" ;
+			break;
+	
+		default:
+			// TODO: error condition
+			break ;
+				 		
+		}
+		break; // case speech
+		
+	case "thought":
+		
+		var radiusSmallCirle = tailBaseWidth / 2;
+		var widthSmallCircle = tailBaseWidth / 2;
+		
+		var radiusLargeCircle = tailBaseWidth;
+		var widthLargeCircle = tailBaseWidth;
+		
+		// offsett to center align small circle with large circle
+		var smallCircleCenterOffset = Math.round( ( widthLargeCircle - widthSmallCircle ) / 2 );
+		
+		// TODO: about 80% of the statements in each case can be factored out. 
+		switch ( bubbleTailDirection ) {
+		case "n":
+		case "ne":
+		case "nw":
+			
+			tailCSSRules.afterVerticalPos = "{top: " +  bubbleTailLength * -1 + "px }" ;
+			var offset =  horizontalTailOffset + smallCircleCenterOffset - ( bubbleOutlineWidth );
+			tailCSSRules.afterHorizontalPos = "{left: " + offset + "px }" ;
+			tailCSSRules.afterWidth = "{width: " + widthSmallCircle + "px}" ;
+			tailCSSRules.afterHeight = "{height: " + widthSmallCircle + "px}" ;
+			tailCSSRules.afterWKBorderRadius = "{-webkit-border-radius: " + radiusSmallCirle + "px}" ;
+			tailCSSRules.afterMozBorderRadius = "{-moz-border-radius: " + radiusSmallCirle + "px}" ;
+			tailCSSRules.afterBorderRadius = "{border-radius: " + radiusSmallCirle + "px}" ;
+			tailCSSRules.afterBorderWidth = "{border-width: " + bubbleOutlineWidth + "px }" ;
+			tailCSSRules.afterBorderColor = "{border-color: " + bubbleOutlineColor +   " }" ;
+			tailCSSRules.afterFillColor = "{background: " + bubbleFillColor + "}" ;
+			
+			tailCSSRules.beforeVerticalPos = "{top: "  +  Math.round( -1 * widthLargeCircle ) + "px }";
+			tailCSSRules.beforeHorizontalPos = "{left: " + horizontalOutlineOffset + "px }";
+			tailCSSRules.beforeWidth = "{width: " + widthLargeCircle + "px}" ;
+			tailCSSRules.beforeHeight = "{height: " + widthLargeCircle + "px}" ;			
+			tailCSSRules.beforeWKBorderRadius = "{-webkit-border-radius: " + radiusLargeCircle + "px}" ;
+			tailCSSRules.beforeMozBorderRadius = "{-moz-border-radius: " + radiusLargeCircle + "px}" ;
+			tailCSSRules.beforeBorderRadius = "{border-radius: " + radiusLargeCircle + "px}" ;
+			tailCSSRules.beforeBorderWidth = "{border-width: " + bubbleOutlineWidth + "px }" ;
+			tailCSSRules.beforeBorderColor = "{border-color: " + bubbleOutlineColor + " }" ;
+			tailCSSRules.beforeFillColor = "{background: " + bubbleFillColor + "}" ;
+			
+			break; 
+	
+		case "se":
+		case "sw":
+		case "s":
+			tailCSSRules.afterVerticalPos = "{bottom: " +  bubbleTailLength * -1 + "px }" ;
+			var offset =  horizontalTailOffset + smallCircleCenterOffset - ( bubbleOutlineWidth );
+			tailCSSRules.afterHorizontalPos = "{right: " + offset + "px }" ;
+			tailCSSRules.afterWidth = "{width: " + widthSmallCircle + "px}" ;
+			tailCSSRules.afterHeight = "{height: " + widthSmallCircle + "px}" ;
+			tailCSSRules.afterWKBorderRadius = "{-webkit-border-radius: " + radiusSmallCirle + "px}" ;
+			tailCSSRules.afterMozBorderRadius = "{-moz-border-radius: " + radiusSmallCirle + "px}" ;
+			tailCSSRules.afterBorderRadius = "{border-radius: " + radiusSmallCirle + "px}" ;
+			tailCSSRules.afterBorderWidth = "{border-width: " + bubbleOutlineWidth + "px }" ;
+			tailCSSRules.afterBorderColor = "{border-color: " + bubbleOutlineColor +   " }" ;
+			tailCSSRules.afterFillColor = "{background: " + bubbleFillColor + "}" ;
+			
+			tailCSSRules.beforeVerticalPos = "{bottom: "  +  Math.round( -1 * widthLargeCircle ) + "px }";
+			tailCSSRules.beforeHorizontalPos = "{right: " + horizontalOutlineOffset + "px }";
+			tailCSSRules.beforeWidth = "{width: " + widthLargeCircle + "px}" ;
+			tailCSSRules.beforeHeight = "{height: " + widthLargeCircle + "px}" ;			
+			tailCSSRules.beforeWKBorderRadius = "{-webkit-border-radius: " + radiusLargeCircle + "px}" ;
+			tailCSSRules.beforeMozBorderRadius = "{-moz-border-radius: " + radiusLargeCircle + "px}" ;
+			tailCSSRules.beforeBorderRadius = "{border-radius: " + radiusLargeCircle + "px}" ;
+			tailCSSRules.beforeBorderWidth = "{border-width: " + bubbleOutlineWidth + "px }" ;
+			tailCSSRules.beforeBorderColor = "{border-color: " + bubbleOutlineColor + " }" ;
+			tailCSSRules.beforeFillColor = "{background: " + bubbleFillColor + "}" ;
+			break;
+	
+		case "w":
 
+			tailCSSRules.afterHorizontalPos =  "{left: " +  bubbleTailLength * -1 + "px }" ;
+			var offset =  verticalTailOffset + smallCircleCenterOffset - ( bubbleOutlineWidth );
+			tailCSSRules.afterVerticalPos =  "{top: " + offset + "px }" ;
+				
+			tailCSSRules.afterWidth = "{width: " + widthSmallCircle + "px}" ;
+			tailCSSRules.afterHeight = "{height: " + widthSmallCircle + "px}" ;
+			tailCSSRules.afterWKBorderRadius = "{-webkit-border-radius: " + radiusSmallCirle + "px}" ;
+			tailCSSRules.afterMozBorderRadius = "{-moz-border-radius: " + radiusSmallCirle + "px}" ;
+			tailCSSRules.afterBorderRadius = "{border-radius: " + radiusSmallCirle + "px}" ;
+			tailCSSRules.afterBorderWidth = "{border-width: " + bubbleOutlineWidth + "px }" ;
+			tailCSSRules.afterBorderColor = "{border-color: " + bubbleOutlineColor +   " }" ;
+			tailCSSRules.afterFillColor = "{background: " + bubbleFillColor + "}" ;
+			
+			tailCSSRules.beforeHorizontalPos = "{left: "  +  Math.round( -1 * widthLargeCircle ) + "px }";
+			tailCSSRules.beforeVerticalPos = "{top: " + verticalOutlineOffset + "px }";				
+			tailCSSRules.beforeWidth = "{width: " + widthLargeCircle + "px}" ;
+			tailCSSRules.beforeHeight = "{height: " + widthLargeCircle + "px}" ;			
+			tailCSSRules.beforeWKBorderRadius = "{-webkit-border-radius: " + radiusLargeCircle + "px}" ;
+			tailCSSRules.beforeMozBorderRadius = "{-moz-border-radius: " + radiusLargeCircle + "px}" ;
+			tailCSSRules.beforeBorderRadius = "{border-radius: " + radiusLargeCircle + "px}" ;
+			tailCSSRules.beforeBorderWidth = "{border-width: " + bubbleOutlineWidth + "px }" ;
+			tailCSSRules.beforeBorderColor = "{border-color: " + bubbleOutlineColor + " }" ;
+			tailCSSRules.beforeFillColor = "{background: " + bubbleFillColor + "}" ;
+			break;
+		
+		case "e":		
+			tailCSSRules.afterHorizontalPos =  "{right: " +  bubbleTailLength * -1 + "px }" ;
+			var offset =  verticalTailOffset + smallCircleCenterOffset - ( bubbleOutlineWidth );
+			tailCSSRules.afterVerticalPos =  "{top: " + offset + "px }" ;
+				
+			tailCSSRules.afterWidth = "{width: " + widthSmallCircle + "px}" ;
+			tailCSSRules.afterHeight = "{height: " + widthSmallCircle + "px}" ;
+			tailCSSRules.afterWKBorderRadius = "{-webkit-border-radius: " + radiusSmallCirle + "px}" ;
+			tailCSSRules.afterMozBorderRadius = "{-moz-border-radius: " + radiusSmallCirle + "px}" ;
+			tailCSSRules.afterBorderRadius = "{border-radius: " + radiusSmallCirle + "px}" ;
+			tailCSSRules.afterBorderWidth = "{border-width: " + bubbleOutlineWidth + "px }" ;
+			tailCSSRules.afterBorderColor = "{border-color: " + bubbleOutlineColor +   " }" ;
+			tailCSSRules.afterFillColor = "{background: " + bubbleFillColor + "}" ;
+			
+			tailCSSRules.beforeHorizontalPos = "{right: "  +  Math.round( -1 * widthLargeCircle ) + "px }";
+			tailCSSRules.beforeVerticalPos = "{top: " + verticalOutlineOffset + "px }";				
+			tailCSSRules.beforeWidth = "{width: " + widthLargeCircle + "px}" ;
+			tailCSSRules.beforeHeight = "{height: " + widthLargeCircle + "px}" ;			
+			tailCSSRules.beforeWKBorderRadius = "{-webkit-border-radius: " + radiusLargeCircle + "px}" ;
+			tailCSSRules.beforeMozBorderRadius = "{-moz-border-radius: " + radiusLargeCircle + "px}" ;
+			tailCSSRules.beforeBorderRadius = "{border-radius: " + radiusLargeCircle + "px}" ;
+			tailCSSRules.beforeBorderWidth = "{border-width: " + bubbleOutlineWidth + "px }" ;
+			tailCSSRules.beforeBorderColor = "{border-color: " + bubbleOutlineColor + " }" ;
+			tailCSSRules.beforeFillColor = "{background: " + bubbleFillColor + "}" ;
+			break;
+	
+		default:
+			// TODO: error condition
+			break ;
+				 		
+		}
+		
+		break;
+		
 	default:
 		// TODO: error condition
 		break ;
-			 
-	
 	}
 	
 	return tailCSSRules;		
