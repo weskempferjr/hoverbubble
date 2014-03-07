@@ -107,7 +107,7 @@ class AdminEditView {
 			
 			<tr>
 			<td><p id="tailposlabel"><?php echo __('Bubble Tail Position:', TNOTW_HB_TEXTDOMAIN ); ?></p></td>
-			<td><input id="tailposlabel" type="number" step="0.1" min="0.1" max="1" name="bubble_tail_position" value="<?php echo $bubble->getBubbleTailPosition(); ?>" />  </td>
+			<td><input id="tailposlabel" type="number" step="0.1" min="0" max="1" name="bubble_tail_position" value="<?php echo $bubble->getBubbleTailPosition(); ?>" />  </td>
 			</tr>
 			
 			

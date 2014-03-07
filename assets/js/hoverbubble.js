@@ -325,41 +325,49 @@ function getContentDivPosition( bubbleConfig ) {
 	var bubbleTailX = parseInt(bubbleConfig.bubbleTailX) ;
 	var bubbleTailY = parseInt(bubbleConfig.bubbleTailY) ;	
 	var bubbleTailDirection = bubbleConfig.bubbleTailDirection.toLowerCase();
+	var textPadding = parseInt( bubbleConfig.textPadding );
+	var bubbleTailBaseWidth = parseInt( bubbleConfig.bubbleTailBaseWidth );
+	var bubbleOutlineWidth = parseInt( bubbleConfig.bubbleOutlineWidth );
 	
-	// TODO: config parameter for position
-	var position = 0.5;
+	var position = parseFloat( bubbleConfig.bubbleTailPosition );
 	
 	var contentDivPos = new Object();
+	var totalWidth = contentAreaWidth + 2 * ( textPadding + bubbleOutlineWidth );
+	var horizontalOffset = totalWidth * position ;
+	
+	var totalHeight = contentAreaHeight + 2 * ( textPadding + bubbleOutlineWidth );
+	var verticalOffset = totalHeight * position ;
 	
 	// TODO: corner directions (nw, sw ) are to be removed.
 	switch ( bubbleTailDirection ) {
 	case "n":
 	case "ne":
 	case "nw":
-		contentDivPos.left = bubbleTailX - ( contentAreaWidth * position );
+		contentDivPos.left = bubbleTailX - horizontalOffset ;
 		contentDivPos.top = bubbleTailY + bubbleTailLength ;				
 		break; 
 
 	case "se":
 	case "sw":
 	case "s":
-		contentDivPos.left = bubbleTailX - ( contentAreaWidth * position );
-		contentDivPos.top = bubbleTailY - bubbleTailLength - contentAreaHeight ;
+		contentDivPos.left = bubbleTailX - horizontalOffset ;
+		contentDivPos.top = bubbleTailY - bubbleTailLength - totalHeight ;
 		break;
 
 	case "w":
 		contentDivPos.left = bubbleTailX + bubbleTailLength ;
-		contentDivPos.top = bubbleTailY - ( contentAreaHeight * position );
+		contentDivPos.top = bubbleTailY - verticalOffset;
 		break;
 	
 	case "e":
-		contentDivPos.left = bubbleTailX - bubbleTailLength - contentAreaWidth;
-		contentDivPos.top = bubbleTailY - ( contentAreaHeight * position );
+		contentDivPos.left = bubbleTailX - bubbleTailLength - totalWidth ;
+		contentDivPos.top = bubbleTailY - verticalOffset ;
 		break;
 
 	default:
-		// TODO: error condition
-		alert("unknown bubble tail direction");
+		// default is "none"
+		contentDivPos.left = bubbleTailX ;
+		contentDivPos.top = bubbleTailY ;	
 		break ;
 			 
 	
@@ -562,7 +570,7 @@ function getTailStyleSheetRules( bubbleConfig, bubbleAreaDimensions )
 		case "s":
 			tailCSSRules.afterVerticalPos = "{bottom: " +  bubbleTailLength * -1 + "px }" ;
 			var offset =  horizontalTailOffset + smallCircleCenterOffset - ( bubbleOutlineWidth );
-			tailCSSRules.afterHorizontalPos = "{right: " + offset + "px }" ;
+			tailCSSRules.afterHorizontalPos = "{left: " + offset + "px }" ;
 			tailCSSRules.afterWidth = "{width: " + widthSmallCircle + "px}" ;
 			tailCSSRules.afterHeight = "{height: " + widthSmallCircle + "px}" ;
 			tailCSSRules.afterWKBorderRadius = "{-webkit-border-radius: " + radiusSmallCirle + "px}" ;
@@ -573,7 +581,7 @@ function getTailStyleSheetRules( bubbleConfig, bubbleAreaDimensions )
 			tailCSSRules.afterFillColor = "{background: " + bubbleFillColor + "}" ;
 			
 			tailCSSRules.beforeVerticalPos = "{bottom: "  +  Math.round( -1 * widthLargeCircle ) + "px }";
-			tailCSSRules.beforeHorizontalPos = "{right: " + horizontalOutlineOffset + "px }";
+			tailCSSRules.beforeHorizontalPos = "{left: " + horizontalOutlineOffset + "px }";
 			tailCSSRules.beforeWidth = "{width: " + widthLargeCircle + "px}" ;
 			tailCSSRules.beforeHeight = "{height: " + widthLargeCircle + "px}" ;			
 			tailCSSRules.beforeWKBorderRadius = "{-webkit-border-radius: " + radiusLargeCircle + "px}" ;
