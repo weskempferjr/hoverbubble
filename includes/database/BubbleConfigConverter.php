@@ -77,7 +77,7 @@ class BubbleConfigConverter implements CMSConverter {
 					bubble_tail_type char(40) NOT NULL DEFAULT 'speech',
 					text_padding smallint(6) NOT NULL DEFAULT '10',
   					bubble_tail_base_width smallint(6) NOT NULL DEFAULT '10',
-  					bubble_tail_position float unsigned NOT NULL DEFAULT '0.5'
+  					bubble_tail_position float unsigned NOT NULL DEFAULT '0.5',
 					PRIMARY KEY  bubble_id (bubble_id),
 					UNIQUE KEY  bubble_name (bubble_name)
 				) ;";
